@@ -96,6 +96,80 @@
                     <environment_variable action="prepend_to" name="PKG_CONFIG_DIR">$INSTALL_DIR/lib/pkgconfig:$INSTALL_DIR/share/pkgconfig</environment_variable>
                     <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$INSTALL_DIR/lib/pkgconfig:$INSTALL_DIR/share/pkgconfig</environment_variable>
                     <environment_variable action="prepend_to" name="PATH">$INSTALL_DIR/bin</environment_variable>
+
+                    <environment_variable action="set_to" name="ATLAS_LIB_DIR">$ENV[ATLAS_LIB_DIR]/lib</environment_variable>
+                    <environment_variable action="set_to" name="ATLAS_INCLUDE_DIR">$ENV[ATLAS_LIB_DIR]/include</environment_variable>
+                    <environment_variable action="set_to" name="ATLAS_BLAS_LIB_DIR">$ENV[ATLAS_LIB_DIR]/lib/atlas</environment_variable>
+                    <environment_variable action="set_to" name="ATLAS_LAPACK_LIB_DIR">$ENV[ATLAS_LIB_DIR]/lib/atlas</environment_variable>
+                    <environment_variable action="set_to" name="ATLAS_ROOT_PATH">$ENV[ATLAS_LIB_DIR]</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[ATLAS_LIB_DIR]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[ATLAS_LIB_DIR]/lib/atlas</environment_variable>
+  
+                    <environment_variable action="set_to" name="CAIRO_ROOT_PATH">$ENV[CAIRO_ROOT_PATH]</environment_variable>
+                    <environment_variable action="prepend_to" name="PATH">$ENV[CAIRO_ROOT_PATH]/bin</environment_variable>
+                    <environment_variable action="set_to" name="CAIRO_LIB_PATH">$ENV[CAIRO_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="set_to" name="CAIRO_INCLUDE_PATH">$ENV[CAIRO_ROOT_PATH]/include</environment_variable>
+                    <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$ENV[CAIRO_ROOT_PATH]/lib/pkgconfig</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[CAIRO_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="set_to" name="CAIRO_CFLAGS">-I$ENV[CAIRO_ROOT_PATH]/include/cairo</environment_variable>
+                    <environment_variable action="set_to" name="CAIRO_LIBS">"-L$ENV[CAIRO_ROOT_PATH]/lib -lcairo"</environment_variable>
+  
+                    <environment_variable action="set_to" name="FONTCONFIG_ROOT_PATH">$ENV[FONTCONFIG_ROOT_PATH]</environment_variable>
+                    <environment_variable action="prepend_to" name="PATH">$ENV[FONTCONFIG_ROOT_PATH]/bin</environment_variable>
+                    <environment_variable action="set_to" name="FONTCONFIG_FILE">$ENV[FONTCONFIG_ROOT_PATH]/etc/fonts/fonts.conf</environment_variable>
+                    <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$ENV[FONTCONFIG_ROOT_PATH]/lib/pkgconfig</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[FONTCONFIG_ROOT_PATH]/lib/</environment_variable>
+                    <environment_variable action="prepend_to" name="C_INCLUDE_PATH">$ENV[FONTCONFIG_ROOT_PATH]/include/</environment_variable>
+                    <environment_variable action="prepend_to" name="CPP_INCLUDE_PATH">$ENV[FONTCONFIG_ROOT_PATH]/include/</environment_variable>
+  
+                    <environment_variable action="set_to" name="FREETYPE_ROOT_PATH">$ENV[FREETYPE_ROOT_PATH]</environment_variable>
+                    <environment_variable action="set_to" name="FREETYPE_LIB_PATH">$ENV[FREETYPE_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="PATH">$ENV[FREETYPE_ROOT_PATH]/bin</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[FREETYPE_ROOT_PATH]/freetype/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="C_INCLUDE_PATH">$ENV[FREETYPE_ROOT_PATH]/freetype/include</environment_variable>
+                    <environment_variable action="prepend_to" name="CPLUS_INCLUDE_PATH">$ENV[FREETYPE_ROOT_PATH]/freetype/include</environment_variable>
+                    <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$ENV[FREETYPE_ROOT_PATH]/lib/pkgconfig</environment_variable>
+
+                    <environment_variable action="prepend_to" name="PATH">$ENV[LIBPNG_ROOT]/bin</environment_variable>
+                    <environment_variable action="set_to" name="LIBPNG_ROOT">$ENV[LIBPNG_ROOT]</environment_variable>
+                    <environment_variable action="set_to" name="LIBPNG_LIB_PATH">$ENV[LIBPNG_ROOT]/lib</environment_variable>
+                    <environment_variable action="set_to" name="LIBPNG_INCLUDE_PATH">$ENV[LIBPNG_ROOT]/include</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[LIBPNG_ROOT]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$ENV[LIBPNG_ROOT]/lib/pkgconfig</environment_variable>
+
+                    <environment_variable action="set_to" name="LIBXML2_ROOT_PATH">$ENV[LIBXML2_ROOT_PATH]</environment_variable>
+                    <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$ENV[LIBXML2_ROOT_PATH]/lib/pkgconfig</environment_variable>
+                    <environment_variable action="prepend_to" name="PATH">$ENV[LIBXML2_ROOT_PATH]/bin</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[LIBXML2_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="LIBRARY_PATH">$ENV[LIBXML2_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="C_INCLUDE_PATH">$ENV[LIBXML2_ROOT_PATH]/include</environment_variable>
+                    <environment_variable action="prepend_to" name="CPLUS_INCLUDE_PATH">$ENV[LIBXML2_ROOT_PATH]/include</environment_variable>
+
+                    <environment_variable action="set_to" name="NCURSES_INCLUDE_PATH">$ENV[NCURSES_ROOT_PATH]/include</environment_variable>
+                    <environment_variable action="set_to" name="NCURSES_LIB_PATH">$ENV[NCURSES_ROOT_PATH]/lib/</environment_variable>
+                    <environment_variable action="set_to" name="NCURSES_ROOT_PATH">$ENV[NCURSES_ROOT_PATH]</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[NCURSES_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="LIBRARY_PATH">$ENV[NCURSES_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable name="C_INCLUDE_PATH" action="prepend_to">$ENV[NCURSES_ROOT_PATH]/include</environment_variable>
+                    <environment_variable name="CPLUS_INCLUDE_PATH" action="prepend_to">$ENV[NCURSES_ROOT_PATH]/include</environment_variable>
+                    <environment_variable name="C_INCLUDE_PATH" action="prepend_to">$ENV[NCURSES_ROOT_PATH]/include/ncurses</environment_variable>
+                    <environment_variable name="CPLUS_INCLUDE_PATH" action="prepend_to">$ENV[NCURSES_ROOT_PATH]/include/ncurses</environment_variable>
+
+                    <environment_variable action="set_to" name="PIXMAN_ROOT_PATH">$ENV[PIXMAN_ROOT_PATH]</environment_variable>
+                    <environment_variable action="prepend_to" name="PATH">$ENV[PIXMAN_ROOT_PATH]/bin</environment_variable>
+                    <environment_variable action="set_to" name="PIXMAN_LIB_PATH">$ENV[PIXMAN_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="prepend_to" name="PKG_CONFIG_PATH">$ENV[PIXMAN_ROOT_PATH]/lib/pkgconfig</environment_variable>
+
+                    <environment_variable action="set_to" name="READLINE_INCLUDE_PATH">$ENV[READLINE_ROOT_PATH]/include</environment_variable>
+                    <environment_variable action="prepend_to" name="C_INCLUDE_PATH">$ENV[READLINE_ROOT_PATH]/include</environment_variable>
+                    <environment_variable action="prepend_to" name="CPLUS_INCLUDE_PATH">$ENV[READLINE_ROOT_PATH]/include</environment_variable>
+                    <environment_variable action="set_to" name="READLINE_LIB_PATH">$ENV[READLINE_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="set_to" name="READLINE_BIN_PATH">$ENV[READLINE_ROOT_PATH]/bin</environment_variable>
+                    <environment_variable action="set_to" name="READLINE_ROOT_PATH">$ENV[READLINE_ROOT_PATH]</environment_variable>
+                    <environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[READLINE_ROOT_PATH]/lib</environment_variable>
+                    <!--environment_variable action="prepend_to" name="LD_LIBRARY_PATH">$ENV[NCURSES_LIB_PATH]</environment_variable-->
+                    <environment_variable action="prepend_to" name="LIBRARY_PATH">$ENV[READLINE_ROOT_PATH]/lib</environment_variable>
+                    <environment_variable action="append_to" name="PATH">$ENV[READLINE_ROOT_PATH]/bin</environment_variable>
                 </action>
             </actions>
         </install>

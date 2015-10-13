@@ -1,14 +1,5 @@
 <tool id="brenninc_r_test" name="r_test" version="0.1.beta">
   <requirements>
-    <requirement type="package" version="3.10.2">atlas</requirement>
-    <requirement type="package" version="6.3">readline</requirement>
-    <requirement type="package" version="1.6.7">libpng</requirement>
-    <requirement type="package" version="1.14.2">cairo</requirement>
-    <requirement type="package" version="0.32.6">pixman</requirement>
-    <requirement type="package" version="2.5.2">freetype</requirement>
-    <requirement type="package" version="6.0">ncurses</requirement>
-    <requirement type="package" version="2.11.1">fontconfig</requirement>
-    <requirement type="package" version="2.9.1">libmxl2</requirement>
     <requirement type="package" version="3.2.1">R</requirement>
     <requirement type="package" version="0.0.1">R_extended</requirement>
   </requirements>  
