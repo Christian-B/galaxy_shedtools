@@ -86,7 +86,7 @@
                     <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/car_2.1-0.tar.gz</package>
                     <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/extRemes_2.0-6.tar.gz</package>
                     <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/pcaMethods_1.58.0.tar.gz</package>
-                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/scde_1.2.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/scde-1.99.0.tar.gz</package>
                     <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/evaluate_0.8.tar.gz</package>
                     <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/formatR_1.2.1.tar.gz</package>
                     <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/highr_0.5.1.tar.gz</package>
