@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="R" version="3.2.1">
+        <repository name="package_r_3_2_1" owner="brenninc" prior_installation_required="True" />
+    </package>
+    <package name="R_SCDE" version="0.0.1">
+        <install version="1.0">
+            <actions>
+                <action type="setup_r_environment">
+                    <repository name="package_r_3_2_1" owner="brenninc" prior_installation_required="True" >
+                        <package name="R" version="3.2.1" />
+                    </repository>  
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/BiocGenerics_0.14.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/S4Vectors_0.6.6.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/IRanges_2.2.9.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/GenomeInfoDb_1.4.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/XVector_0.8.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/GenomicRanges_1.20.8.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Rcpp_0.12.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/RcppArmadillo_0.6.100.0.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Biobase_2.28.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/lambda.r_1.1.7.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/futile.options_1.0.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/futile.logger_1.4.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/snow_0.3-13.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/BiocParallel_1.2.22.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/DBI_0.3.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/RSQLite_1.0.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/AnnotationDbi_1.30.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/XML_3.98-1.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/xtable_1.7-4.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/annotate_1.46.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/survival_2.38-3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/genefilter_1.50.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/lattice_0.20-33.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/locfit_1.5-9.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/RColorBrewer_1.1-2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/geneplotter_1.46.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/plyr_1.8.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/digest_0.6.8.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/gtable_0.1.2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/stringi_0.5-5.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/magrittr_1.5.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/stringr_1.0.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/reshape2_1.4.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/dichromat_2.0-0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/colorspace_1.2-6.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/munsell_0.4.2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/labeling_0.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/scales_0.3.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/proto_0.3-10.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/MASS_7.3-44.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/ggplot2_1.0.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Formula_1.2-1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/latticeExtra_0.6-26.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/cluster_2.0.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/rpart_4.1-10.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/nnet_7.3-11.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/acepack_1.3-3.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/foreign_0.8-66.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/gridExtra_2.0.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Hmisc_3.17-0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/DESeq2_1.8.2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/modeltools_0.2-21.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/flexmix_2.3-13.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/brew_1.0-6.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Rook_1.1-1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/rjson_0.2.15.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Cairo_1.5-9.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/limma_3.24.15.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/edgeR_3.10.5.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/RMTstat_0.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Lmoments_1.1-6.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/distillery_1.0-2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/nlme_3.1-122.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/Matrix_1.2-2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/mgcv_1.8-7.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/minqa_1.2.4.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/nloptr_1.0.4.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/RcppEigen_0.3.2.5.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/lme4_1.1-10.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/pbkrtest_0.4-2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/SparseM_1.7.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/MatrixModels_0.4-1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/quantreg_5.19.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/car_2.1-0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/extRemes_2.0-6.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/pcaMethods_1.58.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/scde_1.2.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/evaluate_0.8.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/formatR_1.2.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/highr_0.5.1.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/mime_0.4.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/markdown_0.7.7.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/yaml_2.1.13.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/knitr_1.11.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/proxy_0.4-15.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/cba_0.2-15.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/fastcluster_1.1.16.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/dynamicTreeCut_1.62.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/matrixStats_0.14.2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/impute_1.42.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/codetools_0.2-14.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/iterators_1.0.8.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/foreach_1.4.3.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/doParallel_1.0.10.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/reshape_0.8.5.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/preprocessCore_1.30.0.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/GO.db_3.1.2.tar.gz</package>
+                    <package>https://github.com/Christian-B/galaxy_shedtools/raw/master/r_extended/WGCNA_1.47.tar.gz</package>               </action>            
+            </actions>
+        </install>
+    </package>
+</tool_dependency>
+
+    
+
+
+
+

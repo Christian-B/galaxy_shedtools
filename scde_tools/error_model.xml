@@ -1,0 +1,30 @@
+<tool id="scde_error_model" name="scde_error_model" version="0.1">
+  <requirements>
+    <requirement type="package" version="3.2.1">R</requirement>
+    <requirement type="package" version="0.0.1">R_SCDE</requirement>
+  </requirements>  
+  <description>Lists packages installed into R</description>
+  <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+  </stdio>
+  <command   interpreter="bash">
+    r_wrapper.sh $__tool_directory__/error_model.R $es_mef_file $o_ifm_file 
+  </command>
+  <inputs>
+     <param format="csv" type="data" name="es_mef_file" label="es mef file" />
+  </inputs>
+  <outputs>
+    <data format="csv" type="data" name="o_ifm_file" label="Error Model"/>
+  </outputs>
+
+  <tests>
+  </tests>
+
+  <help>
+<![CDATA[
+SCDE test based on http://hms-dbmi.github.io/scde/diffexp.html
+]]>
+  </help>
+
+</tool>
