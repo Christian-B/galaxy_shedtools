@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="R" version="3.2.1">
+        <repository name="package_r_3_2_1" owner="brenninc" prior_installation_required="True" />
+    </package>
+    <package name="R_repr" version="0.0.1">
+        <install version="1.0">
+            <actions>
+                <action type="setup_r_environment">
+                    <repository name="package_r_3_2_1" owner="brenninc" prior_installation_required="True" >
+                        <package name="R" version="3.2.1" />
+                    </repository>  
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/ade4_1.7-2.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/RColorBrewer_1.1-2.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/gtools_3.5.0.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/gdata_2.17.0.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/bitops_1.0-6.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/caTools_1.17.1.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/KernSmooth_2.23-15.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/gplots_2.17.0.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/scatterplot3d_0.3-36.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/made4_1.42.0.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/impute_1.42.0.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/highr_0.5.1.tar.gz</package>               
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/getopt_1.20.0.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/optparse_1.3.2.tar.gz</package>
+                   <package>https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/r_extended/repr_0.4.tar.gz</package>
+                </action>            
+            </actions>
+        </install>
+    </package>
+</tool_dependency>
+
+    
+
+
+
+

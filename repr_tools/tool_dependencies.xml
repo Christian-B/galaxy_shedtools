@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="R" version="3.2.1">
+        <repository name="package_r_3_2_1" owner="brenninc" prior_installation_required="True" />
+    </package>
+    <package name="R_repr" version="0.0.1">
+        <repository name="package_r_repr" owner="brenninc" prior_installation_required="True" />
+    </package>
+</tool_dependency>
+
+
