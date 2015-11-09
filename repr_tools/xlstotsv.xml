@@ -1,0 +1,63 @@
+<tool id="transform_xls_to_tsv_script" name="transform_xls_to_tsv_script" version="0.1">
+    <requirements>
+        <requirement type="package" version="3.2.1">R</requirement>
+        <requirement type="package" version="0.0.1">R_repr</requirement>
+    </requirements>  
+    <description>Extracts data and plots it using R</description>
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>
+    <command   interpreter="bash">
+    r_wrapper.sh $__tool_directory__/xlstotsv.R --script_dir=$__tool_directory__  
+        --xls_file=$xls_file 
+        #if $raw_tsv.save=="yes"
+            --raw_tsv_file=$raw_tsv_file 
+        #end if
+        --ignore_rows=$ignore_rows 
+        #if $meta_data.save=="yes"
+            --meta_data_file=$meta_data_file --debug
+        #end if
+        --names_rows=$names_row  
+        --tsv_output_file=$tsv_output_file 
+    </command>
+    <inputs>
+        <param format="xlsx" type="data" name="xls_file" label="xls input file" />
+        <conditional name="raw_tsv">
+            <param name="save" type="select" label="Save the raw data before trimming or header fixing?" help="">
+                <option value="no">no</option>
+                <option value="yes">yes</option>
+            </param>
+            <when value="no"/>
+            <when value="yes"/>
+        </conditional>
+        <param name="ignore_rows" size="4" type="integer" value="9" min="0" label="Top Lines to consider metadata / ignored. (including blanks)." />
+        <conditional name="meta_data">
+            <param name="save" type="select" label="Save the ignored rows as meta_data?" help="">
+                <option value="no">no</option>
+                <option value="yes">yes</option>
+            </param>
+            <when value="no"/>
+            <when value="yes"/>
+        </conditional>
+        <param name="names_row" size="4" type="integer" value="3" min="0" label="Number of lines (under ignore) to considered header/ column names lines." />
+    </inputs>
+    <outputs>
+        <data format="tabular" type="data" name="tsv_output_file" label="Extracted Data"/>
+        <data format="tabular" type="data" name="raw_tsv_file" label="Raw data in tsv format">
+            <filter>(raw_tsv['save'] == 'yes')</filter>
+        </data>
+        <data format="tabular" type="data" name="meta_data_file" label="Lines stripped of the top assumed to be Meta Data">
+            <filter>(meta_data['save'] == 'yes')</filter>
+        </data>
+    </outputs>
+    <tests>
+    </tests>
+
+  <help>
+<![CDATA[
+Converts data from xls(s) fromat into tsv. Then allows the top rows to to stripped of as metadata or just ignored. Finaly the next few rows can be combined into column headers.
+]]>
+  </help>
+
+</tool>
