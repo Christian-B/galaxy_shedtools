@@ -27,4 +27,8 @@ test -f $infile || fail "R input file '$infile' does not exist"
 # Invoke R passing file named by first argument to stdin
 #Remove --slave for full R output
 R --vanilla --slave --args $package_file < $rfile
-echo "done"
+
+status=$?
+echo Done with status $status
+exit $status
+
