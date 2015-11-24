@@ -46,20 +46,13 @@ check_variable("meta_data_file", optional = TRUE)
 check_variable("names_rows", minimum = 0)
 check_variable("tsv_output_file")
 
-# Reading data from CSV file
-if (file.exists(opt$xls_file)){
-    data <- read.xls (opt$xls_file, sheet = 1, header = FALSE, blank.lines.skip = FALSE, method="tab")
-    mysummary("data read", data)
-} else {
-    myerror(c("File",opt$xls_file,"does not exist"))
-    stop(error_message)
-}
+data <- read_data(opt$xls_file, table_format="excell", description="Xls file", header = FALSE)
 
-write_tsv(data, opt$raw_tsv_file, description="Raw data")
+write_data (data, opt$raw_tsv_file, table_format = "tsv", description="Raw data", row.names=FALSE, col.names=FALSE)
 
 if (opt$ignore_rows >= 1){
-    data_minus = data[c(1:opt$ignore_rows),]
-    write_tsv(data_minus, opt$meta_data_file, description="Meta data")
+    meta_data = data[c(1:opt$ignore_rows),]
+    write_data (meta_data, opt$meta_data_file, table_format = "tsv", description="Meta data", row.names=FALSE, col.names=FALSE)
     data_minus_ignores = data[-c(1:opt$ignore_rows),]
     mysummary("data_minus_ignores", data_minus_ignores)
     data_less_ignores = data_minus_ignores[sapply(data_minus_ignores,not_all_blank)]
@@ -71,7 +64,7 @@ mysummary("data_less_ignores", data_less_ignores)
 if (opt$names_rows >= 1){
     names_rows = data_less_ignores[c(1:opt$names_rows),]
     mysummary("name_rows", names_rows)
-    the_names = sapply( names_rows, function(x) {gsub(" ","_",(paste(x[[1]], x[[2]], x[[3]], sep="_")))})
+    the_names = sapply( names_rows, function(x) {gsub(" ","_",(paste(x, collapse ="_")))})
     mysummary("the_names",the_names)
     headed_data = data_less_ignores[-c(1:opt$names_rows),]
     colnames(headed_data) <- the_names
@@ -81,7 +74,7 @@ if (opt$names_rows >= 1){
 }
 mysummary("headed_data", headed_data)
 
-write_tsv(headed_data, opt$tsv_output_file, description="Cleaned data", col.names=TRUE)
+write_data(headed_data, opt$tsv_output_file, table_format="tsv", description="Cleaned data", row.names=FALSE, col.names=TRUE)
 
 
 
