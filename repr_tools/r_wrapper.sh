@@ -25,7 +25,7 @@ test -f $r_script || fail "R input file '$r_script' does not exist"
 # Invoke R passing file named by first argument to stdin
 #Remove --slve for full R output
 
-echo "R Script " r_script
+echo "R Script " $r_script
 echo "args " $*
 
 R --vanilla --slave --args $* < $r_script
