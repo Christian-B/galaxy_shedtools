@@ -1,0 +1,143 @@
+<tool id="extract_graph_script" name="extract_graph_script" version="0.1">
+    <description>Extracts data and plots it using R</description>
+    <requirements>
+        <requirement type="package" version="3.2.1">R</requirement>
+        <requirement type="package" version="0.0.1">R_repr</requirement>
+        </requirements>  
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>        
+    <command interpreter="bash">
+    r_wrapper.sh $__tool_directory__/extract_graph.R --script_dir=$__tool_directory__  
+        --input_file=$input_file 
+        --value_col=$value_col 
+        --column_names_col=$column_names_col
+        #if $input_na
+            --input_na=$input_na
+        #end if 
+        #if $row_names_col
+            --row_names_col=$row_names_col
+        #end if
+        #if $output.type!="graph"
+            --data_output_file=$output_file
+            #if $output.na
+                --output_na=$output.na
+            #end if 
+        #end if
+        #if $output.type!="data"
+            --graph_file=$graph_file
+            --graph_height=$output.graph_height
+            --graph_width=$output.graph_width
+            --graph_red_line_value=$output.graph_red_line_value
+            --graph_title="$output.graph_title"
+        #end if
+        --verbose
+    </command>
+    <inputs>
+        <param type="data" format="tabular" name="input_file" label="input file" />
+ type="data_column" data_ref="input" accept_default="true"
+        <param name="value_col" label="Column holding the value" type="data_column" data_ref="input_file" accept_default="true" /> 
+<!-- use_header_names="true" force_select="true" value="5"/ -->
+        <param name="column_names_col" label="Column holding the column_names/ graph x axis" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
+        <param name="row_names_col" label="Column holding the row_names" type="data_column" data_ref="input_file" use_header_names="true" force_select="false" optional="true"/>
+        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+        <conditional name="output">
+            <param name="type" type="select" label="Type of data to return" help="">
+                <option value="data">Just the Data</option>
+                <option value="graph">Just the graph</option>
+                <option value="both">Both the data and the graph</option>
+            </param>
+            <when value="data">
+                <param name="na" type="text" value="NA" label="Value to be considered NA in output file." />
+            </when>
+            <when value="graph">
+                <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+                <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+                <param name="graph_red_line_value" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
+                <param name="graph_title" size="30" type="text" value="Fancy_Graph_Title" label="Title for the graph."/>
+                <param name="" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
+            </when>
+            <when value="both">
+                <param name="na" type="text" value="NA" label="Value to be considered NA in output file." />
+                <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+                <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+                <param name="graph_red_line_value" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
+                <param name="graph_title" size="30" type="text" value="Fancy_Graph_Title" label="Title for the graph."/>
+                <param name="" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data format="tabular" type="data" name="output_file" label="Extracted Data">
+            <filter>(output['type'] != 'graph')</filter>
+        </data>
+        <data format="jpg" type="data" name="graph_file" label="Graph">
+            <filter>(output['type'] != 'data')</filter>
+        </data>
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="input.na" value="999" />
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="output|type" value="data"/>
+            <param name="output.na" value="999" />
+            <output name="output_file" file="mini_extracted.tsv" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="input_na" value="999" />
+            <param name="output|type" value="graph"/>
+            <output name="graph_file" file="mini_graph_10.ps" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="input_na" value="999" />
+            <param name="output|type" value="graph"/>
+            <param name="output|graph_height" value="15"/>
+            <param name="output|graph_width" value="15"/>
+            <param name="input_na" value="999" />
+            <output name="graph_file" file="mini_graph_15.ps" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="input_na" value="" />
+            <param name="output_na" value="NA" />
+            <param name="output|type" value="both"/>
+            <output name="output_file" file="mini_extracted.tsv" />
+            <output name="graph_file" file="mini_no_na_graph.ps" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="input_na" value="999" />
+            <param name="output|na" value="" />
+            <param name="output|type" value="data"/>
+            <output name="output_file" file="mini_no_na_extracted.tsv" />
+        </test>
+    </tests>
+
+    <help>
+<![CDATA[
+Extracts data from the input file.
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
