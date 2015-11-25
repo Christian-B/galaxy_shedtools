@@ -28,7 +28,7 @@ test -f $r_script || fail "R input file '$r_script' does not exist"
 echo "R Script " $r_script
 echo "args " $*
 
-R --vanilla --slave --args $* < $r_script
+R --vanilla --slave --args "$@" < $r_script
 
 status=$?
 echo Done with status $status

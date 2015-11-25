@@ -192,8 +192,6 @@ if (!is.null(opt$graph_file)){
     check_variable("graph_title")
 }
 
-capabilities()
-
 data <- read_data(opt$input_file, table_format=opt$input_file_format, description="Input data", header=TRUE, na.strings = opt$input_na)
 
 value <- check_column(data, "value", "value_col")

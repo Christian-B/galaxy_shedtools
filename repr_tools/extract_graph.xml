@@ -29,7 +29,9 @@
             --graph_file=$graph_file
             --graph_height=$output.graph_height
             --graph_width=$output.graph_width
-            --graph_red_line_value=$output.graph_red_line_value
+            #if $output.redline.apply=="Yes"
+                --graph_red_line_value=$output.redline.level
+            #end if
             --graph_title="$output.graph_title"
         #end if
         --verbose
@@ -46,7 +48,7 @@
             <param name="type" type="select" label="Type of data to return" help="">
                 <option value="data">Just the Data</option>
                 <option value="graph">Just the graph</option>
-                <option value="both">Both the data and the graph</option>
+                <option value="both" selected="true">Both the data and the graph</option>
             </param>
             <when value="data">
                 <param name="na" type="text" value="NA" label="Value to be considered NA in output file." />
@@ -54,17 +56,37 @@
             <when value="graph">
                 <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
                 <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
-                <param name="graph_red_line_value" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
-                <param name="graph_title" size="30" type="text" value="Fancy_Graph_Title" label="Title for the graph."/>
+                <param name="graph_title" size="30" type="text" value="Graph Title" label="Title for the graph."/>
                 <param name="" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
+                <conditional name="redline">
+                    <param name="apply" type="select" label="Add a red horizontal line to the graph" help="">
+                        <option value="Yes">Yes</option>
+                        <option value="No" selected="true">No</option>
+                    </param>
+                    <when value="Yes">
+                        <param name="level" type="integer" value="0" label="Level to draw the red horizontal line at." />
+                    </when>
+                    <when value="No">
+                    </when>
+                </conditional>                
             </when>
             <when value="both">
                 <param name="na" type="text" value="NA" label="Value to be considered NA in output file." />
                 <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
                 <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
-                <param name="graph_red_line_value" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
-                <param name="graph_title" size="30" type="text" value="Fancy_Graph_Title" label="Title for the graph."/>
+                <param name="graph_title" size="30" type="text" value="Graph Title" label="Title for the graph."/>
                 <param name="" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
+                <conditional name="redline">
+                    <param name="apply" type="select" label="Add a red horizontal line to the graph" help="" value="No">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </param>
+                    <when value="Yes">
+                        <param name="level" type="integer" value="0" label="Level to draw the red horizontal line at." />
+                    </when>
+                    <when value="No">
+                    </when>
+                </conditional>                
             </when>
         </conditional>
     </inputs>
@@ -104,8 +126,11 @@
             <param name="row_names_col" value="3" />
             <param name="input_na" value="999" />
             <param name="output|type" value="graph"/>
+            <param name="output|graph_title" value="Fancy Graph Title"/>
             <param name="output|graph_height" value="15"/>
             <param name="output|graph_width" value="15"/>
+            <param name="output|redline|apply" value="Yes"/>
+            <param name="output|redline|level" value="2"/>
             <param name="input_na" value="999" />
             <output name="graph_file" file="mini_graph_15.ps" />
         </test>
