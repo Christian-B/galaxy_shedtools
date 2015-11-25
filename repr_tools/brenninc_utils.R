@@ -30,7 +30,11 @@ check_variable <- function(long_name, optional=FALSE, minimum=NA) {
                 myerror(c("parameter",long_name,"must be at least",minimum))
             }
         }
-        mymessages (c(long_name,"=",opt[[long_name]]))
+        if (opt[[long_name]] == ""){
+            mymessages (c(long_name,"has the value empty string"))
+        } else {
+            mymessages (c(long_name,"=",opt[[long_name]]))
+        }
     }
 }
 
