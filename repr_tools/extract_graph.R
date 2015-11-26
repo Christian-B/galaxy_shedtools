@@ -62,14 +62,14 @@ extract_values <- function(data, value, column_names, row_names){
     tryCatch({
         extract_values_with_row_names(data, value, column_names, row_names) 
     }, error = function(err) {
-        mymessage(c("Error extracting values with row names:  ",err,"\nExtracting values without row names"),always=TRUE)
+        mymessages(c("Error extracting values with row names:  ",err,"\nExtracting values without row names"),always=TRUE)
         return (extract_values_simple(data, value, column_names))
     }) 
 }
 
 
 extract_values_with_row_names <- function(data, value, column_names, row_names){
-    data_list <- split(data , f = data[column_names] )
+    data_list <- split(data , f = (factor(data[[column_names]])) )
     mysummary("data_list", data_list)
 
     if (all(unlist(lapply(data_list, function(x){length(unique(x[[row_names]])) == length(x[[row_names]])})))){
@@ -168,6 +168,7 @@ check_variable("row_names", optional=TRUE)
 check_variable("row_names_col", optional=TRUE, minimum=1)
 check_variable("column_names", optional=TRUE)
 check_variable("column_names_col", optional=TRUE, minimum=1)
+opt$filter = remove_symbols(opt$filter)
 check_variable("filter", optional=TRUE)
 if (is.null(opt$input_na)){
     opt$input_na = ""
@@ -200,7 +201,6 @@ row_names <- check_column(data, "row_names", "row_names_col", optional = TRUE)
 
 if (!is.null(opt$filter)){
     for (a_filter in strsplit(opt$filter, ",")[[1]]){
-        print (a_filter)
         my_filter = parse(text=a_filter)
         old_length = nrow(data)
         data = subset(data, eval(my_filter))

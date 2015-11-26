@@ -114,6 +114,14 @@ write_data <- function(data, table_file, table_format, description, na="NA", row
     }
 }
 
+remove_symbols <- function(text){
+    if (is.character(text)){
+        text <- gsub("__lt__","<",text)
+        text <- gsub("__gt__",">",text)
+    }
+    return (text)
+}
+
 mysize <- function(data) {
     dim_data = dim(data)
     if (!is.null(dim_data)){

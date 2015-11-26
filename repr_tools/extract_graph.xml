@@ -10,7 +10,10 @@
     </stdio>        
     <command interpreter="bash">
     r_wrapper.sh $__tool_directory__/extract_graph.R --script_dir=$__tool_directory__  
-        --input_file=$input_file 
+        --input_file=$input_file
+        #if $filter.apply=="Text"
+            --filter=$filter.text
+        #end if
         --value_col=$value_col 
         --column_names_col=$column_names_col
         #if $input_na
@@ -34,11 +37,24 @@
             #end if
             --graph_title="$output.graph_title"
         #end if
-        --verbose
+        --debug
     </command>
     <inputs>
         <param type="data" format="tabular" name="input_file" label="input file" />
- type="data_column" data_ref="input" accept_default="true"
+        <conditional name="filter">
+            <param name="apply" type="select" label="Apply a filter to the data" help="">
+                <option value="No" selected="true">No. Keep all the data</option>
+                <option value="Text">Yes. Add text representing R code</option>
+                <option value="Pick">Yes. Create a filter based on values in a column.</option>
+            </param>
+            <when value="No">
+            </when>
+            <when value="Text">
+                <param name="text" type="text" value="" label="R Equation to be used as a filter." />
+            </when>
+            <when value="Pick">
+            </when>
+        </conditional>
         <param name="value_col" label="Column holding the value" type="data_column" data_ref="input_file" accept_default="true" /> 
 <!-- use_header_names="true" force_select="true" value="5"/ -->
         <param name="column_names_col" label="Column holding the column_names/ graph x axis" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
@@ -154,6 +170,18 @@
             <param name="output|na" value="" />
             <param name="output|type" value="data"/>
             <output name="output_file" file="mini_no_na_extracted.tsv" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input.na" value="999" />
+            <param name="filter|apply" value="Text" />
+            <param name="filter|text" value="more_more_fluff&lt;=1000" />
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="output|type" value="data"/>
+            <param name="output.na" value="999" />
+            <output name="output_file" file="mini_extracted.tsv" />
         </test>
     </tests>
 
