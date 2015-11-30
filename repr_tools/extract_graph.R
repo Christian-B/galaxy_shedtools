@@ -11,7 +11,8 @@ check_column_by_number <- function(data, column_number){
     if (opt[[column_number]] > length(colnames(data)) ){
         myerror(c(column_number, ": ", opt[[column_number]],"greater than data length",length(colnames(data)) ))
     }
-    colname <- colnames(data)[[ opt[[column_number]] ]]
+    number <- opt[[column_number]]
+    colname <- colnames(data)[[ number ]]
     mymessages (c(column_number,opt[[column_number]],"maps to",colname))
     return (colname)
 }
@@ -99,6 +100,19 @@ extract_values_simple <- function(data, value, column_names){
     return (merged_list)    
 }
 
+symbols_option <- "(Optional: Use __gt__ and __lt__ for < and >) "
+help_filter = paste("One or more filter to apply to the data. ",
+                    "Seperate filters can be divided by commas. ",
+                    symbols_option,
+                   "No other filter_** parameter needs to be provided.", sep="")
+symbols <- c("==","!=","<","<=",">",">=")
+help_symbol = paste("Symbol for the filter. ",
+                    paste("Recommended symbols are (",paste(symbols,collapse =", "),") "),
+                    "The symbol will be applied column symbol value. ",
+                    symbols_option, 
+                    'This parmater may not work if you use the --filter_symbol="==" format. Use the --filter_symbol "==" format', 
+                    sep="")
+
 option_list = list(
   make_option("--input_file", action="store", type='character',
               help="File to read data from"),
@@ -117,6 +131,14 @@ option_list = list(
   make_option("--row_names_col", action="store", type='integer',
               help="Number of column which holds the names to be used as rows in the extracted data"),
   make_option("--filter", action="store", type='character', default=NULL,
+              help=help_filter),   
+  make_option("--filter_column_name", action="store", type='character', default=NULL,
+              help="Name of the column to filter on."),
+  make_option("--filter_column_number", action="store", type='integer', default=NULL,
+              help="Number the column to filter on."),
+  make_option("--filter_symbol", action="store", type='character', default=NULL,
+              help=help_symbol),
+  make_option("--filter_value", action="store", type='character', default=NULL,
               help="One or more filter to apply to the data"),
   make_option("--input_na", action="store", type='character', 
               help="Value that should be read in as NA. Leave blank to considered the empty string as NA."),
@@ -168,8 +190,15 @@ check_variable("row_names", optional=TRUE)
 check_variable("row_names_col", optional=TRUE, minimum=1)
 check_variable("column_names", optional=TRUE)
 check_variable("column_names_col", optional=TRUE, minimum=1)
+
 opt$filter = remove_symbols(opt$filter)
 check_variable("filter", optional=TRUE)
+values<-list()
+values[[1]] <- symbols
+names(values) <- c("filter_symbol")
+opt$filter_symbol = remove_symbols(opt$filter_symbol)
+check_variables(c("filter_column_name","filter_column_number"),c("filter_symbol","filter_value"), optional=TRUE, qvalues=values, values_required=FALSE)
+
 if (is.null(opt$input_na)){
     opt$input_na = ""
 }
@@ -198,8 +227,21 @@ data <- read_data(opt$input_file, table_format=opt$input_file_format, descriptio
 value <- check_column(data, "value", "value_col")
 column_names <- check_column(data, "column_names", "column_names_col")
 row_names <- check_column(data, "row_names", "row_names_col", optional = TRUE)
+filter_column_name <- check_column(data, "filter_column_name", "filter_column_number", optional = TRUE)
 
-if (!is.null(opt$filter)){
+if (!is.null(filter_column_name)){
+    filter = paste(filter_column_name, opt$filter_symbol, opt$filter_value, collapse ="")
+    if (is.null(opt$filter)){
+        opt$filter = filter
+    } else {
+        opt$filter = paste(opt$filter, filter, collapse =",")
+    }
+    mymessages(c("Filter set to ", opt$filter))
+}
+
+if (is.null(opt$filter)){
+    mymessages(c("No filter paramter provided so no filtering done"))
+} else {
     for (a_filter in strsplit(opt$filter, ",")[[1]]){
         my_filter = parse(text=a_filter)
         old_length = nrow(data)
@@ -214,9 +256,22 @@ if (!is.null(opt$filter)){
         }
     }
     mysummary("data after filter", data)
-} else {
-    mymessages(c("No filter paramter provided so no filtering done"))
 }
+
+
+#if (is.null(filter_column_name)){
+#    mymessages(c("No filter column paramter provided so no filtering done"))
+#} else {
+#    old_length = nrow(data)
+#    if (opt$filter_symbol = ">"){
+#        data = data[data[, filter_column_name] > opt$filter_value,]
+#    } else {
+#        myerror(c("filter_symbol",opt$filter_symbol,"could not be handled"))
+#    }
+#}
+#"!=","<","<=",">",">="
+#}
+
 
 merged_list = extract_values(data, value, column_names, row_names)
 

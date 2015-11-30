@@ -15,10 +15,11 @@ myerror <- function(mess_array){
 
 
 
-check_variable <- function(long_name, optional=FALSE, minimum=NA) {
+check_the_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=list(), values_required=TRUE){
     if (is.null(opt[[long_name]])) {
         if (optional) {
             mymessages(c("No value provided for",long_name))
+            return (FALSE)
         } else {        
             myerror(c("Parameter",long_name,"not provided"))
         }        
@@ -27,13 +28,64 @@ check_variable <- function(long_name, optional=FALSE, minimum=NA) {
             myerror(c("Parameter",long_name,"provided with an invalid value!"))
         } else if (!is.na(minimum)){
             if (opt[[long_name]] < minimum){
-                myerror(c("parameter",long_name,"must be at least",minimum))
+                myerror(c("parameter",long_name,"must be at least",minimum,"found",opt[[long_name]]))
+            }
+        } else if (length(legal_values) > 0){
+            if (! opt[[long_name]] %in% legal_values){
+                value_st = paste(legal_values,collapse =", ")
+                if (values_required){
+                    myerror(c("parameter",long_name,"must be one of (",value_st,") found",opt[[long_name]])) 
+                } else {
+                    cat(paste("parameter",long_name,"not one of (",value_st,") found",opt[[long_name]],"This may cause an error!\n", collapse = " "))
+                }               
             }
         }
         if (opt[[long_name]] == ""){
             mymessages (c(long_name,"has the value empty string"))
         } else {
             mymessages (c(long_name,"=",opt[[long_name]]))
+        }
+        return (TRUE)
+    }
+}
+
+
+check_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=list(), values_required=TRUE){
+    ignore <- check_the_variable(long_name, optional, minimum, legal_values, values_required)
+}
+
+
+
+check_variables <- function(flag_names, extra_names, optional=FALSE, qvalues=list(), values_required=TRUE) {
+    flag_found = NULL 
+    for (flag_name in flag_names){
+        if (check_the_variable(flag_name, optional=TRUE, legal_values=qvalues[[flag_name]], values_required=values_required)){
+            flag_found = flag_name
+        }
+    } 
+    #print (flag_found)
+    if (is.null(flag_found)){
+        #print ("is null")
+        if (optional) {
+            mymessages(c("No value provided for",extra_names[1]))
+            for(extra_name in extra_names){
+                if (is.null(opt[[extra_name]])) {
+                    mymessages(c("No value provided for",extra_name))
+                } else {
+                    myerror(c("Parameter",extra_name,"provided but none of",paste(flag_names,sep=", "),"provided"))
+                }
+            }   
+        } else {
+            myerror(c("None of the parameters",paste(flag_names,collapse =", "),"provided"))
+        }
+    } else {
+        #print ("NOT null")
+        for(extra_name in extra_names){
+            if (is.null(opt[[extra_name]])) {
+                myerror(c("Parameter",flag_found,"provided but parameter",extra_name,"is missing"))
+            } else {
+                check_variable(extra_name, legal_values=qvalues[[extra_name]],values_required=values_required)
+            }   
         }
     }
 }

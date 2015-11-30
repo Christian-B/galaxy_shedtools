@@ -14,6 +14,9 @@
         #if $filter.apply=="Text"
             --filter=$filter.text
         #end if
+        #if $filter.apply=="Pick"
+            --filter_column_number $filter.col --filter_symbol $filter.symbol --filter_value $filter.value
+        #end if
         --value_col=$value_col 
         --column_names_col=$column_names_col
         #if $input_na
@@ -53,6 +56,16 @@
                 <param name="text" type="text" value="" label="R Equation to be used as a filter." />
             </when>
             <when value="Pick">
+                <param name="col" label="Column to be filtered on" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
+                <param name="symbol" type="select" label="Symbol for the filter. Applied column symbol value." help="">
+                    <option value="=="  selected="true">Equals. Keep only rows where column equals this value.</option>
+                    <option value="!=" >Not qquals. Keep only rows where column not equal to this value.</option>
+                    <option value="__lt__" >Less than. Keep only rows where column less than this value.</option>
+                    <option value="__lt__=" >Less than equals. Keep only rows where column less than or equal to this value.</option>
+                    <option value="__gt__" >Greater than. Keep only rows where column greater than this value.</option>
+                    <option value="__gt__=" >Greater than equals. Keep only rows where column greater than or equal to this value.</option>
+                </param>
+                <param name="value" type="text" value="" label="Value to compare column with." />
             </when>
         </conditional>
         <param name="value_col" label="Column holding the value" type="data_column" data_ref="input_file" accept_default="true" /> 
@@ -116,7 +129,7 @@
     </outputs>
 
     <tests>
-        <test>
+        <!--test>
             <param name="input_file" value="mini_cleaned.tsv" />
             <param name="input.na" value="999" />
             <param name="value_col" value="5" />
@@ -182,7 +195,21 @@
             <param name="output|type" value="data"/>
             <param name="output.na" value="999" />
             <output name="output_file" file="mini_extracted.tsv" />
-        </test>
+        </test-->
+        <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input.na" value="999" />
+            <param name="filter|apply" value="Pick" />
+            <param name="filter|col" value="6"/> 
+            <param name="filter|symbol" value="__lt__="/> 
+            <param name="filter|value" value="1000"/> 
+            <param name="value_col" value="5" />
+            <param name="column_names_col" value="2" />
+            <param name="row_names_col" value="3" />
+            <param name="output|type" value="data"/>
+            <param name="output.na" value="999" />
+            <output name="output_file" file="mini_extracted.tsv" />
+       </test>
     </tests>
 
     <help>
