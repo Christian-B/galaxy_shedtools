@@ -63,9 +63,7 @@ check_variables <- function(flag_names, extra_names, optional=FALSE, qvalues=lis
             flag_found = flag_name
         }
     } 
-    #print (flag_found)
     if (is.null(flag_found)){
-        #print ("is null")
         if (optional) {
             mymessages(c("No value provided for",extra_names[1]))
             for(extra_name in extra_names){
@@ -79,7 +77,6 @@ check_variables <- function(flag_names, extra_names, optional=FALSE, qvalues=lis
             myerror(c("None of the parameters",paste(flag_names,collapse =", "),"provided"))
         }
     } else {
-        #print ("NOT null")
         for(extra_name in extra_names){
             if (is.null(opt[[extra_name]])) {
                 myerror(c("Parameter",flag_found,"provided but parameter",extra_name,"is missing"))
@@ -260,6 +257,80 @@ mysummary <- function(long_name, data) {
         cat (mysize(data))
         cat ("\n")
     }
+}
+
+input_options <- function(){
+    new_options = list(
+        make_option("--input_file", action="store", type='character',
+                    help="File to read data from"),
+        make_option("--input_file_format", action="store", type='character', default="tsv",
+                    help="Format of file to read data from. Excepted values are tsv, csv, excell. Default is tsv"),
+        make_option("--input_na", action="store", type='character', 
+                    help="Value that should be read in as NA. Leave blank to considered the empty string as NA.")
+    )
+    return (new_options)
+}
+
+output_options <- function(){
+    new_options = list(
+        make_option("--data_output_file", action="store", type='character', 
+                    help="File to write reduced data to. if not provided no data will be putput."),
+        make_option("--data_output_format", action="store", type='character', default="tsv",
+                    help="Format of file to write data to. Excepted values are tsv, csv, excell. Default is tsv"),
+        make_option("--output_na", action="store", type='character', default=NULL,
+                    help="Value that should be used for any NA in the output file. If not provided the empty string is used.")
+    )
+    return (new_options)
+}
+
+util_options <- function(){
+    new_options = list(
+        make_option("--script_dir", action="store", type='character',
+                    help="Path to the where R utils scripts are stored. If not the current directory"),
+        make_option("--verbose", action="store_true", default=FALSE,
+                    help="Should the program print extra stuff out? [default %default]"),
+        make_option("--debug", action="store_true", default=FALSE,
+                    help="Should the program print even more extra stuff out? [default %default]. Setting debug turns verbose on too!")
+    )
+    return (new_options)
+}
+
+check_utils  <- function(){ 
+    if (opt$debug) { 
+        opt$verbose <<- TRUE 
+    }
+    mymessages(c("Parameters provided as"))
+}
+
+check_inputs  <- function(){ 
+    check_variable("input_file")
+    check_input_format("input_file_format")
+    if (is.null(opt$input_na)){
+        opt$input_na <<- ""
+    }
+    check_variable("input_na")
+}
+
+check_output  <- function(){ 
+    check_variable("data_output_file", optional=TRUE)
+    check_output_format("data_output_format")
+    if (!is.null(opt$data_output_file)){
+        if (is.null(opt$output_na)){
+            opt$output_na <<- ""
+        }
+        check_variable("output_na")
+    }
+}
+
+init_utils <- function(extra_options){
+    option_list <- c(input_options(), extra_options, output_options(), util_options())
+
+    option_parser = OptionParser(option_list=option_list)
+    opt <<- parse_args(option_parser)
+
+    check_utils()
+    check_inputs()
+    check_output()
 }
 
 

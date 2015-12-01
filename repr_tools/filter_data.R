@@ -21,18 +21,6 @@ load_utils <- function(){
  
 symbols <- c("==","!=","<","<=",">",">=")
 
-input_options <- function(){
-    new_options = list(
-        make_option("--input_file", action="store", type='character',
-                    help="File to read data from"),
-        make_option("--input_file_format", action="store", type='character', default="tsv",
-                    help="Format of file to read data from. Excepted values are tsv, csv, excell. Default is tsv"),
-        make_option("--input_na", action="store", type='character', 
-                    help="Value that should be read in as NA. Leave blank to considered the empty string as NA.")
-    )
-    return (new_options)
-}
-
 filter_options <- function(){
     symbols_option <- "(Optional: Use __gt__ and __lt__ for < and >) "
     help_filter = paste("One or more filter to apply to the data. ",
@@ -60,47 +48,6 @@ filter_options <- function(){
     return (new_options)
 }
 
-
-output_options <- function(){
-    new_options = list(
-        make_option("--data_output_file", action="store", type='character', 
-                    help="File to write reduced data to. if not provided no data will be putput."),
-        make_option("--data_output_format", action="store", type='character', default="tsv",
-                    help="Format of file to write data to. Excepted values are tsv, csv, excell. Default is tsv"),
-        make_option("--output_na", action="store", type='character', default=NULL,
-                    help="Value that should be used for any NA in the output file. If not provided the empty string is used.")
-    )
-    return (new_options)
-}
-
-util_options <- function(){
-    new_options = list(
-        make_option("--script_dir", action="store", type='character',
-                    help="Path to the where R utils scripts are stored. If not the current directory"),
-        make_option("--verbose", action="store_true", default=FALSE,
-                    help="Should the program print extra stuff out? [default %default]"),
-        make_option("--debug", action="store_true", default=FALSE,
-                    help="Should the program print even more extra stuff out? [default %default]. Setting debug turns verbose on too!")
-    )
-    return (new_options)
-}
-
-check_utils  <- function(){ 
-    if (opt$debug) { 
-        opt$verbose <<- TRUE 
-    }
-    mymessages(c("Parameters provided as"))
-}
-
-check_inputs  <- function(){ 
-    check_variable("input_file")
-    check_input_format("input_file_format")
-    if (is.null(opt$input_na)){
-        opt$input_na <<- ""
-    }
-    check_variable("input_na")
-}
-
 check_filter  <- function(){ 
     opt$filter = remove_symbols(opt$filter)
     check_variable("filter", optional=TRUE)
@@ -109,17 +56,6 @@ check_filter  <- function(){
     names(values) <- c("filter_symbol")
     opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
     check_variables(c("filter_column_name","filter_column_number"),c("filter_symbol","filter_value"), optional=TRUE, qvalues=values, values_required=FALSE)
-}
-
-check_output  <- function(){ 
-    check_variable("data_output_file", optional=TRUE)
-    check_output_format("data_output_format")
-    if (!is.null(opt$data_output_file)){
-        if (is.null(opt$output_na)){
-            opt$output_na <<- ""
-        }
-        check_variable("output_na")
-    }
 }
 
 do_filter  <- function(data){ 
@@ -157,7 +93,6 @@ do_filter  <- function(data){
 }
 
 write_the_data  <- function(data, decription="some data"){ 
-    print (opt)
     if (is.null(opt$data_output_file)){
         mymessages(c("No data output as data_output_file parameter not provided"))
     } else {
@@ -168,15 +103,10 @@ write_the_data  <- function(data, decription="some data"){
 
 #Main
 load_utils()
-option_list <- c(input_options(), filter_options(), output_options(), util_options())
 
-option_parser = OptionParser(option_list=option_list)
-opt = parse_args(option_parser)
+init_utils (filter_options())
 
-check_utils()
-check_inputs()
 check_filter()
-check_output()
 
 data <- read_data(opt$input_file, table_format=opt$input_file_format, description="Input data", header=TRUE, na.strings = opt$input_na)
 
