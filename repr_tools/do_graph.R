@@ -58,7 +58,7 @@ graph_data <- function(data){
         #png(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, bg = "white", res = 300)
         old.par <- par(mfrow=c(2, 1)) 
         par(cex.axis=0.55)
-        boxplot(data,ylab="Ct Value", names=colnames(merged_list), las=2,font.axis=0.5)
+        boxplot(data,ylab="Ct Value", names=colnames(data), las=2,font.axis=0.5)
         title(opt$graph_title)
         if (is.null(opt$graph_red_line_value)){
             mymessages(c("No red line as graph_red_line_value parameter not provided"))  
@@ -71,12 +71,17 @@ graph_data <- function(data){
 }
 
 #Main
-load_utils()
+if (!exists("main_flag")){
+    main_flag <<- TRUE
 
-init_utils (graph_options())
+    load_utils()
 
-check_graph()
+    init_utils (graph_options())
 
-data <- read_the_data(description="Extracted Data")
+    check_graph()
 
+    data <- read_the_data(description="Extracted Data")
 
+    graph_data(data)
+
+}

@@ -336,7 +336,7 @@ check_output  <- function(){
 }
 
 init_utils <- function(extra_options){
-    option_list <- c(input_options(), extra_options, output_options(), util_options())
+    option_list <- c(input_options(), extra_options, output_options(), util_options())    
 
     option_parser = OptionParser(option_list=option_list)
     opt <<- parse_args(option_parser)

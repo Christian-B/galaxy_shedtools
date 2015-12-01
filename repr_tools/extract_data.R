@@ -37,7 +37,7 @@ extract_options <- function(){
     return (new_list)
 }
 
-check_filter  <- function(){ 
+check_extract  <- function(){ 
     check_variable("value", optional=TRUE)
     check_variable("value_col", optional=TRUE, minimum=1)
     check_variable("row_names", optional=TRUE)
@@ -99,18 +99,21 @@ extract_values_simple <- function(data, value, column_names){
 
 
 #Main
-load_utils()
+if (!exists("main_flag")){
+    main_flag <<- TRUE
 
-init_utils (extract_options())
+    load_utils()
 
-check_filter()
+    init_utils (extract_options())
 
-data <- read_the_data(description="Input data")
+    check_extract()
 
-data <- extract_the_values(data)
+    data <- read_the_data(description="Input data")
 
-write_the_data (data, "Extracted Data")
+    data <- extract_the_values(data)
 
+    write_the_data (data, "Extracted Data")
 
+} 
 
 

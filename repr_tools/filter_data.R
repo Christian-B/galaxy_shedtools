@@ -93,18 +93,23 @@ do_filter  <- function(data){
 }
 
 #Main
-load_utils()
 
-init_utils (filter_options())
+if (!exists("main_flag")){
+    main_flag <<- TRUE
 
-check_filter()
+    load_utils()
 
-data <- read_the_data(description="Input data")
+    init_utils (filter_options())
 
-data = do_filter(data)
+    check_filter()
 
-write_the_data (data, "Filtered Data")
+    data <- read_the_data(description="Input data")
 
+    data = do_filter(data)
+
+    write_the_data (data, "Filtered Data")
+
+}
 
 
 
