@@ -91,6 +91,58 @@ check_variables <- function(flag_names, extra_names, optional=FALSE, qvalues=lis
 }
 
 
+check_column_by_number <- function(data, column_number){
+    if (opt[[column_number]] < 1){
+        myerror(c(column_number, ": ", opt[[column_number]],"must be great than zero!"))
+    }
+    if (opt[[column_number]] > length(colnames(data)) ){
+        myerror(c(column_number, ": ", opt[[column_number]],"greater than data length",length(colnames(data)) ))
+    }
+    number <- opt[[column_number]]
+    colname <- colnames(data)[[ number ]]
+    mymessages (c(column_number,opt[[column_number]],"maps to",colname))
+    return (colname)
+}
+
+
+check_column_by_name <- function(data, column_name) {
+    found <- match(opt[[column_name]], colnames(data))
+    if(is.na(found)){
+        myerror(c("No Colomn",column_name, "named", opt[[column_name]], "found in the data!"))
+    } 
+    mymessages(c(column_name,":",opt[[column_name]],"found in the data!"))
+    return (opt[[column_name]])
+}
+
+
+check_column <- function(data, column_name, column_number, optional = FALSE) {
+    if (is.null(opt[[column_name]])){
+        if (is.null(opt[[column_number]])){
+            if (optional) {
+                return (NULL)
+            } else {
+                myerror(c("Neither",column_name, "nor", column_number, "parameter provided!"))
+            }
+        } else {
+            return (check_column_by_number(data, column_number))
+        } 
+    } else {  
+        if (is.null(opt[[column_number]])){
+            return (check_column_by_name(data, column_name))
+        } else {
+            by_number = check_column_by_number(data, column_number)
+            if (by_number == opt[[column_name]]){
+                return (by_number)
+            } else {
+                error_message1 = c("Column", column_number,":", opt[[column_number]],"is named to",by_number)
+                error_message2 = c("Which does not match",column_name, ":", opt[[column_name]])
+                myerror(c(error_message1,error_message2))
+            }
+        }
+    }
+}
+
+
 valid_input_formats = c("tsv","csv","excell")
 
 check_input_format <- function(long_name) {
