@@ -129,7 +129,7 @@
     </outputs>
 
     <tests>
-        <!--test>
+        <test>
             <param name="input_file" value="mini_cleaned.tsv" />
             <param name="input.na" value="999" />
             <param name="value_col" value="5" />
@@ -195,7 +195,7 @@
             <param name="output|type" value="data"/>
             <param name="output.na" value="999" />
             <output name="output_file" file="mini_extracted.tsv" />
-        </test-->
+        </test>
         <test>
             <param name="input_file" value="mini_delta.tsv" />
             <param name="input.na" value="999" />

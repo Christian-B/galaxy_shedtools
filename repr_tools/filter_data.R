@@ -49,7 +49,7 @@ filter_options <- function(){
 }
 
 check_filter  <- function(){ 
-    opt$filter = remove_symbols(opt$filter)
+    opt$filter <<- remove_symbols(opt$filter)
     check_variable("filter", optional=TRUE)
     values<-list()
     values[[1]] <- symbols
