@@ -92,15 +92,6 @@ do_filter  <- function(data){
     return (data)
 }
 
-write_the_data  <- function(data, decription="some data"){ 
-    if (is.null(opt$data_output_file)){
-        mymessages(c("No data output as data_output_file parameter not provided"))
-    } else {
-        write_data (data, table_file = opt$data_output_file, table_format= opt$data_output_format, description = decription, 
-                    na=opt$output_na, row.names=TRUE, col.names=TRUE) 
-    }
-}
-
 #Main
 load_utils()
 
@@ -108,7 +99,7 @@ init_utils (filter_options())
 
 check_filter()
 
-data <- read_data(opt$input_file, table_format=opt$input_file_format, description="Input data", header=TRUE, na.strings = opt$input_na)
+data <- read_the_data(description="Input data")
 
 data = do_filter(data)
 

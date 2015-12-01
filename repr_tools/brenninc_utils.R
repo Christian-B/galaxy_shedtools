@@ -151,6 +151,10 @@ check_input_format <- function(long_name) {
     }
 }
 
+read_the_data  <- function(description="Some data"){
+    return (read_data(opt$input_file, table_format=opt$input_file_format, description=description, header=TRUE, na.strings = opt$input_na))
+}
+
 #Because default value for header differes between format this methods has no defualt header
 #Overrides normal default check.names = TRUE and blank.lines.skip = TRUE
 read_data  <- function(table_file, table_format, description, header, na.strings = "NA"){ 
@@ -193,6 +197,15 @@ check_output_format <- function(long_name) {
 }
 
 #Overrides normal default quote=FALSE
+write_the_data  <- function(data, decription="some data"){ 
+    if (is.null(opt$data_output_file)){
+        mymessages(c("No data output as data_output_file parameter not provided"))
+    } else {
+        write_data (data, table_file = opt$data_output_file, table_format= opt$data_output_format, description = decription, 
+                    na=opt$output_na, row.names=TRUE, col.names=TRUE) 
+    }
+}
+
 write_data <- function(data, table_file, table_format, description, na="NA", row.names=TRUE, col.names=TRUE){
     if (is.null(table_file)){
         mymessages(c(description, "not saved as file name not specified."))
