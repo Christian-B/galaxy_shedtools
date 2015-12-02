@@ -21,7 +21,13 @@
         #if $redline.apply=="Yes"
             --graph_red_line_value=$redline.level
         #end if
-        --graph_title="$graph_title"
+        #if $graph_title
+            --graph_title="$graph_title"
+        #end if
+        #if $graph_y_label
+            --graph_y_label="$graph_y_label"
+        #end if
+        --graph_format $graph_format
         --debug
     </command>
     <inputs>
@@ -30,7 +36,8 @@
 
         <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
         <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
-        <param name="graph_title" size="30" type="text" value="Graph Title" label="Title for the graph."/>
+        <param name="graph_title" size="30" type="text" value="" label="Title for the graph."/>
+        <param name="graph_y_label" size="30" type="text" value="" label="Label for the y axis in the graph."/>
         <param name="" size="4" type="integer" value="25" label="Possition of a red horizontal line" />
         <conditional name="redline">
             <param name="apply" type="select" label="Add a red horizontal line to the graph" help="">
@@ -42,7 +49,15 @@
             </when>
             <when value="No">
             </when>
-        </conditional>                
+        </conditional>
+        <param name="graph_format" type="select" label="Format for the graph" help="">
+            <option value="jpeg" selected="true">jpeg</option>
+            <option value="bmp">bmp</option>
+            <option value="png">png</option>
+            <option value="tiff">tiff</option>
+            <option value="ps">ps</option>
+        </param>
+              
     </inputs>
     <outputs>
         <data format="jpg" type="data" name="graph_file" label="Graph">
@@ -53,6 +68,12 @@
          <test>
             <param name="input_file" value="mini_extracted.tsv" />
             <param name="input_na" value="999" />
+            <output name="graph_file" file="mini_graph_10.jpeg" compare="sim_size" delta="1000"/>
+        </test>
+         <test>
+            <param name="input_file" value="mini_extracted.tsv" />
+            <param name="input_na" value="999" />
+            <param name="graph_format" value="ps" />
             <output name="graph_file" file="mini_graph_10.ps" />
         </test>
         <test>
@@ -61,14 +82,11 @@
             <param name="graph_title" value="Fancy Graph Title"/>
             <param name="graph_height" value="15"/>
             <param name="graph_width" value="15"/>
+            <param name="graph_y_label" value="Y Label"/>
             <param name="redline|apply" value="Yes"/>
             <param name="redline|level" value="2"/>
+            <param name="graph_format" value="ps" />
             <output name="graph_file" file="mini_graph_15.ps" />
-        </test>
-        <test>
-            <param name="input_file" value="mini_extracted.tsv" />
-            <param name="input_na" value="" />
-            <output name="graph_file" file="mini_no_na_graph.ps" />
         </test>
     </tests>
 

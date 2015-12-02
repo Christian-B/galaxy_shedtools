@@ -18,17 +18,21 @@ load_utils <- function(){
         source(paste0(c(script_dir,"brenninc_utils.R"), collapse = "/"))
     }
 }
- 
+
 graph_options <- function(){
     new_list = list(
         make_option("--graph_file", action="store", type='character', 
                     help="File to write graph to. If not provided no graph is output"),
+        make_option("--graph_format", action="store", type='character',  default="jpeg", 
+                    help="Format of graph file. Expected values are jpeg, bmp, png, tiff and ps. Default is jpg"),
         make_option("--graph_height", action="store", type='double', default="10",
                     help="Height in inches of graph"),
         make_option("--graph_width", action="store", type='double', default="10",
                     help="Width in inches of graph"),
         make_option("--graph_title", action="store", type='character',
-                    help="Title to give the graph. If no title is provided one will be created automatically."),
+                    help="Title to give the graph."),
+        make_option("--graph_y_label", action="store", type='character',
+                    help="Label for the Y axis in the graph."),
         make_option("--graph_red_line_value", action="store", type='double', 
                     help="Value at which to draw a horizonatal red line. If not provided no line is draw")
     )
@@ -39,12 +43,14 @@ check_graph  <- function(){
     check_variable("graph_file", optional=TRUE)
     if (!is.null(opt$graph_file)){
         check_variable("graph_height")
+        check_variable("graph_format")
         check_variable("graph_width")
         check_variable("graph_red_line_value", optional=TRUE)
         if (is.null(opt$graph_title)) {
             opt$graph_title <<- paste(opt$value,"by",opt$row_name)
         }
-        check_variable("graph_title")
+        check_variable("graph_title", optional=TRUE)
+        check_variable("graph_y_label", optional=TRUE)
     }
 }
 
@@ -52,14 +58,28 @@ graph_data <- function(data){
     if (is.null(opt$graph_file)){
         mymessages(c("No graph plotted as graph_file parameter not provided"))
     } else {
-        postscript(opt$graph_file, horizontal=F, width=opt$graph_width, height=opt$graph_height, paper="special", onefile=FALSE)
-        #jpeg(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, quality = 75,
-        #     bg = "white", res = 300, bitmapType='cairo')
-        #png(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, bg = "white", res = 300)
+        if (opt$graph_format =="jpeg"){
+            jpeg(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, quality = 75,
+                 bg = "white", res = 300, type='cairo')
+        } else if (opt$graph_format =="bmp"){
+            bmp(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, 
+                 bg = "white", res = 300, type='cairo')
+        } else if (opt$graph_format =="png"){
+            png(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, 
+                 bg = "white", res = 300, type='cairo')
+        } else if (opt$graph_format =="tiff"){
+            tiff(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, compression = "none",
+                 bg = "white", res = 300, type='cairo')
+        } else if (opt$graph_format =="ps"){
+            postscript(opt$graph_file, horizontal=F, width=opt$graph_width, height=opt$graph_height, paper="special", onefile=FALSE)
+        } else {
+            myerror(c("Unexpected graph format", opt$graph_format))
+        }   
         old.par <- par(mfrow=c(2, 1)) 
         par(cex.axis=0.55)
-        boxplot(data,ylab="Ct Value", names=colnames(data), las=2,font.axis=0.5)
-        title(opt$graph_title)
+        boxplot(data, names=colnames(data), las=2,font.axis=0.5)
+        #boxplot(data,ylab="Ct Value", names=colnames(data), las=2,font.axis=0.5)
+        #title(opt$graph_title)
         if (is.null(opt$graph_red_line_value)){
             mymessages(c("No red line as graph_red_line_value parameter not provided"))  
         } else {
