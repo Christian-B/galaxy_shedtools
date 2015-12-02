@@ -11,20 +11,23 @@
     <command interpreter="bash">
     r_wrapper.sh $__tool_directory__/extract_graph.R --script_dir=$__tool_directory__  
         --input_file=$input_file
+        #if $input_na
+            --input_na=$input_na
+        #end if 
+
         #if $filter.apply=="Text"
             --filter=$filter.text
         #end if
         #if $filter.apply=="Pick"
             --filter_column_number $filter.col --filter_symbol $filter.symbol --filter_value $filter.value
         #end if
+
         --value_col=$value_col 
         --column_names_col=$column_names_col
-        #if $input_na
-            --input_na=$input_na
-        #end if 
         #if $row_names_col
             --row_names_col=$row_names_col
         #end if
+
         #if $output.type!="graph"
             --data_output_file=$output_file
             #if $output.na
@@ -44,6 +47,8 @@
     </command>
     <inputs>
         <param type="data" format="tabular" name="input_file" label="input file" />
+        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+
         <conditional name="filter">
             <param name="apply" type="select" label="Apply a filter to the data" help="">
                 <option value="No" selected="true">No. Keep all the data</option>
@@ -68,11 +73,11 @@
                 <param name="value" type="text" value="" label="Value to compare column with." />
             </when>
         </conditional>
+
         <param name="value_col" label="Column holding the value" type="data_column" data_ref="input_file" accept_default="true" /> 
-<!-- use_header_names="true" force_select="true" value="5"/ -->
         <param name="column_names_col" label="Column holding the column_names/ graph x axis" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
         <param name="row_names_col" label="Column holding the row_names" type="data_column" data_ref="input_file" use_header_names="true" force_select="false" optional="true"/>
-        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+
         <conditional name="output">
             <param name="type" type="select" label="Type of data to return" help="">
                 <option value="data">Just the Data</option>
