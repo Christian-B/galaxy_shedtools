@@ -136,74 +136,73 @@
     <tests>
         <test>
             <param name="input_file" value="mini_cleaned.tsv" />
-            <param name="input.na" value="999" />
+            <param name="input_na" value="999" />
             <param name="value_col" value="5" />
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
             <param name="output|type" value="data"/>
-            <param name="output.na" value="999" />
+            <param name="output|na" value="999" />
             <output name="output_file" file="mini_extracted.tsv" />
         </test>
         <test>
             <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="input_na" value="999" />
             <param name="value_col" value="5" />
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
-            <param name="input_na" value="999" />
             <param name="output|type" value="graph"/>
             <output name="graph_file" file="mini_graph_10.ps" />
         </test>
         <test>
             <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="input_na" value="999" />
             <param name="value_col" value="5" />
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
-            <param name="input_na" value="999" />
             <param name="output|type" value="graph"/>
             <param name="output|graph_title" value="Fancy Graph Title"/>
             <param name="output|graph_height" value="15"/>
             <param name="output|graph_width" value="15"/>
             <param name="output|redline|apply" value="Yes"/>
             <param name="output|redline|level" value="2"/>
-            <param name="input_na" value="999" />
             <output name="graph_file" file="mini_graph_15.ps" />
         </test>
         <test>
             <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="input_na" value="" />
             <param name="value_col" value="5" />
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
-            <param name="input_na" value="" />
-            <param name="output_na" value="NA" />
+            <param name="output|na" value="NA" />
             <param name="output|type" value="both"/>
             <output name="output_file" file="mini_extracted.tsv" />
             <output name="graph_file" file="mini_no_na_graph.ps" />
         </test>
         <test>
             <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="input_na" value="999" />
             <param name="value_col" value="5" />
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
-            <param name="input_na" value="999" />
             <param name="output|na" value="" />
             <param name="output|type" value="data"/>
             <output name="output_file" file="mini_no_na_extracted.tsv" />
         </test>
         <test>
             <param name="input_file" value="mini_delta.tsv" />
-            <param name="input.na" value="999" />
+            <param name="input_na" value="999" />
             <param name="filter|apply" value="Text" />
             <param name="filter|text" value="more_more_fluff&lt;=1000" />
             <param name="value_col" value="5" />
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
             <param name="output|type" value="data"/>
-            <param name="output.na" value="999" />
+            <param name="output|na" value="999" />
             <output name="output_file" file="mini_extracted.tsv" />
         </test>
         <test>
             <param name="input_file" value="mini_delta.tsv" />
-            <param name="input.na" value="999" />
+            <param name="input_na" value="999" />
             <param name="filter|apply" value="Pick" />
             <param name="filter|col" value="6"/> 
             <param name="filter|symbol" value="__lt__="/> 
@@ -212,7 +211,7 @@
             <param name="column_names_col" value="2" />
             <param name="row_names_col" value="3" />
             <param name="output|type" value="data"/>
-            <param name="output.na" value="999" />
+            <param name="output|na" value="999" />
             <output name="output_file" file="mini_extracted.tsv" />
        </test>
     </tests>

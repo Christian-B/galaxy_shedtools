@@ -30,12 +30,9 @@ load_scripts <- function(){
 if (!exists("main_flag")){
     main_flag <<- TRUE
 
-    print ("here 1")
     load_scripts()
-    print ("here 2")
 
     local_options <- c(filter_options(), extract_options(), graph_options())
-    print(local_options)
     init_utils (local_options)
 
     check_filter()
