@@ -73,6 +73,17 @@
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_filtered.tsv" />
         </test>
+        <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="filter|apply" value="Pick" />
+            <param name="filter|col" value="6"/> 
+            <param name="filter|symbol" value="__lt__="/> 
+            <param name="filter|value" value="1000"/> 
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_filtered.tsv" />
+       </test>
+ 
     </tests>
 
     <help>
