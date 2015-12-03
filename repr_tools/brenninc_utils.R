@@ -232,6 +232,9 @@ remove_symbols <- function(text){
     if (is.character(text)){
         text <- gsub("__lt__","<",text)
         text <- gsub("__gt__",">",text)
+        text <- gsub("__sq__","'",text)
+        text <- gsub("__dq__",'"',text)
+        text <- gsub("__in__",'%in%',text)
     }
     return (text)
 }

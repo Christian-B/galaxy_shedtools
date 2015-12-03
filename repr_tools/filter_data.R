@@ -19,7 +19,7 @@ load_utils <- function(){
     }
 }
  
-symbols <- c("==","!=","<","<=",">",">=")
+symbols <- c("==","!=","<","<=",">",">=","%in%")
 
 filter_options <- function(){
     symbols_option <- "(Optional: Use __gt__ and __lt__ for < and >) "
@@ -55,6 +55,7 @@ check_filter  <- function(){
     values[[1]] <- symbols
     names(values) <- c("filter_symbol")
     opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
+    opt$filter_value <<- remove_symbols(opt$filter_value)
     check_variables(c("filter_column_name","filter_column_number"),c("filter_symbol","filter_value"), optional=TRUE, qvalues=values, values_required=FALSE)
 }
 
@@ -62,11 +63,15 @@ do_filter  <- function(data){
     filter_column_name <- check_column(data, "filter_column_name", "filter_column_number", optional = TRUE)
 
     if (!is.null(filter_column_name)){
-        filter = paste(filter_column_name, opt$filter_symbol, opt$filter_value, collapse ="")
-        if (is.null(opt$filter)){
-            opt$filter = filter
+        if (grepl("%in%$",opt$filter_symbol)){
+            if (!grepl("^c\\(", opt$filter_value)){
+                opt$filter_value <<- paste0("c(", opt$filter_value, ")", collapse = " ")
+            }
+        }
+        if (grepl("^!",opt$filter_symbol)){
+            opt$filter = paste("!(",filter_column_name, substring(opt$filter_symbol, 2), opt$filter_value,")", collapse ="")
         } else {
-            opt$filter = paste(opt$filter, filter, collapse =",")
+            opt$filter = paste(filter_column_name, opt$filter_symbol, opt$filter_value, collapse ="")
         }
         mymessages(c("Filter set to ", opt$filter))
     }
@@ -74,18 +79,16 @@ do_filter  <- function(data){
     if (is.null(opt$filter)){
         mymessages(c("No filter paramter provided so no filtering done"))
     } else {
-        for (a_filter in strsplit(opt$filter, ",")[[1]]){
-            my_filter = parse(text=a_filter)
-            old_length = nrow(data)
-            data = subset(data, eval(my_filter))
-            new_length = nrow(data)
-            if (new_length == old_length) {
-                mymessages(c("applying filter",a_filter,"had no effect"))
-            } else if (new_length == 0){
-                myerror(c(a_filter,"has removed all the data"))
-            } else {
-                mymessages(c("applying filter",a_filter,"has reduced the rows from", old_length,"to",new_length))
-            }
+        my_filter = parse(text=opt$filter)
+        old_length = nrow(data)
+        data = subset(data, eval(my_filter))
+        new_length = nrow(data)
+        if (new_length == old_length) {
+            mymessages(c("applying filter",opt$filter,"had no effect"))
+        } else if (new_length == 0){
+            myerror(c(opt$filter,"has removed all the data"))
+        } else {
+            mymessages(c("applying filter",opt$filter,"has reduced the rows from", old_length,"to",new_length))
         }
         mysummary("data after filter", data)
     }

@@ -52,8 +52,10 @@
                     <option value="__lt__=" >Less than equals. Keep only rows where column less than or equal to this value.</option>
                     <option value="__gt__" >Greater than. Keep only rows where column greater than this value.</option>
                     <option value="__gt__=" >Greater than equals. Keep only rows where column greater than or equal to this value.</option>
+                    <option value="__in__" >In. Keep only rows where column %in% list.</option>
+                    <option value="!__in__" >Not In. Remove rows where column %in% list.</option>
                 </param>
-                <param name="value" type="text" value="" label="Value to compare column with." />
+                <param name="value" type="text" value="" label="Value to compare column with. Note: For In and Not In, do not include the opening c( or closing )." />
             </when>
         </conditional>
 
@@ -82,6 +84,26 @@
             <param name="filter|value" value="1000"/> 
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_filtered.tsv" />
+       </test>
+       <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="filter|apply" value="Pick" />
+            <param name="filter|col" value="2"/> 
+            <param name="filter|symbol" value="__in__"/> 
+            <param name="filter|value" value="'alpha','beta'" /> 
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_alpha_beta.tsv" />
+       </test>
+       <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="filter|apply" value="Pick" />
+            <param name="filter|col" value="2"/> 
+            <param name="filter|symbol" value="!__in__" /> 
+            <param name="filter|value" value='"gamma","delta","epsion"' /> 
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_alpha_beta.tsv" />
        </test>
  
     </tests>
