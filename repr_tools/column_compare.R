@@ -40,6 +40,7 @@ check_column_compare  <- function(){
 do_check_column  <- function(data){ 
     compare_column <- check_column(data, "compare_column_name", "compare_column_number")
 
+    mymessages(c("Processing data using",opt$compare_method))
     if (opt$compare_method == "delta_ct"){
         data = data[,compare_column] - data
         return (2^data)
