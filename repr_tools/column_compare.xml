@@ -1,0 +1,62 @@
+<tool id="column_compare_script" name="column_compare_script" version="0.1">
+    <description>Process all data by comparing it to one column</description>
+    <requirements>
+        <requirement type="package" version="3.2.1">R</requirement>
+        <requirement type="package" version="0.0.1">R_repr</requirement>
+        </requirements>  
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>        
+    <command interpreter="bash">
+    r_wrapper.sh $__tool_directory__/column_compare.R --script_dir=$__tool_directory__  
+        --input_file=$input_file
+        #if $input_na
+            --input_na=$input_na
+        #end if 
+
+        --compare_column_number=$compare_column_number
+        --compare_method=$compare_method
+
+        --data_output_file=$output_file
+        #if $output_na
+            --output_na=$output_na
+        #end if 
+        --debug
+    </command>
+    <inputs>
+        <param type="data" format="tabular" name="input_file" label="input file" />
+        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+
+        <param name="compare_column_number" label="Column holding the value to be compared with all others" type="data_column" data_ref="input_file" accept_default="true" /> 
+        <param name="compare_method" type="select" label="M." help="Method to compare by.">
+            <option value="delta_ct"  selected="true">Calculate the delta ct to this column.  Which is 2^(data[,compare_columnselected] - data)</option> 
+        </param>
+
+        <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
+    </inputs>
+    <outputs>
+        <data format="tabular" type="data" name="output_file" label="Extracted Data">
+        </data>
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="input_file" value="mini_extracted.tsv" />
+            <param name="input_na" value="999" />
+            <param name="compare_column_number" value="1" />
+            <param name="compare_method" value="delta_ct" />
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_delta_ct.tsv" />
+        </test>
+    </tests>
+
+    <help>
+<![CDATA[
+Extracts data from the input file.
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
