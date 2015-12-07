@@ -28,21 +28,32 @@ function_options <- function(){
 }
 
 check_function  <- function(){ 
-    check_variable("data_function", legal_values=c("na_per_column","na_per_row"))
+    check_variable("data_function", legal_values=c("impute_knn","na_per_column","na_per_row","transpose"))
 }
 
 
 apply_function <- function(data){
     mymessages(c("Applying function",opt$data_function, "to the data."))
-    if (opt$data_function == "na_per_column"){
-        return (colSums(is.na(data)))
+    if (opt$data_function == "impute_knn"){
+        if(exists(".Random.seed")) rm(.Random.seed)
+        new_data = impute.knn(as.matrix(data))$data
+    } else if (opt$data_function == "na_per_column"){
+        new_data = colSums(is.na(data))
     } else if (opt$data_function == "na_per_row"){
-        return (rowSums(is.na(data)))
+        new_data = rowSums(is.na(data))
+    } else if (opt$data_function == "transpose"){
+        new_data = t(data)
     } else {
         myerror(c("Unexpected fuction",opt$data_function))
     }
+    mysummary("data after function", new_data)
+    return (new_data)
 }
   
+set_input <- function(){
+    opt$input_file <<- "test-data/khan_expr.tsv"
+}
+
 #Main
 if (!exists("main_flag")){
     main_flag <<- TRUE
@@ -52,12 +63,11 @@ if (!exists("main_flag")){
     init_utils (function_options())
 
     check_function()
-
+ 
     data <- read_the_data(description="Input data")
 
     data <- apply_function(data)
 
-    #write_the_data (data, paste0("data after ", opt$function, "data", collapse = " "))
     write_the_data (data, paste0("data after ", opt$data_functio, collapse = " "))
 
 } 

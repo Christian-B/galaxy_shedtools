@@ -30,6 +30,8 @@
         <param name="data_function" type="select" label="Data Function." help="Function to apply over all the data.">
             <option value="na_per_column"  selected="true">Apply colSums(is.na(data))</option> 
             <option value="na_per_row"  selected="true">Apply rowSums(is.na(data))</option> 
+            <option value="transpose"  selected="true">Apply t(data)</option> 
+            <option value="impute_knn"  selected="true">Apply impute.knn(as.matrix(data))$data</option> 
         </param>
 
 
@@ -54,6 +56,20 @@
             <param name="data_function" value="na_per_row" />
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_na_per_row.tsv" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_extracted.tsv" />
+            <param name="input_na" value="999" />
+            <param name="data_function" value="transpose" />
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_transposed.tsv" />
+        </test>
+        <test>
+            <param name="input_file" value="khan_expr.tsv" />
+            <param name="input_na" value="NA" />
+            <param name="data_function" value="impute_knn" />
+            <param name="output_na" value="NA" />
+            <output name="output_file" file="khan_imputed.tsv" />
         </test>
     </tests>
 
