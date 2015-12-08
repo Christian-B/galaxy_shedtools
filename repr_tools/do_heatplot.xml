@@ -1,0 +1,88 @@
+<tool id="do_heatplot_script" name="do_heatplot_script" version="0.1">
+    <description>Plots a heatplot using R</description>
+    <requirements>
+        <requirement type="package" version="3.2.1">R</requirement>
+        <requirement type="package" version="0.0.1">R_repr</requirement>
+        </requirements>  
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>        
+    <command interpreter="bash">
+    r_wrapper.sh $__tool_directory__/do_heatplot.R --script_dir=$__tool_directory__  
+        --input_file=$input_file
+        #if $input_na
+            --input_na=$input_na
+        #end if 
+
+        --graph_file=$graph_file
+        --graph_height=$graph_height
+        --graph_width=$graph_width
+        --graph_format $graph_format
+
+        --heatplot_dend=$heatplot_dend
+        #if float($heatplot_cexrow) > 0
+            --heatplot_cexrow=$heatplot_cexrow 
+        #end if
+        #if float($heatplot_cexcol) > 0
+             --heatplot_cexcol=$heatplot_cexcol 
+        #end if
+
+        --debug
+    </command>
+    <inputs>
+        <param type="data" format="tabular" name="input_file" label="input file" />
+        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+
+        <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+        <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+        <param name="graph_format" type="select" label="Format for the graph" help="">
+            <option value="jpeg" selected="true">jpeg</option>
+            <option value="bmp">bmp</option>
+            <option value="png">png</option>
+            <option value="tiff">tiff</option>
+            <option value="ps">ps</option>
+        </param>
+
+        <param name="heatplot_dend" type="select" label="dend parameter for heatplot" help="">
+            <option value="both" selected="true">Both ends</option>
+            <option value="row">row</option>
+            <option value="column">column</option>
+            <option value="none">none</option>
+        </param>
+        <param name="heatplot_cexrow" size="4" type="float" value="0" min="0" label="cexRow value for heatplot. (0 will be ignored)." />
+        <param name="heatplot_cexcol" size="4" type="float" value="0" min="0" label="cexCol value for heatplot. (0 will be ignored)." />
+              
+    </inputs>
+    <outputs>
+        <data format="jpg" type="data" name="graph_file" label="Graph">
+        </data>
+    </outputs>
+
+    <tests>
+         <test>
+            <param name="input_file" value="khan_imputed.tsv" />
+            <param name="input_na" value="NA" />
+            <param name="graph_format" value="ps" />
+            <output name="graph_file" file="khan_heatplot.ps" />
+        </test>
+        <test>
+            <param name="input_file" value="khan_imputed.tsv" />
+            <param name="input_na" value="NA" />
+            <param name="graph_format" value="ps" />
+            <param name="heatplot_dend" value="none" />
+            <param name="heatplot_cexrow" value="0.5" />
+            <param name="heatplot_cexcol" value="0.5" />
+            <output name="graph_file" file="khan_heatplot2.ps" />
+        </test>
+    </tests>
+
+    <help>
+<![CDATA[
+Plots data to a heatplot
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
