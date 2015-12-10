@@ -50,22 +50,31 @@ check_the_variable <- function(long_name, optional=FALSE, minimum=NA, legal_valu
 }
 
 
-check_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=list(), values_required=TRUE){
+check_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=list(), values_required=TRUE) {
     ignore <- check_the_variable(long_name, optional, minimum, legal_values, values_required)
 }
 
+check_not_variable <- function(long_name, not_flag) {
+    if (check_the_variable(long_name, optional=TRUE)) {
+        myerror(c("Parameter",not_flag,"clashes with",long_name))
+    }
+}
 
+check_not_variables <- function(long_names, not_flag){
+    for (long_name in long_names) {
+        check_not_variable(long_name, not_flag)
+    }
+}
 
-check_variables <- function(flag_names, extra_names, optional=FALSE, qvalues=list(), values_required=TRUE) {
+check_variables <- function(flag_names, extra_names, optional=FALSE, values=list(), values_required=TRUE) {
     flag_found = NULL 
     for (flag_name in flag_names){
-        if (check_the_variable(flag_name, optional=TRUE, legal_values=qvalues[[flag_name]], values_required=values_required)){
+        if (check_the_variable(flag_name, optional=TRUE, legal_values=values[[flag_name]], values_required=values_required)){
             flag_found = flag_name
         }
     } 
     if (is.null(flag_found)){
         if (optional) {
-            mymessages(c("No value provided for",extra_names[1]))
             for(extra_name in extra_names){
                 if (is.null(opt[[extra_name]])) {
                     mymessages(c("No value provided for",extra_name))
@@ -81,7 +90,7 @@ check_variables <- function(flag_names, extra_names, optional=FALSE, qvalues=lis
             if (is.null(opt[[extra_name]])) {
                 myerror(c("Parameter",flag_found,"provided but parameter",extra_name,"is missing"))
             } else {
-                check_variable(extra_name, legal_values=qvalues[[extra_name]],values_required=values_required)
+                check_variable(extra_name, legal_values=values[[extra_name]],values_required=values_required)
             }   
         }
     }
@@ -397,3 +406,29 @@ graph_end <- function(data){
     mymessages(c("Plotted graph to",opt$graph_file))
 }
 
+
+check_code <- function(code, trust_code=FALSE) {
+    if (!trust_code){
+        if (grepl(";",code)) {
+            cat ("COMPUTER SAYS NO!\n")
+            quit(status = 1)
+        }
+        if (grepl("\\n",code)) {
+            cat ("COMPUTER SAYS NO!!\n")
+            quit(status = 1)
+        }
+    }
+}
+
+run_code <- function(code, trust_code=FALSE){
+    check_code(code)
+    mymessages(c("running",code))
+    parsed_code = parse(text=code)
+    return (eval(parsed_code))
+}
+
+if (!exists("main_flag")){
+    main_flag <<- TRUE
+
+    run_code("print(1 + 2) \n 4+5")
+}
