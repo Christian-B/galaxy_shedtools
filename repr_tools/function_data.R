@@ -22,19 +22,22 @@ load_utils <- function(){
 function_options <- function(){
     new_list = list(
         make_option("--data_function", action="store", type='character', 
-                    help="Function to apply on all the data. Currently supported funtions are na_per_column, na_per_row")
+                    help="Function to apply on all the data. Currently supported funtions are col_names_to_data, impute_knn, na_per_column, na_per_row, transpose")
     )
     return (new_list)
 }
 
 check_function  <- function(){ 
-    check_variable("data_function", legal_values=c("impute_knn","na_per_column","na_per_row","transpose"))
+    check_variable("data_function", legal_values=c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose"))
 }
 
 
 apply_function <- function(data){
     mymessages(c("Applying function",opt$data_function, "to the data."))
-    if (opt$data_function == "impute_knn"){
+    if (opt$data_function == "col_names_to_data"){
+        new_data = colnames(data)
+        names(new_data) = colnames(data)
+    } else if (opt$data_function == "impute_knn"){
         if(exists(".Random.seed")) rm(.Random.seed)
         new_data = impute.knn(as.matrix(data))$data
     } else if (opt$data_function == "na_per_column"){
