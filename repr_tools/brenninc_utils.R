@@ -429,6 +429,4 @@ run_code <- function(code, trust_code=FALSE){
 
 if (!exists("main_flag")){
     main_flag <<- TRUE
-
-    run_code("print(1 + 2) \n 4+5")
 }
