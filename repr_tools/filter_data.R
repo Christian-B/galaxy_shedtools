@@ -56,7 +56,7 @@ check_filter  <- function(){
     names(values) <- c("filter_symbol")
     opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
     opt$filter_value <<- remove_symbols(opt$filter_value)
-    check_variables(c("filter_column_name","filter_column_number"),c("filter_symbol","filter_value"), optional=TRUE, qvalues=values, values_required=FALSE)
+    check_variables(c("filter_column_name","filter_column_number"),c("filter_symbol","filter_value"), optional=TRUE, values=values, values_required=FALSE)
 }
 
 do_filter  <- function(data){ 
