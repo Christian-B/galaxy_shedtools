@@ -31,9 +31,12 @@
         <param type="data" format="tabular" name="input_file" label="input file" />
         <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
 
-        <param name="value_col" label="Column holding the value" type="data_column" data_ref="input_file" accept_default="true" /> 
-        <param name="column_names_col" label="Column holding the column_names/ graph x axis" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
-        <param name="row_names_col" label="Column holding the row_names" type="data_column" data_ref="input_file" use_header_names="true" force_select="false" optional="true"/>
+        <param name="value_col"        label="Column holding the value" 
+               type="data_column" data_ref="input_file"  use_header_names="true" force_select="true" /> 
+        <param name="column_names_col" label="Column holding the column_names/ graph x axis" 
+               type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
+        <param name="row_names_col"    label="Column holding the row_names" 
+               type="data_column" data_ref="input_file" use_header_names="true" force_select="false" optional="true"/>
 
         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
