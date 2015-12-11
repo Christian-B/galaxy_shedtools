@@ -36,7 +36,7 @@
         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="Extracted Data">
+        <data format="tabular" type="data" name="output_file" label="Column Compared Data">
         </data>
     </outputs>
 
