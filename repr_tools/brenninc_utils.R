@@ -1,10 +1,13 @@
+suppressPackageStartupMessages(require(optparse))
+
+## User messages escpecially for Debug and verbose modes
+
 mymessages <- function(mess_array, always=FALSE){
     if (opt$verbose | always) {
         cat(paste0(mess_array, collapse = " "))
         cat ("\n")
     }
 }
-
 
 myerror <- function(mess_array){
     print_help(option_parser)
@@ -13,7 +16,44 @@ myerror <- function(mess_array){
     quit(status = 1)
 }
 
+mysize <- function(data) {
+    dim_data = dim(data)
+    if (!is.null(dim_data)){
+        return (toString(dim_data))
+    }
+    if (length(data) == 1){
+        return ("1")
+    }
+    the_size = mysize(data[[1]])
+    for (i in 2:length(data)) {
+        new_size = mysize(data[[i]])
+        if (the_size !=  new_size){
+        return(paste (paste(length(data),",", sep=""), "various", sep = " "))
+        }
+    }
+    if (the_size == "1"){
+        return (length(data))
+    } else {
+        return(paste (paste(length(data),",", sep=""), the_size, sep = " "))
+    }
+}
 
+mysummary <- function(long_name, data) {
+    if (opt$debug) {
+        cat (long_name)
+        cat (": class = ")
+        cat (class(data))
+        cat (": type = ")
+        cat (typeof(data))
+        cat (", size = ")
+        cat (mysize(data))
+        cat ("\n")
+    }
+}
+
+
+
+## Methods to check the variables found by optparse
 
 check_the_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=list(), values_required=TRUE){
     if (is.null(opt[[long_name]])) {
@@ -60,6 +100,12 @@ check_not_variable <- function(long_name, not_flag) {
     }
 }
 
+check_no_paired_variable <- function(long_name, paired_name) {
+    if (check_the_variable(long_name, optional=TRUE)) {
+        myerror(c("Parameter",long_name,"can must be used together with",paired_name))
+    }
+}
+
 check_not_variables <- function(long_names, not_flag){
     for (long_name in long_names) {
         check_not_variable(long_name, not_flag)
@@ -96,7 +142,6 @@ check_variables <- function(flag_names, extra_names, optional=FALSE, values=list
     }
 }
 
-
 check_column_by_number <- function(data, column_number){
     if (opt[[column_number]] < 1){
         myerror(c(column_number, ": ", opt[[column_number]],"must be great than zero!"))
@@ -110,7 +155,6 @@ check_column_by_number <- function(data, column_number){
     return (colname)
 }
 
-
 check_column_by_name <- function(data, column_name) {
     found <- match(opt[[column_name]], colnames(data))
     if(is.na(found)){
@@ -119,7 +163,6 @@ check_column_by_name <- function(data, column_name) {
     mymessages(c(column_name,":",opt[[column_name]],"found in the data!"))
     return (opt[[column_name]])
 }
-
 
 check_column <- function(data, column_name, column_number, optional = FALSE) {
     if (is.null(opt[[column_name]])){
@@ -149,19 +192,56 @@ check_column <- function(data, column_name, column_number, optional = FALSE) {
 }
 
 
+##Input methods and settings
+
 valid_input_formats = c("tsv","csv","excell")
+
+input_options <- function(){
+    new_options = list(
+        make_option("--input_file", action="store", type='character',
+                    help="File to read data from"),
+        make_option("--input_file_format", action="store", type='character', default="tsv",
+                    help="Format of file to read data from. Excepted values are tsv, csv, excell. Default is tsv"),
+        make_option("--input_has_headers", action="store_true", default=TRUE,
+                    help="Conisder the first line of the input to be coloumn names[default]. If the first row has the same length as other rows the first column will be conisdered row names."),
+        make_option("--input_headerless", action="store_false",
+                    dest="input_has_headers", help="Read input headerless, which means data will have no column or row names."),      
+        make_option("--input_na", action="store", type='character',
+                    help="Value that should be read in as NA. Leave blank to considered the empty string as NA."),
+        make_option("--raw_rewrite_file", action="store", type='character', 
+                    help="Raw converted tsv file. (Optional)."),
+        make_option("--raw_rewrite_format", action="store", type='character', 
+                    help="Raw converted tsv file. (Optional).")
+    )
+    return (new_options)
+}
+
+check_inputs  <- function(){ 
+    check_variable("input_file")
+    check_input_format("input_file_format")
+    if (is.null(opt$input_na)){
+        opt$input_na <<- ""
+    }
+    check_variable("input_na")
+    check_variable("input_has_headers")
+    if (check_the_variable("raw_rewrite_file", optional=TRUE)) {
+        check_output_format("raw_rewrite_format")
+    } else {
+        check_no_paired_variable("raw_rewrite_format", "raw_rewrite_file") 
+    }
+}
 
 check_input_format <- function(long_name) {
     check_variable(long_name)
     if (opt[[long_name]] %in% valid_input_formats){
-        mymessages(c("\tReading is done with check.names = FALSE and blank.lines.skip = FALSEU"))
+        mymessages(c("\tReading is done with check.names = FALSE and blank.lines.skip = FALSE"))
     } else {
         myerror(c("parameter",long_name,"not a valid input format. Use one of", valid_input_formats))
     }
 }
 
 read_the_data  <- function(description="Some data"){
-    return (read_data(opt$input_file, table_format=opt$input_file_format, description=description, header=TRUE, na.strings = opt$input_na))
+    return (read_data(opt$input_file, table_format=opt$input_file_format, description=description, header=opt$input_has_headers, na.strings = opt$input_na))
 }
 
 #Because default value for header differes between format this methods has no defualt header
@@ -177,14 +257,18 @@ read_data  <- function(table_file, table_format, description, header, na.strings
                              header = header, na.strings = na.strings, 
                              blank.lines.skip = FALSE, check.names=FALSE)
         } else if (table_format == "excell"){
-            data <- read.xls (opt$xls_file, sheet = 1, method="tab", 
-                              header = header, na.strings = na.strings, 
+            data <- read.xls (table_file, sheet = 1, method="tab", 
+                              header = header, #  na.strings = na.strings, 
                               blank.lines.skip = FALSE, check.names=FALSE)
         } else {
             myerror(c("Unexpected format",table_format,"for",description))
             stop(error_message)            
         }   
         mysummary(description, data)
+        if (!is.null(opt$raw_rewrite_file)){
+            write_data (data, table_file = opt$raw_rewrite_file, table_format= opt$raw_rewrite_format, description = "Raw data in different format", 
+                    na=opt$input_na, row.names=TRUE, col.names=TRUE) 
+        }
         return (data)
     } else {
         myerror(c("File",table_file,"does not exist! So unable to read",description))
@@ -192,16 +276,43 @@ read_data  <- function(table_file, table_format, description, header, na.strings
     }
 }
 
+
+##Output methods and settings
+
 valid_output_formats = c("tsv","csv")
 
-check_output_format <- function(long_name) {
-    check_variable(long_name)
-    if (opt[[long_name]] %in% valid_input_formats){
-        mymessages(c("\tReading is done with check.names = FALSE and blank.lines.skip = FALSE"))
-    } else if (opt[[long_name]] == "excell"){
-        myerror(c("For parameter",long_name,"excell format not supported. Use csv or tsv which Excell can read"))
-    } else {
-        myerror(c("parameter",long_name,"not a valid input format. Use one of", valid_input_formats))
+output_options <- function(){
+    new_options = list(
+        make_option("--data_output_file", action="store", type='character', 
+                    help="File to write reduced data to. if not provided no data will be putput."),
+        make_option("--data_output_format", action="store", type='character', default="tsv",
+                    help="Format of file to write data to. Excepted values are tsv, csv, excell. Default is tsv"),
+        make_option("--output_na", action="store", type='character', default=NULL,
+                    help="Value that should be used for any NA in the output file. If not provided the empty string is used.")
+    )
+    return (new_options)
+}
+
+check_output  <- function(){ 
+    check_variable("data_output_file", optional=TRUE)
+    check_output_format("data_output_format")
+    if (!is.null(opt$data_output_file)){
+        if (is.null(opt$output_na)){
+            opt$output_na <<- ""
+        }
+        check_variable("output_na")
+    }
+}
+
+check_output_format <- function(long_name, optional=FALSE) {
+    if (check_the_variable(long_name, optional=optional)){
+        if (opt[[long_name]] %in% valid_input_formats){
+            mymessages(c("\tReading is done with check.names = FALSE and blank.lines.skip = FALSE"))
+        } else if (opt[[long_name]] == "excell"){
+            myerror(c("For parameter",long_name,"excell format not supported. Use csv or tsv which Excell can read"))
+        } else {
+            myerror(c("parameter",long_name,"not a valid input format. Use one of", valid_input_formats))
+        }
     }
 }
 
@@ -237,126 +348,8 @@ write_data <- function(data, table_file, table_format, description, na="NA", row
     }
 }
 
-remove_symbols <- function(text){
-    if (is.character(text)){
-        text <- gsub("__lt__","<",text)
-        text <- gsub("__gt__",">",text)
-        text <- gsub("__sq__","'",text)
-        text <- gsub("__dq__",'"',text)
-        text <- gsub("__in__",'%in%',text)
-    }
-    return (text)
-}
 
-mysize <- function(data) {
-    dim_data = dim(data)
-    if (!is.null(dim_data)){
-        return (toString(dim_data))
-    }
-    if (length(data) == 1){
-        return ("1")
-    }
-    the_size = mysize(data[[1]])
-    for (i in 2:length(data)) {
-        new_size = mysize(data[[i]])
-        if (the_size !=  new_size){
-        return(paste (paste(length(data),",", sep=""), "various", sep = " "))
-        }
-    }
-    if (the_size == "1"){
-        return (length(data))
-    } else {
-        return(paste (paste(length(data),",", sep=""), the_size, sep = " "))
-    }
-}
-
-
-mysummary <- function(long_name, data) {
-    if (opt$debug) {
-        cat (long_name)
-        cat (": class = ")
-        cat (class(data))
-        cat (": type = ")
-        cat (typeof(data))
-        cat (", size = ")
-        cat (mysize(data))
-        cat ("\n")
-    }
-}
-
-input_options <- function(){
-    new_options = list(
-        make_option("--input_file", action="store", type='character',
-                    help="File to read data from"),
-        make_option("--input_file_format", action="store", type='character', default="tsv",
-                    help="Format of file to read data from. Excepted values are tsv, csv, excell. Default is tsv"),
-        make_option("--input_na", action="store", type='character', 
-                    help="Value that should be read in as NA. Leave blank to considered the empty string as NA.")
-    )
-    return (new_options)
-}
-
-output_options <- function(){
-    new_options = list(
-        make_option("--data_output_file", action="store", type='character', 
-                    help="File to write reduced data to. if not provided no data will be putput."),
-        make_option("--data_output_format", action="store", type='character', default="tsv",
-                    help="Format of file to write data to. Excepted values are tsv, csv, excell. Default is tsv"),
-        make_option("--output_na", action="store", type='character', default=NULL,
-                    help="Value that should be used for any NA in the output file. If not provided the empty string is used.")
-    )
-    return (new_options)
-}
-
-util_options <- function(){
-    new_options = list(
-        make_option("--script_dir", action="store", type='character',
-                    help="Path to the where R utils scripts are stored. If not the current directory"),
-        make_option("--verbose", action="store_true", default=FALSE,
-                    help="Should the program print extra stuff out? [default %default]"),
-        make_option("--debug", action="store_true", default=FALSE,
-                    help="Should the program print even more extra stuff out? [default %default]. Setting debug turns verbose on too!")
-    )
-    return (new_options)
-}
-
-check_utils  <- function(){ 
-    if (opt$debug) { 
-        opt$verbose <<- TRUE 
-    }
-    mymessages(c("Parameters provided as"))
-}
-
-check_inputs  <- function(){ 
-    check_variable("input_file")
-    check_input_format("input_file_format")
-    if (is.null(opt$input_na)){
-        opt$input_na <<- ""
-    }
-    check_variable("input_na")
-}
-
-check_output  <- function(){ 
-    check_variable("data_output_file", optional=TRUE)
-    check_output_format("data_output_format")
-    if (!is.null(opt$data_output_file)){
-        if (is.null(opt$output_na)){
-            opt$output_na <<- ""
-        }
-        check_variable("output_na")
-    }
-}
-
-init_utils <- function(extra_options){
-    option_list <- c(input_options(), extra_options, output_options(), util_options())    
-
-    option_parser <<- OptionParser(option_list=option_list)
-    opt <<- parse_args(option_parser)
-
-    check_utils()
-    check_inputs()
-    check_output()
-}
+## Graph methods and settings
 
 graph_options <- function(){
     new_list = list(
@@ -407,6 +400,52 @@ graph_end <- function(data){
 }
 
 
+## Util settings and init
+
+util_options <- function(){
+    new_options = list(
+        make_option("--script_dir", action="store", type='character',
+                    help="Path to the where R utils scripts are stored. If not the current directory"),
+        make_option("--verbose", action="store_true", default=FALSE,
+                    help="Should the program print extra stuff out? [default %default]"),
+        make_option("--debug", action="store_true", default=FALSE,
+                    help="Should the program print even more extra stuff out? [default %default]. Setting debug turns verbose on too!")
+    )
+    return (new_options)
+}
+
+check_utils  <- function(){ 
+    if (opt$debug) { 
+        opt$verbose <<- TRUE 
+    }
+    mymessages(c("Parameters provided as"))
+}
+
+init_utils <- function(extra_options){
+    option_list <- c(input_options(), extra_options, output_options(), util_options())    
+
+    option_parser <<- OptionParser(option_list=option_list)
+    opt <<- parse_args(option_parser)
+
+    check_utils()
+    check_inputs()
+    check_output()
+}
+
+
+## Utility methods
+
+remove_symbols <- function(text){
+    if (is.character(text)){
+        text <- gsub("__lt__","<",text)
+        text <- gsub("__gt__",">",text)
+        text <- gsub("__sq__","'",text)
+        text <- gsub("__dq__",'"',text)
+        text <- gsub("__in__",'%in%',text)
+    }
+    return (text)
+}
+
 check_code <- function(code, trust_code=FALSE) {
     if (!trust_code){
         if (grepl(";",code)) {
@@ -426,6 +465,23 @@ run_code <- function(code, trust_code=FALSE){
     parsed_code = parse(text=code)
     return (eval(parsed_code))
 }
+
+not_all_blank <- function(a_vector){
+    all_blank = all(unlist(lapply(a_vector, function(x) {is.na(x) | x == ""})))
+    return (!all_blank)
+}
+
+clean_name <- function(name){
+    while (grepl('^_', name)){
+        name <- sub('^_','',name)
+    }
+    while (grepl('_$', name)){
+        name <- sub('_$','',name)
+    }
+    return (name)
+}
+
+## Main for testing
 
 if (!exists("main_flag")){
     main_flag <<- TRUE
