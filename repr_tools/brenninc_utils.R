@@ -356,7 +356,7 @@ graph_options <- function(){
         make_option("--graph_file", action="store", type='character', 
                     help="File to write graph to. If not provided no graph is output"),
         make_option("--graph_format", action="store", type='character',  default="jpeg", 
-                    help="Format of graph file. Expected values are jpeg, bmp, png, tiff and ps. Default is jpg"),
+                    help="Format of graph file. Expected values are jpeg/jpg, bmp, png, tiff and ps. Default is jpeg"),
         make_option("--graph_height", action="store", type='double', default="10",
                     help="Height in inches of graph"),
         make_option("--graph_width", action="store", type='double', default="10",
@@ -375,7 +375,7 @@ check_graph  <- function(){
 }
 
 graph_start <- function(data){
-    if (opt$graph_format =="jpeg"){
+    if (opt$graph_format =="jpeg" | opt$graph_format =="jpg"){
         jpeg(filename = opt$graph_file, width = opt$graph_width, height = opt$graph_height, units = "in", pointsize = 12, quality = 75,
              bg = "white", res = 300, type='cairo')
     } else if (opt$graph_format =="bmp"){
