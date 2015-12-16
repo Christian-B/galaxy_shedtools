@@ -12,6 +12,9 @@
     <command   interpreter="bash">
     r_wrapper.sh $__tool_directory__/clean_data.R --script_dir=$__tool_directory__  
         --input_file=$xls_file 
+        #if $input_na
+            --input_na=$input_na
+        #end if 
         --input_file_format=excell 
         --input_headerless
         #if $raw_tsv.save=="yes"
@@ -25,10 +28,14 @@
         --names_rows=$names_row  
         --data_output_file=$tsv_output_file 
         --data_output_format=tsv
-        --verbose
-    </command>
+        #if $output_na
+            --output_na=$output_na
+        #end if 
+        --debug
+     </command>
     <inputs>
         <param format="xlsx" type="data" name="xls_file" label="xls input file" />
+        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
         <conditional name="raw_tsv">
             <param name="save" type="select" label="Save the raw data before trimming or header fixing?" help="">
                 <option value="no">no</option>
@@ -47,6 +54,7 @@
             <when value="yes"/>
         </conditional>
         <param name="names_row" size="4" type="integer" value="1" min="0" label="Number of lines (under ignore) to considered header/ column names lines." />
+        <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
     <outputs>
         <data format="tabular" type="data" name="tsv_output_file" label="Transformed Data"/>
@@ -67,6 +75,18 @@
             <output name="output_file" file="mini_cleaned.tsv" />
             <output name="raw_tsv_file" file="mini_raw.tsv" />
             <output name="meta_data_file" file="mini_meta_data.tsv" />
+        </test>
+        <test>
+            <param name="xls_file" value="mini.xlsx" />
+            <param name="input_na" value="999" />
+            <param name="raw_tsv|save" value="yes"/>
+            <param name="ignore_rows" value="9"/>
+            <param name="names_row" value="3"/>
+            <param name="meta_data|save" value="yes"/>
+            <output name="output_file" file="mini_cleaned_na.tsv" />
+            <param name="output_na" value="NA" />
+            <output name="raw_tsv_file" file="mini_raw_na.tsv" />
+            <output name="meta_data_file" file="mini_meta_data_na.tsv" />
         </test>
         <test>
             <param name="xls_file" value="mini_simple.xlsx" />

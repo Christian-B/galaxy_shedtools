@@ -79,7 +79,7 @@ if (!exists("main_flag")){
 
     data = make_header(data)
 
-    write_the_data (data, "Filtered Data")
+    write_the_data (data, "Cleaned Data", row.names=TRUE, col.names=TRUE)
 
 }
 

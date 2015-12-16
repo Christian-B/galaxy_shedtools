@@ -250,7 +250,7 @@ read_data  <- function(table_file, table_format, description, header, na.strings
     if (file.exists(table_file)){
         if (table_format == "tsv"){
             data <- read.table(table_file,
-                               header = header, na.strings = na.strings, 
+                               header = header, na.strings = na.strings,
                                blank.lines.skip = FALSE, check.names=FALSE)
         } else if (table_format == "csv"){
             data <- read.csv(table_file,
@@ -258,7 +258,7 @@ read_data  <- function(table_file, table_format, description, header, na.strings
                              blank.lines.skip = FALSE, check.names=FALSE)
         } else if (table_format == "excell"){
             data <- read.xls (table_file, sheet = 1, method="tab", 
-                              header = header, #  na.strings = na.strings, 
+                              header = header, na.strings = na.strings,
                               blank.lines.skip = FALSE, check.names=FALSE)
         } else {
             myerror(c("Unexpected format",table_format,"for",description))
@@ -267,7 +267,7 @@ read_data  <- function(table_file, table_format, description, header, na.strings
         mysummary(description, data)
         if (!is.null(opt$raw_rewrite_file)){
             write_data (data, table_file = opt$raw_rewrite_file, table_format= opt$raw_rewrite_format, description = "Raw data in different format", 
-                    na=opt$input_na, row.names=TRUE, col.names=TRUE) 
+                    na=opt$output_na, row.names=TRUE, col.names=TRUE)
         }
         return (data)
     } else {
@@ -317,12 +317,12 @@ check_output_format <- function(long_name, optional=FALSE) {
 }
 
 #Overrides normal default quote=FALSE
-write_the_data  <- function(data, decription="some data"){ 
+write_the_data  <- function(data, decription="some data", row.names=TRUE, col.names=TRUE){ 
     if (is.null(opt$data_output_file)){
         mymessages(c("No data output as data_output_file parameter not provided"))
     } else {
         write_data (data, table_file = opt$data_output_file, table_format= opt$data_output_format, description = decription, 
-                    na=opt$output_na, row.names=TRUE, col.names=TRUE) 
+                    na=opt$output_na, row.names=row.names, col.names=col.names) 
     }
 }
 
