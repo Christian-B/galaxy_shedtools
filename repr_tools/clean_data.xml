@@ -1,5 +1,5 @@
 <tool id="clean_data_script" name="clean_data_script" version="0.1">
-    <description>Extracts data and plots it using R</description>
+    <description>Extracts data from an Excell file, ignoring meta data lines and combining names rows using R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>
         <requirement type="package" version="0.0.1">R_repr</requirement>
