@@ -1,0 +1,19 @@
+V1	V2	V3	V4	V5	V6	V7	V8
+1	A	top	line	with	fluff	across	many	columns
+2	more							
+3	stuff							
+4	in							
+5	several							
+6	lines							
+7	then blanks							
+8								
+9								
+10	An	the	the		the	more		
+11	unimportant	x	y	stuff	value	more		
+12	column	axis	axis		column	fluff		
+13	asas	alpha	foo	23	2	NA		
+14	dad	alpha	bar	21	3	23		
+15	sd	beta	foo	21	NA	34		
+16	wwd	gamma	foo	34	3	NA		
+17	sd	gamma	bar	32	5	23		
+18	sdee	beta	bar	323	5	23		
