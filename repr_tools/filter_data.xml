@@ -55,7 +55,7 @@
                     <option value="__in__" >In. Keep only rows where column %in% list.</option>
                     <option value="!__in__" >Not In. Remove rows where column %in% list.</option>
                 </param>
-                <param name="value" type="text" value="" label="Value to compare column with. No spaces please. Remember strings don't forget the quotes. Note: For In and Not In, do not include the opening c( or closing )." />
+                <param name="value" type="text" value="" label="Value to compare column with. Note: For In and Not In, do not include the opening c( or closing )." />
             </when>
         </conditional>
 

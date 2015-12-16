@@ -57,11 +57,11 @@
         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="tsv_output_file" label="Transformed Data"/>
-        <data format="tabular" type="data" name="raw_tsv_file" label="Raw data in tsv format">
+        <data format="tabular" type="data" name="tsv_output_file" label="${on_string} as tsv with ${ignore_rows} lines removed and ${names_row} converted to a header."/>
+        <data format="tabular" type="data" name="raw_tsv_file" label="{on_string} as tsv with row numbers">
             <filter>(raw_tsv['save'] == 'yes')</filter>
         </data>
-        <data format="tabular" type="data" name="meta_data_file" label="Lines stripped of the top assumed to be Meta Data">
+        <data format="tabular" type="data" name="meta_data_file" label="${ignore_rows} lines stripped of the top of ${on_string}">
             <filter>(meta_data['save'] == 'yes')</filter>
         </data>
     </outputs>

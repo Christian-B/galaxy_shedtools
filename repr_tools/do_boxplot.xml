@@ -52,7 +52,7 @@
             </when>
         </conditional>
         <param name="graph_format" type="select" label="Format for the graph" help="">
-            <option value="jpeg" selected="true">jpeg</option>
+            <option value="jpg" selected="true">jpeg</option>
             <option value="bmp">bmp</option>
             <option value="png">png</option>
             <option value="tiff">tiff</option>
@@ -61,7 +61,7 @@
               
     </inputs>
     <outputs>
-        <data format="jpg" type="data" name="graph_file" label="Graph">
+        <data format="${graph_format}" type="data" name="graph_file" label="Boxplot of ${on_string}">
         </data>
     </outputs>
 

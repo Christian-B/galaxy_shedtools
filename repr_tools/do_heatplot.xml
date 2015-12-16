@@ -55,7 +55,7 @@
               
     </inputs>
     <outputs>
-        <data format="jpg" type="data" name="graph_file" label="Graph">
+        <data format="${graph_format}" type="data" name="graph_file" label="Heatplot of ${on_string}">
         </data>
     </outputs>
 
