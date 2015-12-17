@@ -356,7 +356,7 @@ graph_options <- function(){
         make_option("--graph_file", action="store", type='character', 
                     help="File to write graph to. If not provided no graph is output"),
         make_option("--graph_format", action="store", type='character',  default="jpeg", 
-                    help="Format of graph file. Expected values are jpeg/jpg, bmp, png, tiff and ps. Default is jpeg"),
+                    help="Format of graph file. Expected values are jpeg/jpg, bmp, png, and ps. Default is jpeg"),
         make_option("--graph_height", action="store", type='double', default="10",
                     help="Height in inches of graph"),
         make_option("--graph_width", action="store", type='double', default="10",
