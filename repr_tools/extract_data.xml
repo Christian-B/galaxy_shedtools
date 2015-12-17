@@ -38,10 +38,10 @@
         <param name="row_names_col"    label="Column holding the row_names" 
                type="data_column" data_ref="input_file" use_header_names="true" force_select="false" optional="true"/>
 
-        <param name="output_na" type="text" value="NA" label="Column ${value_col} extracted from {on_string} by column ${column_names_col}." />
+        <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="Extracted Data">
+        <data format="tabular" type="data" name="output_file" label="Column ${value_col} extracted from ${on_string} by column ${column_names_col}.">
         </data>
     </outputs>
 
