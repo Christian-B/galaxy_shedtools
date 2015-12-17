@@ -18,7 +18,7 @@
         --graph_file=$graph_file
         --graph_height=$graph_height
         --graph_width=$graph_width
-        --graph_format $graph_format
+        --graph_format $graph.format
 
         --heatplot_dend=$heatplot_dend
         #if float($heatplot_cexrow) > 0
@@ -36,13 +36,22 @@
 
         <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
         <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
-        <param name="graph_format" type="select" label="Format for the graph" help="">
-            <option value="jpeg" selected="true">jpeg</option>
-            <option value="bmp">bmp</option>
-            <option value="png">png</option>
-            <option value="tiff">tiff</option>
-            <option value="ps">ps</option>
-        </param>
+         <conditional name="graph">
+            <param name="format" type="select" label="Format for the graph" help="">
+                <option value="jpg" selected="true">jpeg</option>
+                <option value="bmp">bmp</option>
+                <option value="png">png</option>
+                <option value="ps">ps</option>
+            </param>
+            <when value="jpg">
+            </when>
+            <when value="bmp">
+            </when>
+            <when value="png">
+            </when>
+            <when value="ps">
+            </when>
+        </conditional>
 
         <param name="heatplot_dend" type="select" label="dend parameter for heatplot" help="">
             <option value="both" selected="true">Both ends</option>
@@ -55,7 +64,17 @@
               
     </inputs>
     <outputs>
-        <data format="${graph_format}" type="data" name="graph_file" label="Heatplot of ${on_string}">
+        <data format="jpg" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'jpg')</filter>
+        </data>
+        <data format="bmp" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'bmp')</filter>
+        </data>
+        <data format="png" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'ps')</filter>
+        </data>
+        <data format="ps" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'ps')</filter>
         </data>
     </outputs>
 
@@ -63,13 +82,13 @@
          <test>
             <param name="input_file" value="khan_imputed.tsv" />
             <param name="input_na" value="NA" />
-            <param name="graph_format" value="ps" />
+            <param name="graph|format" value="ps" />
             <output name="graph_file" file="khan_heatplot.ps" />
         </test>
         <test>
             <param name="input_file" value="khan_imputed.tsv" />
             <param name="input_na" value="NA" />
-            <param name="graph_format" value="ps" />
+            <param name="graph|format" value="ps" />
             <param name="heatplot_dend" value="none" />
             <param name="heatplot_cexrow" value="0.5" />
             <param name="heatplot_cexcol" value="0.5" />

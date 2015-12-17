@@ -16,9 +16,9 @@
         #end if 
 
         --graph_file=$graph_file
+        --graph_format $graph.format
         --graph_height=$graph_height
         --graph_width=$graph_width
-        --graph_format $graph_format
 
         #if $redline.apply=="Yes"
             --boxplot_red_line_value=$redline.level
@@ -51,17 +51,36 @@
             <when value="No">
             </when>
         </conditional>
-        <param name="graph_format" type="select" label="Format for the graph" help="">
-            <option value="jpg" selected="true">jpeg</option>
-            <option value="bmp">bmp</option>
-            <option value="png">png</option>
-            <option value="tiff">tiff</option>
-            <option value="ps">ps</option>
-        </param>
+        <conditional name="graph">
+            <param name="format" type="select" label="Format for the graph" help="">
+                <option value="jpg" selected="true">jpeg</option>
+                <option value="bmp">bmp</option>
+                <option value="png">png</option>
+                <option value="ps">ps</option>
+            </param>
+            <when value="jpg">
+            </when>
+            <when value="bmp">
+            </when>
+            <when value="png">
+            </when>
+            <when value="ps">
+            </when>
+        </conditional>
               
     </inputs>
     <outputs>
-        <data format="${graph_format}" type="data" name="graph_file" label="Boxplot of ${on_string}">
+        <data format="jpg" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'jpg')</filter>
+        </data>
+        <data format="bmp" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'bmp')</filter>
+        </data>
+        <data format="png" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'ps')</filter>
+        </data>
+        <data format="ps" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+            <filter>(graph_format == 'ps')</filter>
         </data>
     </outputs>
 
@@ -71,10 +90,22 @@
             <param name="input_na" value="999" />
             <output name="graph_file" file="mini_graph_10.jpeg" compare="sim_size" delta="1000"/>
         </test>
-         <test>
+        <test>
             <param name="input_file" value="mini_extracted.tsv" />
             <param name="input_na" value="999" />
-            <param name="graph_format" value="ps" />
+            <param name="graph|format" value="bmp" />
+            <output name="graph_file" file="mini_graph_10.bmp"  compare="sim_size" delta="1000"/>
+        </test>
+        <test>
+            <param name="input_file" value="mini_extracted.tsv" />
+            <param name="input_na" value="999" />
+            <param name="graph|format" value="png" />
+            <output name="graph_file" file="mini_graph_10.png"  compare="sim_size" delta="1000"/>
+        </test>
+        <test>
+            <param name="input_file" value="mini_extracted.tsv" />
+            <param name="input_na" value="999" />
+            <param name="graph|format" value="ps" />
             <output name="graph_file" file="mini_graph_10.ps" />
         </test>
         <test>
@@ -82,7 +113,7 @@
             <param name="input_na" value="999" />
             <param name="graph_height" value="15"/>
             <param name="graph_width" value="15"/>
-            <param name="graph_format" value="ps" />
+            <param name="graph|format" value="ps" />
             <param name="boxplot_title" value="Fancy Graph Title"/>
             <param name="boxplot_y_label" value="Y Label"/>
             <param name="redline|apply" value="Yes"/>
