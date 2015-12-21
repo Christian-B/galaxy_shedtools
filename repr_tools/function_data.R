@@ -22,13 +22,13 @@ load_utils <- function(){
 function_options <- function(){
     new_list = list(
         make_option("--data_function", action="store", type='character', 
-                    help="Function to apply on all the data. Currently supported funtions are col_names_to_data, impute_knn, na_per_column, na_per_row, transpose")
+                    help="Function to apply on all the data. Currently supported funtions are col_names_to_data, impute_knn, na_per_column, na_per_row, transpose, transpose_impute_knn")
     )
     return (new_list)
 }
 
 check_function  <- function(){ 
-    check_variable("data_function", legal_values=c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose"))
+    check_variable("data_function", legal_values=c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose","transpose_impute_knn"))
 }
 
 
@@ -40,6 +40,11 @@ apply_function <- function(data){
     } else if (opt$data_function == "impute_knn"){
         if(exists(".Random.seed")) rm(.Random.seed)
         new_data = impute.knn(as.matrix(data))$data
+    } else if (opt$data_function == "transpose_impute_knn"){
+        new_data = t(data)
+        if(exists(".Random.seed")) rm(.Random.seed)
+        new_data = impute.knn(as.matrix(new_data))$data
+        new_data = t(new_data)
     } else if (opt$data_function == "na_per_column"){
         new_data = colSums(is.na(data))
     } else if (opt$data_function == "na_per_row"){

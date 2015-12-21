@@ -1,4 +1,4 @@
-<tool id="function_data_script" name="function_data_script" version="0.1">
+<tool id="function_data_script" name="Function on all the data" version="0.1">
     <description>Extracts data and plots it using R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>
@@ -28,17 +28,17 @@
         <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
 
         <param name="data_function" type="select" label="Data Function." help="Function to apply over all the data.">
-            <option value="na_per_column"  selected="true">Apply colSums(is.na(data))</option> 
-            <option value="na_per_row"  selected="true">Apply rowSums(is.na(data))</option> 
-            <option value="transpose"  selected="true">Apply t(data)</option> 
-            <option value="impute_knn"  selected="true">Apply impute.knn(as.matrix(data))$data</option> 
+            <option value="na_per_column"  selected="true">Count NA values per column. Appling colSums(is.na(data))</option> 
+            <option value="na_per_row"  selected="true">Count NA Values per row. Appling rowSums(is.na(data))</option> 
+            <option value="transpose"  selected="true">Transpose. Appling t(data)</option> 
+            <option value="impute_knn"  selected="true">Impute. Appling impute.knn(as.matrix(data))$data</option> 
+            <option value="transpose_impute_knn"  selected="true">Transposed Impute. Appling t(impute.knn(as.matrix(t(data)))$data)</option>
         </param>
-
 
         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="Function Applied Data">
+        <data format="tabular" type="data" name="output_file" label="${data_function} of ${on_string}">
         </data>
     </outputs>
 
