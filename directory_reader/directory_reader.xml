@@ -1,0 +1,78 @@
+<tool id="directory_reader_script" name="Directory Reader" version="0.1">
+    <description>TEST</description>
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>        
+    <command>
+    ln -s ${directory} symlink ;
+    #if $extension.file_type=="txt"
+        ls symlink > ${listing_txt}
+    #end if
+    #if $extension.file_type=="text"
+        ls symlink > ${listing_text}
+    #end if
+    </command>
+    <inputs>
+        <param name="directory" type="text" label="Directory to read data from." />
+        <conditional name="extension">
+            <param name="file_type" type="select" label="File Type" help="File Type.">
+                <option value="txt" selected="true">txt Files</option> 
+                <option value="text">text Files</option> 
+            </param>
+            <when value="txt">
+            </when>
+            <when value="text">
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data format="txt" name="listing_txt">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" directory="symlink" ext="txt" visible="true" />
+            <filter>(extension['file_type'] == 'txt')</filter>
+        </data>
+        <data format="txt" name="listing_text">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.text" directory="symlink" ext="txt" visible="true" />
+            <filter>(extension['file_type'] == 'text')</filter>
+        </data>
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="directory" value="/home/christian/Dropbox/Manchester/galaxy_shed_tools/directory_reader/the_data" />
+            <param name="extension|file_type" value="txt" />
+            <output name="listing_txt">
+                <assert_contents>
+                    <has_line line="sample1.txt" />
+                </assert_contents>cd 
+                <discovered_dataset designation="sample1" ftype="txt">
+                    <assert_contents><has_line line="1" /></assert_contents>
+                </discovered_dataset>
+                <discovered_dataset designation="sample2" ftype="txt">
+                    <assert_contents><has_line line="2" /></assert_contents>
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="/home/christian/Dropbox/Manchester/galaxy_shed_tools/directory_reader/the_data" />
+            <param name="extension|file_type" value="text" />
+            <output name="listing_text">
+                <assert_contents>
+                    <has_line line="sample1.txt" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="txt">
+                    <assert_contents><has_line line="text1" /></assert_contents>
+                </discovered_dataset>
+            </output>
+        </test>
+    </tests>
+
+    <help>
+<![CDATA[
+    Test
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
