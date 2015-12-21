@@ -35,7 +35,9 @@ check_boxplot  <- function(){
     check_graph()
     if (!is.null(opt$graph_file)){
         check_variable("boxplot_red_line_value", optional=TRUE)
+        opt$boxplot_title <<- remove_symbols(opt$boxplot_title)
         check_variable("boxplot_title", optional=TRUE)
+        opt$boxplot_y_label <<- remove_symbols(opt$boxplot_y_label)
         check_variable("boxplot_y_label", optional=TRUE)
     }
 }
