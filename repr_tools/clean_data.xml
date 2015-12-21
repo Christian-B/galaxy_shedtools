@@ -1,4 +1,4 @@
-<tool id="clean_data_script" name="clean_data_script" version="0.1">
+<tool id="clean_data_script" name="Clean and convert xls data" version="0.1">
     <description>Extracts data from an Excell file, ignoring meta data lines and combining names rows using R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>

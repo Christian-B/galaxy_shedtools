@@ -1,4 +1,4 @@
-<tool id="extract_data_script" name="extract_data_script" version="0.1">
+<tool id="extract_data_script" name="Extract data from a single row" version="0.1">
     <description>Extracts data and plots it using R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>

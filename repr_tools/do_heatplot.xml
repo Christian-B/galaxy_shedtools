@@ -1,4 +1,4 @@
-<tool id="do_heatplot_script" name="do_heatplot_script" version="0.1">
+<tool id="do_heatplot_script" name="Heatplot drawing Tool" version="0.1">
     <description>Plots a heatplot using R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>
@@ -35,7 +35,7 @@
         <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
 
         <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
-        <param name="graph_width" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+        <param name="graph_width" size="4" type="integer" value="10" min="1" label="Width of the graph" />
 
         <param name="heatplot_dend" type="select" label="dend parameter for heatplot" help="">
             <option value="both" selected="true">Both ends</option>
@@ -48,13 +48,7 @@
               
     </inputs>
     <outputs>
-        <data format="jpg" type="data" name="graph_file" label="Boxplot of ${on_string}">            
-        </data>
-        <data format="bmp" type="data" name="graph_file" label="Boxplot of ${on_string}">            
-        </data>
-        <data format="png" type="data" name="graph_file" label="Boxplot of ${on_string}">            
-        </data>
-        <data format="ps" type="data" name="graph_file" label="Boxplot of ${on_string}">            
+        <data format="jpg" type="data" name="graph_file" label="Heatplot of ${on_string}">            
         </data>
     </outputs>
 

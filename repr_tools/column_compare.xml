@@ -1,4 +1,4 @@
-<tool id="column_compare_script" name="column_compare_script" version="0.1">
+<tool id="column_compare_script" name="Function based on one column" version="0.1">
     <description>Process all data by comparing it to one column</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>
@@ -36,7 +36,7 @@
         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="Column Compared Data">
+        <data format="tabular" type="data" name="output_file" label="${compare_method} of ${on_string}">
         </data>
     </outputs>
 

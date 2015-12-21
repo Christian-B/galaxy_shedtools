@@ -1,4 +1,4 @@
-<tool id="filter_by_text_script" name="filter_by_text_script" version="0.1">
+<tool id="filter_by_text_script" name="Filter Data user R command" version="0.1">
     <description>Extracts data and plots it using R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>

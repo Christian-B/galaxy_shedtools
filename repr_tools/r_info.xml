@@ -1,4 +1,4 @@
-<tool id="repr_package_checker" name="repr_package_checker" version="0.1">
+<tool id="repr_package_checker" name="List R packages used" version="0.1">
     <description>Lists packages installed into R</description>
     <requirements>
         <requirement type="package" version="3.2.1">R</requirement>
