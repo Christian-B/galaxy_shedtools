@@ -5,7 +5,11 @@
         <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
     </stdio>        
     <command>
-    ln -s ${directory} symlink ;
+    #if $directory.startswith('/'):
+        ln -s ${directory} symlink ;
+    #else
+        ln -s $__tool_directory__/${directory} symlink ;
+    #end if
     #if $extension.file_type=="txt"
         ls symlink > ${listing_txt}
     #end if
@@ -39,29 +43,28 @@
 
     <tests>
         <test>
-            <param name="directory" value="/home/christian/Dropbox/Manchester/galaxy_shed_tools/directory_reader/the_data" />
+            <param name="directory" value="test-data" />
             <param name="extension|file_type" value="txt" />
             <output name="listing_txt">
                 <assert_contents>
                     <has_line line="sample1.txt" />
                 </assert_contents>cd 
-                <discovered_dataset designation="sample1" ftype="txt">
+                <discovered_dataset designation="sample1" ftype="txt" file="sample1.txt">
                     <assert_contents><has_line line="1" /></assert_contents>
                 </discovered_dataset>
-                <discovered_dataset designation="sample2" ftype="txt">
+                <discovered_dataset designation="sample2" ftype="txt" file="sample2.txt">
                     <assert_contents><has_line line="2" /></assert_contents>
                 </discovered_dataset>
             </output>
         </test>
         <test>
-            <param name="directory" value="/home/christian/Dropbox/Manchester/galaxy_shed_tools/directory_reader/the_data" />
-            <param name="extension|file_type" value="text" />
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="text"/>
             <output name="listing_text">
                 <assert_contents>
                     <has_line line="sample1.txt" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="txt">
-                    <assert_contents><has_line line="text1" /></assert_contents>
+                <discovered_dataset designation="sample1" ftype="txt" file="sample1.text">
                 </discovered_dataset>
             </output>
         </test>
