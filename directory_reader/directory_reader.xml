@@ -1,5 +1,5 @@
 <tool id="directory_reader_script" name="Directory Reader" version="0.1">
-    <description>TEST</description>
+    <description>Reads a particular file type from a directory on the server</description>
     <stdio>
         <exit_code range="1" level="fatal" description="Error code 1 occurred" />
         <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
@@ -10,55 +10,248 @@
     #else
         ln -s $__tool_directory__/${directory} symlink ;
     #end if
+    #if $extension.file_type=="bmp"
+        ls symlink/*.bmp > ${listing_bmp}
+    #end if
+    #if $extension.file_type=="csv"
+        ls symlink/*.csv > ${listing_csv}
+    #end if
+    #if $extension.file_type=="fasta"
+        ls symlink/*.fasta > ${listing_fasta}
+    #end if
     #if $extension.file_type=="fastq"
         ls symlink/*.fastq > ${listing_fastq}
+    #end if
+    #if $extension.file_type=="jpeg"
+        ls symlink/*.jpeg > ${listing_jpeg}
+    #end if
+    #if $extension.file_type=="jpg"
+        ls symlink/*.jpg > ${listing_jpg}
+    #end if
+    #if $extension.file_type=="png"
+        ls symlink/*.png > ${listing_png}
+    #end if
+    #if $extension.file_type=="ps"
+        ls symlink/*.ps > ${listing_ps}
+    #end if
+    #if $extension.file_type=="sam"
+        ls symlink/*.sam > ${listing_sam}
+    #end if
+    #if $extension.file_type=="tabular"
+        ls symlink/*.tabular > ${listing_tabular}
     #end if
     #if $extension.file_type=="text"
         ls symlink/*.text > ${listing_text}
     #end if
+    #if $extension.file_type=="tiff"
+        ls symlink/*.tiff > ${listing_tiff}
+    #end if
+    #if $extension.file_type=="tsv"
+        ls symlink/*.tsv > ${listing_tsv}
+    #end if
     #if $extension.file_type=="txt"
         ls symlink/*.txt > ${listing_txt}
+    #end if
+    #if $extension.file_type=="xlsx"
+        ls symlink/*.xlsx > ${listing_xlsx}
     #end if
     </command>
     <inputs>
         <param name="directory" type="text" label="Directory to read data from." />
         <conditional name="extension">
             <param name="file_type" type="select" label="File Type" help="File Type.">
-                <option value="fastq">Fastq Files</option> 
-                <option value="text">text Files</option> 
-                <option value="txt" selected="true">txt Files</option> 
+                <option value="bmp">bmp files</option>
+                <option value="csv">csv files</option>
+                <option value="fasta">fatsa files (including fasta.gz)</option>
+                <option value="fastq">fastq files (including fastq.gz)</option>
+                <option value="jpeg">jpeg files</option>
+                <option value="jpg">jpg files</option>
+                <option value="png">png files</option>
+                <option value="ps">ps files</option>
+                <option value="sam">sam files</option>
+                <option value="tabular">tabular Files</option>
+                <option value="text">text Files</option>
+                <option value="tiff">tiff files</option>
+                <option value="tsv">tsv files</option>
+                <option value="txt" selected="true">txt Files</option>
+                <option value="xlsx">xlsx files</option>
             </param>
-            <when value="txt">
-            </when>
-            <when value="text">
-            </when>
         </conditional>
     </inputs>
     <outputs>
+        <data format="txt" name="listing_bmp">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.bmp" directory="symlink" ext="bmp" visible="true" />
+            <filter>(extension['file_type'] == 'bmp')</filter>
+        </data>
+        <data format="txt" name="listing_csv">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.csv" directory="symlink" ext="csv" visible="true" />
+            <filter>(extension['file_type'] == 'csv')</filter>
+        </data>
+        <data format="txt" name="listing_fasta">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fasta" directory="symlink" ext="fasta" visible="true" />
+            <filter>(extension['file_type'] == 'fasta')</filter>
+        </data>
         <data format="txt" name="listing_fastq">
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fastq" directory="symlink" ext="fastq" visible="true" />
             <filter>(extension['file_type'] == 'fastq')</filter>
+        </data>
+        <data format="txt" name="listing_jpeg">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.jpeg" directory="symlink" ext="jpg" visible="true" />
+            <filter>(extension['file_type'] == 'jpeg')</filter>
+        </data>
+        <data format="txt" name="listing_jpg">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.jpg" directory="symlink" ext="jpg" visible="true" />
+            <filter>(extension['file_type'] == 'jpg')</filter>
+        </data>
+        <data format="txt" name="listing_png">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.png" directory="symlink" ext="png" visible="true" />
+            <filter>(extension['file_type'] == 'png')</filter>
+        </data>
+        <data format="txt" name="listing_ps">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.ps" directory="symlink" ext="ps" visible="true" />
+            <filter>(extension['file_type'] == 'ps')</filter>
+        </data>
+        <data format="txt" name="listing_sam">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.sam" directory="symlink" ext="sam" visible="true" />
+            <filter>(extension['file_type'] == 'sam')</filter>
+        </data>
+        <data format="txt" name="listing_tabular">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.tabular" directory="symlink" ext="tabular" visible="true" />
+            <filter>(extension['file_type'] == 'tabular')</filter>
         </data>
         <data format="txt" name="listing_text">
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.text" directory="symlink" ext="txt" visible="true" />
             <filter>(extension['file_type'] == 'text')</filter>
         </data>
+        <data format="txt" name="listing_tiff">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.tiff" directory="symlink" ext="tiff" visible="true" />
+            <filter>(extension['file_type'] == 'tiff')</filter>
+        </data>
+        <data format="txt" name="listing_tsv">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.tsv" directory="symlink" ext="tabular" visible="true" />
+            <filter>(extension['file_type'] == 'tsv')</filter>
+        </data>
         <data format="txt" name="listing_txt">
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" directory="symlink" ext="txt" visible="true" />
             <filter>(extension['file_type'] == 'txt')</filter>
         </data>
-
+        <data format="txt" name="listing_xlsx">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.xlsx" directory="symlink" ext="xlsx" visible="true" />
+            <filter>(extension['file_type'] == 'xlsx')</filter>
+        </data>
     </outputs>
-
     <tests>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="bmp"/>
+            <output name="listing_bmp">
+                <assert_contents>
+                    <has_line line="symlink/sample1.bmp" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="bmp" file="sample1.bmp">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="csv"/>
+            <output name="listing_csv">
+                <assert_contents>
+                    <has_line line="symlink/sample1.csv" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="csv" file="sample1.csv">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="fasta"/>
+            <output name="listing_fasta">
+                <assert_contents>
+                    <has_line line="symlink/sample1.fasta" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta">
+                </discovered_dataset>
+            </output>
+        </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="extension|file_type" value="fastq"/>
             <output name="listing_fastq">
                 <assert_contents>
-                    <has_line line="symlink/mini.fastq" />
+                    <has_line line="symlink/sample1.fastq" />
                 </assert_contents>
-                <discovered_dataset designation="mini" ftype="fastq" file="mini.fastq">
+                <discovered_dataset designation="sample1" ftype="fastq" file="sample1.fastq">
+                </discovered_dataset>
+                <discovered_dataset designation="sample2" ftype="fastq" file="sample2.fastq.gz">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="jpeg"/>
+            <output name="listing_jpeg">
+                <assert_contents>
+                    <has_line line="symlink/sample1.jpeg" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="jpg" file="sample1.jpeg">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="jpg"/>
+            <output name="listing_jpg">
+                <assert_contents>
+                    <has_line line="symlink/sample1.jpg" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="jpg" file="sample1.jpg">
+                </discovered_dataset>
+            </output>
+        </test>
+
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="png"/>
+            <output name="listing_png">
+                <assert_contents>
+                    <has_line line="symlink/sample1.png" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="png" file="sample1.png">
+                </discovered_dataset>
+            </output>
+        </test>
+
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="ps"/>
+            <output name="listing_ps">
+                <assert_contents>
+                    <has_line line="symlink/sample1.ps" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="ps" file="sample1.ps">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="sam"/>
+            <output name="listing_sam">
+                <assert_contents>
+                    <has_line line="symlink/sample1.sam" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="sam" file="sample1.sam">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="tabular"/>
+            <output name="listing_tabular">
+                <assert_contents>
+                    <has_line line="symlink/sample1.tabular" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="tabular" file="sample1.tabular">
                 </discovered_dataset>
             </output>
         </test>
@@ -75,6 +268,28 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="tiff"/>
+            <output name="listing_tiff">
+                <assert_contents>
+                    <has_line line="symlink/sample1.tiff" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="tiff" file="sample1.tiff">
+                </discovered_dataset>
+            </output>
+        </test> 
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="tsv"/>
+            <output name="listing_tsv">
+                <assert_contents>
+                    <has_line line="symlink/sample1.tsv" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="tabular" file="sample1.tsv">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
             <param name="extension|file_type" value="txt" />
             <output name="listing_txt">
                 <assert_contents>
@@ -85,6 +300,17 @@
                 </discovered_dataset>
                 <discovered_dataset designation="sample2" ftype="txt" file="sample2.txt">
                     <assert_contents><has_line line="2" /></assert_contents>
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="xlsx"/>
+            <output name="listing_xlsx">
+                <assert_contents>
+                    <has_line line="symlink/sample1.xlsx" />
+                </assert_contents>
+                <discovered_dataset designation="sample1" ftype="xlsx" file="sample1.xlsx">
                 </discovered_dataset>
             </output>
         </test>
