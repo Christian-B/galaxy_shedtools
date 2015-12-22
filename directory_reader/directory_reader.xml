@@ -10,19 +10,23 @@
     #else
         ln -s $__tool_directory__/${directory} symlink ;
     #end if
-    #if $extension.file_type=="txt"
-        ls symlink > ${listing_txt}
+    #if $extension.file_type=="fastq"
+        ls symlink/*.fastq > ${listing_fastq}
     #end if
     #if $extension.file_type=="text"
-        ls symlink > ${listing_text}
+        ls symlink/*.text > ${listing_text}
+    #end if
+    #if $extension.file_type=="txt"
+        ls symlink/*.txt > ${listing_txt}
     #end if
     </command>
     <inputs>
         <param name="directory" type="text" label="Directory to read data from." />
         <conditional name="extension">
             <param name="file_type" type="select" label="File Type" help="File Type.">
-                <option value="txt" selected="true">txt Files</option> 
+                <option value="fastq">Fastq Files</option> 
                 <option value="text">text Files</option> 
+                <option value="txt" selected="true">txt Files</option> 
             </param>
             <when value="txt">
             </when>
@@ -31,29 +35,30 @@
         </conditional>
     </inputs>
     <outputs>
-        <data format="txt" name="listing_txt">
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" directory="symlink" ext="txt" visible="true" />
-            <filter>(extension['file_type'] == 'txt')</filter>
+        <data format="txt" name="listing_fastq">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fastq" directory="symlink" ext="fastq" visible="true" />
+            <filter>(extension['file_type'] == 'fastq')</filter>
         </data>
         <data format="txt" name="listing_text">
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.text" directory="symlink" ext="txt" visible="true" />
             <filter>(extension['file_type'] == 'text')</filter>
         </data>
+        <data format="txt" name="listing_txt">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" directory="symlink" ext="txt" visible="true" />
+            <filter>(extension['file_type'] == 'txt')</filter>
+        </data>
+
     </outputs>
 
     <tests>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="txt" />
-            <output name="listing_txt">
+            <param name="extension|file_type" value="fastq"/>
+            <output name="listing_fastq">
                 <assert_contents>
-                    <has_line line="sample1.txt" />
-                </assert_contents>cd 
-                <discovered_dataset designation="sample1" ftype="txt" file="sample1.txt">
-                    <assert_contents><has_line line="1" /></assert_contents>
-                </discovered_dataset>
-                <discovered_dataset designation="sample2" ftype="txt" file="sample2.txt">
-                    <assert_contents><has_line line="2" /></assert_contents>
+                    <has_line line="symlink/mini.fastq" />
+                </assert_contents>
+                <discovered_dataset designation="mini" ftype="fastq" file="mini.fastq">
                 </discovered_dataset>
             </output>
         </test>
@@ -62,9 +67,24 @@
             <param name="extension|file_type" value="text"/>
             <output name="listing_text">
                 <assert_contents>
-                    <has_line line="sample1.txt" />
+                    <has_line line="symlink/sample1.text" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="txt" file="sample1.text">
+                </discovered_dataset>
+            </output>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="extension|file_type" value="txt" />
+            <output name="listing_txt">
+                <assert_contents>
+                    <has_line line="symlink/sample1.txt" />
+                </assert_contents>cd 
+                <discovered_dataset designation="sample1" ftype="txt" file="sample1.txt">
+                    <assert_contents><has_line line="1" /></assert_contents>
+                </discovered_dataset>
+                <discovered_dataset designation="sample2" ftype="txt" file="sample2.txt">
+                    <assert_contents><has_line line="2" /></assert_contents>
                 </discovered_dataset>
             </output>
         </test>
