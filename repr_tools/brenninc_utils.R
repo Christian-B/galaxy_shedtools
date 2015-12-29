@@ -399,6 +399,43 @@ graph_end <- function(data){
     mymessages(c("Plotted graph to",opt$graph_file))
 }
 
+## Shared filter stuff
+legal_symbols <<- c("==","!=","<","<=",">",">=",",%in%","!%in%")
+
+global_filter_options <- function(){
+    symbols_option <- "(Optional: Use __gt__ and __lt__ for < and >) "
+    help_symbol = paste("Symbol for the filter. ",
+                        paste("Recommended symbols are (",paste(legal_symbols,collapse =", "),") "),
+                        "The symbol will be applied column symbol value. ",
+                        symbols_option, 
+                        'This parmater may not work if you use the --filter_symbol="==" format. Use the --filter_symbol "==" format', 
+                        sep="")
+    new_options = list(
+        make_option("--filter_symbol", action="store", type='character', default=NULL,
+                    help=help_symbol),
+        make_option("--filter_value", action="store", type='character', default=NULL,
+                    help="One or more filter to apply to the data")
+    )
+    return (new_options)
+}
+
+create_filter <- function(flag){
+    if (grepl("%in%$",opt$filter_symbol)){
+        if (!grepl("^c\\(", opt$filter_value)){
+            opt$filter_value <<- paste0("c(", opt$filter_value, ")", collapse = " ")
+        }
+    }
+    if (opt$filter_symbol =="!="){
+        filter = paste(flag, "!=", opt$filter_value, collapse ="")
+    } else if (grepl("^!",opt$filter_symbol)){
+        filter = paste("!(",flag, substring(opt$filter_symbol, 2), opt$filter_value,")", collapse ="")
+    } else {
+        filter = paste(flag, opt$filter_symbol, opt$filter_value, collapse ="")
+    }
+    mymessages(c("Filter set to ", filter))
+    my_filter = parse(text=filter)
+    return (my_filter)
+}
 
 ## Util settings and init
 
@@ -460,7 +497,7 @@ check_code <- function(code, trust_code=FALSE) {
 }
 
 run_code <- function(code, trust_code=FALSE){
-    check_code(code)
+    check_code(code, trust_code=trust_code)
     mymessages(c("running",code))
     parsed_code = parse(text=code)
     return (eval(parsed_code))
