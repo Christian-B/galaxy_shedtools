@@ -400,12 +400,13 @@ graph_end <- function(data){
 }
 
 ## Shared filter stuff
-legal_symbols <<- c("==","!=","<","<=",">",">=",",%in%","!%in%")
+filter_symbol <<- c("==","!=","<","<=",">",">=",",%in%","!%in%")
+
+symbols_option <<- "(Optional: Use __gt__ and __lt__ for < and >) "
 
 global_filter_options <- function(){
-    symbols_option <- "(Optional: Use __gt__ and __lt__ for < and >) "
     help_symbol = paste("Symbol for the filter. ",
-                        paste("Recommended symbols are (",paste(legal_symbols,collapse =", "),") "),
+                        paste("Recommended symbols are (",paste(filter_symbol,collapse =", "),") "),
                         "The symbol will be applied column symbol value. ",
                         symbols_option, 
                         'This parmater may not work if you use the --filter_symbol="==" format. Use the --filter_symbol "==" format', 
@@ -433,8 +434,7 @@ create_filter <- function(flag){
         filter = paste(flag, opt$filter_symbol, opt$filter_value, collapse ="")
     }
     mymessages(c("Filter set to ", filter))
-    my_filter = parse(text=filter)
-    return (my_filter)
+    return (filter)
 }
 
 ## Util settings and init

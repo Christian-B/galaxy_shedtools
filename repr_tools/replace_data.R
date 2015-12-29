@@ -31,7 +31,7 @@ replace_options <- function(){
 
 check_replace <- function(){ 
     opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
-    check_variable("filter_symbol", legal_values=legal_symbols, values_required=FALSE)
+    check_variable("filter_symbol", legal_values=filter_symbol, values_required=FALSE)
     opt$filter_value <<- remove_symbols(opt$filter_value)
     check_variable("filter_value")
     opt$replace_value <<- remove_symbols(opt$replace_value)
@@ -39,7 +39,8 @@ check_replace <- function(){
 }
 
 do_replace  <- function(data){ 
-    my_filter = create_filter("data")
+    filter = create_filter("data")
+    my_filter = parse(text=filter)
     data[eval(my_filter)] = opt$replace_value
     mysummary("data after filter", data)
     return (data)

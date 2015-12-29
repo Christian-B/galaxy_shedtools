@@ -19,31 +19,18 @@ load_utils <- function(){
     }
 }
  
-symbols <- c("==","!=","<","<=",">",">=","%in%")
-
 filter_options <- function(){
-    symbols_option <- "(Optional: Use __gt__ and __lt__ for < and >) "
     help_filter = paste("One or more filter to apply to the data. ",
                         "Seperate filters can be divided by commas. ",
                         symbols_option,
                        "No other filter_** parameter needs to be provided.", sep="")
-    help_symbol = paste("Symbol for the filter. ",
-                        paste("Recommended symbols are (",paste(symbols,collapse =", "),") "),
-                        "The symbol will be applied column symbol value. ",
-                        symbols_option, 
-                        'This parmater may not work if you use the --filter_symbol="==" format. Use the --filter_symbol "==" format', 
-                        sep="")
     new_options = list(
         make_option("--filter", action="store", type='character', default=NULL,
                     help=help_filter),   
         make_option("--filter_column_name", action="store", type='character', default=NULL,
                     help="Name of the column to filter on."),
         make_option("--filter_column_number", action="store", type='integer', default=NULL,
-                    help="Number the column to filter on."),
-        make_option("--filter_symbol", action="store", type='character', default=NULL,
-                    help=help_symbol),
-        make_option("--filter_value", action="store", type='character', default=NULL,
-                    help="One or more filter to apply to the data")
+                    help="Number the column to filter on.")
     )
     return (new_options)
 }
@@ -52,7 +39,7 @@ check_filter  <- function(){
     opt$filter <<- remove_symbols(opt$filter)
     check_variable("filter", optional=TRUE)
     values<-list()
-    values[[1]] <- symbols
+    values[[1]] <- filter_symbol
     names(values) <- c("filter_symbol")
     opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
     opt$filter_value <<- remove_symbols(opt$filter_value)
@@ -63,17 +50,7 @@ do_filter  <- function(data){
     filter_column_name <- check_column(data, "filter_column_name", "filter_column_number", optional = TRUE)
 
     if (!is.null(filter_column_name)){
-        if (grepl("%in%$",opt$filter_symbol)){
-            if (!grepl("^c\\(", opt$filter_value)){
-                opt$filter_value <<- paste0("c(", opt$filter_value, ")", collapse = " ")
-            }
-        }
-        if (grepl("^!",opt$filter_symbol)){
-            opt$filter = paste("!(",filter_column_name, substring(opt$filter_symbol, 2), opt$filter_value,")", collapse ="")
-        } else {
-            opt$filter = paste(filter_column_name, opt$filter_symbol, opt$filter_value, collapse ="")
-        }
-        mymessages(c("Filter set to ", opt$filter))
+        opt$filter = create_filter(filter_column_name)
     }
 
     if (is.null(opt$filter)){
@@ -102,7 +79,7 @@ if (!exists("main_flag")){
 
     load_utils()
 
-    init_utils (filter_options())
+    init_utils (c(filter_options(), global_filter_options()))
 
     check_filter()
 
