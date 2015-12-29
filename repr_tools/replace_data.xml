@@ -1,0 +1,63 @@
+<tool id="replace_data_script" name="Replace data based on a filter" version="0.1">
+    <description>Replaces data based on a filter using R. (Works best with all numerical data)</description>
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
+    <command interpreter="bash">
+    r_wrapper.sh $__tool_directory__/replace_data.R --script_dir=$__tool_directory__  
+        --input_file=$input_file
+        #if $input_na
+            --input_na=$input_na
+        #end if 
+
+        --filter_symbol $symbol --filter_value $value
+        --replace_value $replace_value
+        --data_output_file=$output_file
+        #if $output_na
+            --output_na=$output_na
+        #end if 
+        --debug
+    </command>
+    <inputs>
+        <expand macro="input_params" />
+        <expand macro="filter_params" />
+        <param name="replace_value" type="text" label="Value to be replace where ever filter passes." />
+        <expand macro="output_params" />
+    </inputs>
+    <outputs>
+        <data format="tabular" type="data" name="output_file" label="${on_string} ${symbol} ${value} replaced by ${replace_value}">
+        </data>
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="symbol" value="__gt__"/> 
+            <param name="value" value="100"/> 
+            <param name="replace_value" value="99"/> 
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_replaced.tsv" />
+       </test>
+       <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="col" value="2"/> 
+            <param name="symbol" value="!="/> 
+            <param name="value" value="3" /> 
+            <param name="replace_value" value="3"/> 
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_all_three.tsv" />
+       </test> 
+    </tests>
+
+    <help>
+<![CDATA[
+Replaces data from a file.
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
