@@ -1,0 +1,43 @@
+<macros>
+
+    <xml name="requirements_and_stdio">
+        <requirements>
+            <requirement type="package" version="3.2.1">R</requirement>
+            <requirement type="package" version="0.0.1">R_repr</requirement>
+        </requirements>
+        <stdio>
+            <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+            <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+        </stdio>
+    </xml>
+
+    <xml name="input_params">
+        <param type="data" format="tabular" name="input_file" label="input file" />
+        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+    </xml>
+
+    <xml name="output_params">
+         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
+    </xml>
+
+    <xml name="filter_params">
+         <param name="symbol" type="select" label="Symbol for the filter. Applied data symbol value." help="">
+            <option value="=="  selected="true">Equals. Keep only rows where column equals this value.</option>
+            <option value="!=" >Not qquals. Keep only rows where column not equal to this value.</option>
+            <option value="__lt__" >Less than. Keep only rows where column less than this value.</option>
+            <option value="__lt__=" >Less than equals. Keep only rows where column less than or equal to this value.</option>
+            <option value="__gt__" >Greater than. Keep only rows where column greater than this value.</option>
+            <option value="__gt__=" >Greater than equals. Keep only rows where column greater than or equal to this value.</option>
+            <option value="__in__" >In. Keep only rows where column %in% list.</option>
+            <option value="!__in__" >Not In. Remove rows where column %in% list.</option>
+         </param>
+         <param name="value" type="text" value="" label="Value to compare data with. No spaces please. Remember strings don;t forget the quotes.Notes:  For In and Not In, do  not include the opening c( or closing )." />
+    </xml>
+
+    <xml name="graph_params">
+        <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
+        <param name="graph_width" size="4" type="integer" value="10" min="1" label="Width of the graph" />
+    </xml>
+
+
+</macros>

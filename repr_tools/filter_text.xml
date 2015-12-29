@@ -1,13 +1,9 @@
 <tool id="filter_by_text_script" name="Filter Data user R command" version="0.1">
     <description>Extracts data and plots it using R</description>
-    <requirements>
-        <requirement type="package" version="3.2.1">R</requirement>
-        <requirement type="package" version="0.0.1">R_repr</requirement>
-        </requirements>  
-    <stdio>
-        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
-        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
-    </stdio>        
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
     <command interpreter="bash">
     r_wrapper.sh $__tool_directory__/filter_data.R --script_dir=$__tool_directory__  
         --input_file=$input_file
@@ -22,10 +18,9 @@
         --debug
     </command>
     <inputs>
-        <param type="data" format="tabular" name="input_file" label="input file" />
-        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+        <expand macro="input_params" />
         <param name="filter" type="text" value="" label="R Equation to be used as a filter." />
-        <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
+        <expand macro="output_params" />
     </inputs>
     <outputs>
         <data format="tabular" type="data" name="output_file" label="${on_string} Filtered by ${filter}">

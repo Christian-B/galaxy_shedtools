@@ -1,13 +1,9 @@
 <tool id="clean_data_script" name="Clean and convert xls data" version="0.1">
     <description>Extracts data from an Excell file, ignoring meta data lines and combining names rows using R</description>
-    <requirements>
-        <requirement type="package" version="3.2.1">R</requirement>
-        <requirement type="package" version="0.0.1">R_repr</requirement>
-    </requirements>  
-    <stdio>
-        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
-        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
-    </stdio>
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
 
     <command   interpreter="bash">
     r_wrapper.sh $__tool_directory__/clean_data.R --script_dir=$__tool_directory__  
@@ -54,7 +50,7 @@
             <when value="yes"/>
         </conditional>
         <param name="names_row" size="4" type="integer" value="1" min="0" label="Number of lines (under ignore) to considered header/ column names lines." />
-        <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
+        <expand macro="output_params" />
     </inputs>
     <outputs>
         <data format="tabular" type="data" name="tsv_output_file" label="${on_string} as tsv with ${ignore_rows} lines removed and ${names_row} converted to a header."/>

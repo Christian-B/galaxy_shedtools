@@ -1,13 +1,9 @@
 <tool id="do_boxplot_script" name="Boxplot drawing Tool" version="0.1">
     <description>Extracts data and plots it using R</description>
-    <requirements>
-        <requirement type="package" version="3.2.1">R</requirement>
-        <requirement type="package" version="0.0.1">R_repr</requirement>
-        </requirements>  
-    <stdio>
-        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
-        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
-    </stdio>        
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
     <command interpreter="bash">
     r_wrapper.sh $__tool_directory__/do_boxplot.R --script_dir=$__tool_directory__  
         --input_file=$input_file
@@ -33,11 +29,9 @@
         --debug
     </command>
     <inputs>
-        <param type="data" format="tabular" name="input_file" label="input file" />
-        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+        <expand macro="input_params" />
+        <expand macro="graph_params" />
 
-        <param name="graph_height" size="4" type="integer" value="10" min="1" label="Height of the graph" />
-        <param name="graph_width" size="4" type="integer" value="10" min="1" label="Width of the graph" />
         <param name="boxplot_title" size="30" type="text" value="" label="Title for the graph."/>
         <param name="boxplot_y_label" size="30" type="text" value="" label="Label for the y axis in the graph."/>
         <conditional name="redline">

@@ -1,13 +1,9 @@
 <tool id="filter_on_column_script" name="Filter based on a column" version="0.1">
     <description>Filters data based on a column value using R</description>
-    <requirements>
-        <requirement type="package" version="3.2.1">R</requirement>
-        <requirement type="package" version="0.0.1">R_repr</requirement>
-        </requirements>  
-    <stdio>
-        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
-        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
-    </stdio>        
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
     <command interpreter="bash">
     r_wrapper.sh $__tool_directory__/filter_data.R --script_dir=$__tool_directory__  
         --input_file=$input_file
@@ -24,22 +20,10 @@
         --debug
     </command>
     <inputs>
-        <param type="data" format="tabular" name="input_file" label="input file" />
-        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
-
-         <param name="col" label="Column to be filtered on" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
-         <param name="symbol" type="select" label="Symbol for the filter. Applied column symbol value." help="">
-            <option value="=="  selected="true">Equals. Keep only rows where column equals this value.</option>
-            <option value="!=" >Not qquals. Keep only rows where column not equal to this value.</option>
-            <option value="__lt__" >Less than. Keep only rows where column less than this value.</option>
-            <option value="__lt__=" >Less than equals. Keep only rows where column less than or equal to this value.</option>
-            <option value="__gt__" >Greater than. Keep only rows where column greater than this value.</option>
-            <option value="__gt__=" >Greater than equals. Keep only rows where column greater than or equal to this value.</option>
-            <option value="__in__" >In. Keep only rows where column %in% list.</option>
-            <option value="!__in__" >Not In. Remove rows where column %in% list.</option>
-         </param>
-         <param name="value" type="text" value="" label="Value to compare column with. No spaces please. Remember strings don;t forget the quotes.Notes:  For In and Not In, do  not include the opening c( or closing )." />
-         <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
+        <expand macro="input_params" />
+        <param name="col" label="Column to be filtered on" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
+        <expand macro="filter_params" />
+        <expand macro="output_params" />
     </inputs>
     <outputs>
         <data format="tabular" type="data" name="output_file" label="${on_string} Filtered on column ${col} ${symbol} ${value}">

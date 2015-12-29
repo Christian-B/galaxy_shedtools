@@ -1,13 +1,9 @@
 <tool id="function_data_script" name="Function on all the data" version="0.1">
     <description>Extracts data and plots it using R</description>
-    <requirements>
-        <requirement type="package" version="3.2.1">R</requirement>
-        <requirement type="package" version="0.0.1">R_repr</requirement>
-        </requirements>  
-    <stdio>
-        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
-        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
-    </stdio>        
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
     <command interpreter="bash">
     r_wrapper.sh $__tool_directory__/function_data.R --script_dir=$__tool_directory__  
         --input_file=$input_file
@@ -24,8 +20,7 @@
         --debug
     </command>
     <inputs>
-        <param type="data" format="tabular" name="input_file" label="input file" />
-        <param name="input_na" type="text" value="NA" label="Value to be considered NA in input file." />
+        <expand macro="input_params" />
 
         <param name="data_function" type="select" label="Data Function." help="Function to apply over all the data.">
             <option value="na_per_column"  selected="true">Count NA values per column. Appling colSums(is.na(data))</option> 
@@ -35,7 +30,7 @@
             <option value="transpose_impute_knn"  selected="true">Transposed Impute. Appling t(impute.knn(as.matrix(t(data)))$data)</option>
         </param>
 
-        <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
+        <expand macro="output_params" />
     </inputs>
     <outputs>
         <data format="tabular" type="data" name="output_file" label="${data_function} of ${on_string}">
