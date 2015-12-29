@@ -10,23 +10,24 @@
     #else
         ln -s $__tool_directory__/${directory} symlink ;
     #end if
+    cd symlink ;
     #if $extension.file_type=="bmp"
-        ls symlink/*.bmp > ${listing_bmp}
+        ls *.bmp > ${listing_bmp}
     #end if
     #if $extension.file_type=="jpeg"
-        ls symlink/*.jpeg > ${listing_jpeg}
+        ls *.jpeg > ${listing_jpeg}
     #end if
     #if $extension.file_type=="jpg"
-        ls symlink/*.jpg > ${listing_jpg}
+        ls *.jpg > ${listing_jpg}
     #end if
     #if $extension.file_type=="png"
-        ls symlink/*.png > ${listing_png}
+        ls *.png > ${listing_png}
     #end if
     #if $extension.file_type=="ps"
-        ls symlink/*.ps > ${listing_ps}
+        ls *.ps > ${listing_ps}
     #end if
     #if $extension.file_type=="tiff"
-        ls symlink/*.tiff > ${listing_tiff}
+        ls *.tiff > ${listing_tiff}
     #end if
     </command>
     <inputs>
@@ -74,7 +75,7 @@
             <param name="extension|file_type" value="bmp"/>
             <output name="listing_bmp">
                 <assert_contents>
-                    <has_line line="symlink/sample1.bmp" />
+                    <has_line line="sample1.bmp" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="bmp" file="sample1.bmp">
                 </discovered_dataset>
@@ -85,7 +86,7 @@
             <param name="extension|file_type" value="jpeg"/>
             <output name="listing_jpeg">
                 <assert_contents>
-                    <has_line line="symlink/sample1.jpeg" />
+                    <has_line line="sample1.jpeg" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="jpg" file="sample1.jpeg">
                 </discovered_dataset>
@@ -96,7 +97,7 @@
             <param name="extension|file_type" value="jpg"/>
             <output name="listing_jpg">
                 <assert_contents>
-                    <has_line line="symlink/sample1.jpg" />
+                    <has_line line="sample1.jpg" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="jpg" file="sample1.jpg">
                 </discovered_dataset>
@@ -107,7 +108,7 @@
             <param name="extension|file_type" value="png"/>
             <output name="listing_png">
                 <assert_contents>
-                    <has_line line="symlink/sample1.png" />
+                    <has_line line="sample1.png" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="png" file="sample1.png">
                 </discovered_dataset>
@@ -118,7 +119,7 @@
             <param name="extension|file_type" value="ps"/>
             <output name="listing_ps">
                 <assert_contents>
-                    <has_line line="symlink/sample1.ps" />
+                    <has_line line="sample1.ps" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="ps" file="sample1.ps">
                 </discovered_dataset>
@@ -129,7 +130,7 @@
             <param name="extension|file_type" value="tiff"/>
             <output name="listing_tiff">
                 <assert_contents>
-                    <has_line line="symlink/sample1.tiff" />
+                    <has_line line="sample1.tiff" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="tiff" file="sample1.tiff">
                 </discovered_dataset>

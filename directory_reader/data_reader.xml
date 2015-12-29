@@ -10,41 +10,42 @@
     #else
         ln -s $__tool_directory__/${directory} symlink ;
     #end if
+    cd symlink ;
     #if $extension.file_type=="csv"
-        ls symlink/*.csv > ${listing_csv}
+        ls *.csv > ${listing_csv}
     #end if
     #if $extension.file_type=="fasta"
-        ls symlink/*.fasta> ${listing_fasta}
+        ls *.fasta> ${listing_fasta}
     #end if
     #if $extension.file_type=="fasta.gz"
-        ls symlink/*.fasta.gz> ${listing_fasta_gz}
+        ls *.fasta.gz> ${listing_fasta_gz}
     #end if
     #if $extension.file_type=="fastq"
-        ls symlink/*.fastq > ${listing_fastq}
+        ls *.fastq > ${listing_fastq}
     #end if
     #if $extension.file_type=="fastq.gz"
-        ls symlink/*.fastq.gz > ${listing_fastq_gz}
+        ls *.fastq.gz > ${listing_fastq_gz}
     #end if
     #if $extension.file_type=="sam"
-        ls symlink/*.sam > ${listing_sam}
+        ls *.sam > ${listing_sam}
     #end if
     #if $extension.file_type=="tabular"
-        ls symlink/*.tabular > ${listing_tabular}
+        ls *.tabular > ${listing_tabular}
     #end if
     #if $extension.file_type=="text"
-        ls symlink/*.text > ${listing_text}
+        ls *.text > ${listing_text}
     #end if
     #if $extension.file_type=="tsv"
-        ls symlink/*.tsv > ${listing_tsv}
+        ls *.tsv > ${listing_tsv}
     #end if
     #if $extension.file_type=="txt"
-        ls symlink/*.txt > ${listing_txt}
+        ls *.txt > ${listing_txt}
     #end if
     #if $extension.file_type=="xls"
-        ls symlink/*.xls > ${listing_xls}
+        ls *.xls > ${listing_xls}
     #end if
     #if $extension.file_type=="xlsx"
-        ls symlink/*.xlsx > ${listing_xlsx}
+        ls *.xlsx > ${listing_xlsx}
     #end if
     </command>
     <inputs>
@@ -122,7 +123,7 @@
             <param name="extension|file_type" value="csv"/>
             <output name="listing_csv">
                 <assert_contents>
-                    <has_line line="symlink/sample1.csv" />
+                    <has_line line="sample1.csv" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="csv" file="sample1.csv">
                 </discovered_dataset>
@@ -133,7 +134,7 @@
             <param name="extension|file_type" value="fasta"/>
             <output name="listing_fasta">
                 <assert_contents>
-                    <has_line line="symlink/sample1.fasta" />
+                    <has_line line="sample1.fasta" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta">
                 </discovered_dataset>
@@ -144,7 +145,7 @@
             <param name="extension|file_type" value="fasta.gz"/>
             <output name="listing_fasta_gz">
                 <assert_contents>
-                    <has_line line="symlink/sample1.fasta.gz" />
+                    <has_line line="sample1.fasta.gz" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta.gz">
                 </discovered_dataset>
@@ -155,7 +156,7 @@
             <param name="extension|file_type" value="fastq"/>
             <output name="listing_fastq">
                 <assert_contents>
-                    <has_line line="symlink/sample1.fastq" />
+                    <has_line line="sample1.fastq" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="fastq" file="sample1.fastq">
                 </discovered_dataset>
@@ -166,7 +167,7 @@
             <param name="extension|file_type" value="fastq.gz"/>
             <output name="listing_fastq_gz">
                 <assert_contents>
-                    <has_line line="symlink/sample1.fastq.gz" />
+                    <has_line line="sample1.fastq.gz" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="fastq" file="sample1.fastq.gz">
                 </discovered_dataset>
@@ -177,7 +178,7 @@
             <param name="extension|file_type" value="sam"/>
             <output name="listing_sam">
                 <assert_contents>
-                    <has_line line="symlink/sample1.sam" />
+                    <has_line line="sample1.sam" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="sam" file="sample1.sam">
                 </discovered_dataset>
@@ -188,7 +189,7 @@
             <param name="extension|file_type" value="tabular"/>
             <output name="listing_tabular">
                 <assert_contents>
-                    <has_line line="symlink/sample1.tabular" />
+                    <has_line line="sample1.tabular" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="tabular" file="sample1.tabular">
                 </discovered_dataset>
@@ -199,7 +200,7 @@
             <param name="extension|file_type" value="text"/>
             <output name="listing_text">
                 <assert_contents>
-                    <has_line line="symlink/sample1.text" />
+                    <has_line line="sample1.text" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="txt" file="sample1.text">
                 </discovered_dataset>
@@ -210,7 +211,7 @@
             <param name="extension|file_type" value="tsv"/>
             <output name="listing_tsv">
                 <assert_contents>
-                    <has_line line="symlink/sample1.tsv" />
+                    <has_line line="sample1.tsv" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="tabular" file="sample1.tsv">
                 </discovered_dataset>
@@ -221,7 +222,7 @@
             <param name="extension|file_type" value="txt" />
             <output name="listing_txt">
                 <assert_contents>
-                    <has_line line="symlink/sample1.txt" />
+                    <has_line line="sample1.txt" />
                 </assert_contents>cd 
                 <discovered_dataset designation="sample1" ftype="txt" file="sample1.txt">
                     <assert_contents><has_line line="1" /></assert_contents>
@@ -236,7 +237,7 @@
             <param name="extension|file_type" value="xls"/>
             <output name="listing_xls">
                 <assert_contents>
-                    <has_line line="symlink/sample1.xls" />
+                    <has_line line="sample1.xls" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="xls" file="sample1.xls">
                 </discovered_dataset>
@@ -247,7 +248,7 @@
             <param name="extension|file_type" value="xlsx"/>
             <output name="listing_xlsx">
                 <assert_contents>
-                    <has_line line="symlink/sample1.xlsx" />
+                    <has_line line="sample1.xlsx" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="xlsx" file="sample1.xlsx">
                 </discovered_dataset>
