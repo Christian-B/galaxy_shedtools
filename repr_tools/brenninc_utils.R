@@ -142,6 +142,19 @@ check_variables <- function(flag_names, extra_names, optional=FALSE, values=list
     }
 }
 
+check_secondary_variable <- function(primary_variable, required_if,secondary_variable){
+    #print(opt)
+    #primary = opt[[primary_variable]]
+    #print(primary)
+    if (opt[[primary_variable]] %in% required_if){
+        check_variable(secondary_variable)
+    } else {
+        if (check_the_variable(secondary_variable, optional=TRUE)){
+            myerror(c("Parameter",secondary_variable,"not valid if parameter",primary_variable,"has the value",opt[[primary_variable]]))
+        }
+    }
+}
+
 check_column_by_number <- function(data, column_number){
     if (opt[[column_number]] < 1){
         myerror(c(column_number, ": ", opt[[column_number]],"must be great than zero!"))

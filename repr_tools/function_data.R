@@ -22,15 +22,19 @@ load_utils <- function(){
 function_options <- function(){
     new_list = list(
         make_option("--data_function", action="store", type='character', 
-                    help="Function to apply on all the data. Currently supported funtions are col_names_to_data, impute_knn, na_per_column, na_per_row, transpose, transpose_impute_knn")
+                    help="Function to apply on all the data. Currently supported funtions are col_names_to_data, impute_knn, na_per_column, na_per_row, two_power_relative, transpose, transpose_impute_knn"),
+        make_option("--compare_value", action="store", type='double', 
+                    help="If applicable the value for the function to use. Required for two_power_relative")
     )
     return (new_list)
 }
 
 check_function  <- function(){ 
-    check_variable("data_function", legal_values=c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose","transpose_impute_knn"))
+    check_variable("data_function", legal_values=c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose","transpose_impute_knn","two_power_relative"))
+    required_if<-list()
+    required_if[[1]] <- "two_power_relative"
+    check_secondary_variable("data_function", required_if,"compare_value")
 }
-
 
 apply_function <- function(data){
     mymessages(c("Applying function",opt$data_function, "to the data."))
@@ -51,6 +55,8 @@ apply_function <- function(data){
         new_data = rowSums(is.na(data))
     } else if (opt$data_function == "transpose"){
         new_data = t(data)
+    } else if (opt$data_function == "two_power_relative"){
+        new_data = 2^(opt$compare_value - data)
     } else {
         myerror(c("Unexpected fuction",opt$data_function))
     }

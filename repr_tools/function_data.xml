@@ -11,7 +11,10 @@
             --input_na=$input_na
         #end if 
 
-        --data_function=$data_function
+        --data_function=$data.function
+        #if $data.function=="two_power_relative"
+            --compare_value=$data.compare_value
+        #end if
 
         --data_output_file=$output_file
         #if $output_na
@@ -22,18 +25,29 @@
     <inputs>
         <expand macro="input_params" />
 
-        <param name="data_function" type="select" label="Data Function." help="Function to apply over all the data.">
-            <option value="na_per_column"  selected="true">Count NA values per column. Appling colSums(is.na(data))</option> 
-            <option value="na_per_row"  selected="true">Count NA Values per row. Appling rowSums(is.na(data))</option> 
-            <option value="transpose"  selected="true">Transpose. Appling t(data)</option> 
-            <option value="impute_knn"  selected="true">Impute. Appling impute.knn(as.matrix(data))$data</option> 
-            <option value="transpose_impute_knn"  selected="true">Transposed Impute. Appling t(impute.knn(as.matrix(t(data)))$data)</option>
-        </param>
+        <conditional name="data">
+            <param name="function" type="select" label="Data Function." help="Function to apply over all the data.">
+                <option value="na_per_column"  selected="true">Count NA values per column. Appling colSums(is.na(data))</option> 
+                <option value="na_per_row" >Count NA Values per row. Appling rowSums(is.na(data))</option> 
+                <option value="transpose" >Transpose. Appling t(data)</option> 
+                <option value="impute_knn" >Impute. Appling impute.knn(as.matrix(data))$data</option> 
+                <option value="transpose_impute_knn" >Transposed Impute. Appling t(impute.knn(as.matrix(t(data)))$data)</option>
+                <option value="two_power_relative" >2 to the power of the difference with the compare_value. Appling 2^(compare_value - data)</option>
+            </param>
+            <when value="na_per_column"/>
+            <when value="na_per_row"/>
+            <when value="transpose"/>
+            <when value="impute_knn"/>
+            <when value="transpose_impute_knn"/>
+            <when value="two_power_relative">
+                <param name="compare_value" type="float" value="0" label="Value from which each data value is subtracted from before appling 2 o the power of the result." />
+            </when>
+        </conditional>
 
         <expand macro="output_params" />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="${data_function} of ${on_string}">
+        <data format="tabular" type="data" name="output_file" label="${data.function} of ${on_string}">
         </data>
     </outputs>
 
@@ -41,30 +55,38 @@
         <test>
             <param name="input_file" value="mini_extracted.tsv" />
             <param name="input_na" value="999" />
-            <param name="data_function" value="na_per_column" />
+            <param name="data|function" value="na_per_column" />
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_na_per_column.tsv" />
         </test>
         <test>
             <param name="input_file" value="mini_extracted.tsv" />
             <param name="input_na" value="999" />
-            <param name="data_function" value="na_per_row" />
+            <param name="data|function" value="na_per_row" />
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_na_per_row.tsv" />
         </test>
         <test>
             <param name="input_file" value="mini_extracted.tsv" />
             <param name="input_na" value="999" />
-            <param name="data_function" value="transpose" />
+            <param name="data|function" value="transpose" />
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_transposed.tsv" />
         </test>
         <test>
             <param name="input_file" value="khan_expr.tsv" />
             <param name="input_na" value="NA" />
-            <param name="data_function" value="impute_knn" />
+            <param name="data|function" value="impute_knn" />
             <param name="output_na" value="NA" />
             <output name="output_file" file="khan_imputed.tsv" />
+        </test>
+        <test>
+            <param name="input_file" value="mini_extracted.tsv" />
+            <param name="input_na" value="999" />
+            <param name="data|function" value="two_power_relative" />
+            <param name="data|compare_value" value="6" />
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_power_two.tsv" />
         </test>
     </tests>
 
