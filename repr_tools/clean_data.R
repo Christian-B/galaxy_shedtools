@@ -38,7 +38,7 @@ check_clean  <- function(){
 ignore_top_lines <- function(data){ 
     if (opt$ignore_rows >= 1){
         meta_data = data[c(1:opt$ignore_rows),]
-        write_data (meta_data, opt$meta_data_file, table_format = "tsv", description="Meta data", row.names=FALSE, col.names=FALSE)
+        write_data (meta_data, opt$meta_data_file, table_format = "tsv", description="Meta data", na=opt$output_na, row.names=FALSE, col.names=FALSE)
         data = data[-c(1:opt$ignore_rows),]
         mysummary("data_minus_ignores", data)
     }
@@ -47,11 +47,17 @@ ignore_top_lines <- function(data){
     return (data)
 } 
 
+as_character_NA_as_blank <- function(input){
+    aschar <- sapply(input, as.character)
+    aschar[is.na(aschar)] = ""
+    return (aschar)
+}
+
 make_header <- function(data){ 
     if (opt$names_rows >= 1){
         names_rows = data[c(1:opt$names_rows),]
         mysummary("name_rows", names_rows)
-        the_names = sapply( names_rows, function(x) {gsub(" ","_",(paste(x, collapse ="_")))})
+        the_names = sapply( names_rows, function(x) {gsub(" ","_",(paste(as_character_NA_as_blank(x), collapse ="_")))})
         mysummary("the_names",the_names)
         data <- data[-c(1:opt$names_rows),]
         the_names <- sapply(the_names, clean_name)
