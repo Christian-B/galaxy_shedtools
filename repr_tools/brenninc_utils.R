@@ -52,7 +52,6 @@ mysummary <- function(long_name, data) {
 }
 
 
-
 ## Methods to check the variables found by optparse
 
 check_the_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=list(), values_required=TRUE){
@@ -94,64 +93,40 @@ check_variable <- function(long_name, optional=FALSE, minimum=NA, legal_values=l
     ignore <- check_the_variable(long_name, optional, minimum, legal_values, values_required)
 }
 
-check_not_variable <- function(long_name, not_flag) {
+
+check_not_variable <- function(long_name, reason) {
     if (check_the_variable(long_name, optional=TRUE)) {
-        myerror(c("Parameter",not_flag,"clashes with",long_name))
+        myerror(c("Illegal Parameter",long_name,"because"))
     }
 }
 
-check_no_paired_variable <- function(long_name, paired_name) {
-    if (check_the_variable(long_name, optional=TRUE)) {
-        myerror(c("Parameter",long_name,"can must be used together with",paired_name))
-    }
-}
-
-check_not_variables <- function(long_names, not_flag){
-    for (long_name in long_names) {
-        check_not_variable(long_name, not_flag)
-    }
-}
-
-check_variables <- function(flag_names, extra_names, optional=FALSE, values=list(), values_required=TRUE) {
-    flag_found = NULL 
-    for (flag_name in flag_names){
-        if (check_the_variable(flag_name, optional=TRUE, legal_values=values[[flag_name]], values_required=values_required)){
-            flag_found = flag_name
-        }
-    } 
-    if (is.null(flag_found)){
-        if (optional) {
-            for(extra_name in extra_names){
-                if (is.null(opt[[extra_name]])) {
-                    mymessages(c("No value provided for",extra_name))
-                } else {
-                    myerror(c("Parameter",extra_name,"provided but none of",paste(flag_names,sep=", "),"provided"))
-                }
-            }   
-        } else {
-            myerror(c("None of the parameters",paste(flag_names,collapse =", "),"provided"))
-        }
-    } else {
-        for(extra_name in extra_names){
-            if (is.null(opt[[extra_name]])) {
-                myerror(c("Parameter",flag_found,"provided but parameter",extra_name,"is missing"))
-            } else {
-                check_variable(extra_name, legal_values=values[[extra_name]],values_required=values_required)
-            }   
+check_one_of <- function(long_names){
+    name_found = NA
+    for (long_name in long_names){
+        if (check_the_variable(long_name, optional=TRUE)){
+            name_found <- long_name
         }
     }
+    return (name_found)
 }
 
 check_secondary_variable <- function(primary_variable, required_if,secondary_variable){
-    #print(opt)
-    #primary = opt[[primary_variable]]
-    #print(primary)
     if (opt[[primary_variable]] %in% required_if){
         check_variable(secondary_variable)
     } else {
         if (check_the_variable(secondary_variable, optional=TRUE)){
             myerror(c("Parameter",secondary_variable,"not valid if parameter",primary_variable,"has the value",opt[[primary_variable]]))
         }
+    }
+}
+
+check_unless_secondary_variable <- function(primary_variable, required_if,secondary_variable){
+    if (opt[[primary_variable]] %in% required_if){
+        if (check_the_variable(secondary_variable, optional=TRUE)){
+            myerror(c("Parameter",secondary_variable,"not valid if parameter",primary_variable,"has the value",opt[[primary_variable]]))
+        }
+    } else {
+        check_variable(secondary_variable)
     }
 }
 
@@ -240,7 +215,7 @@ check_inputs  <- function(){
     if (check_the_variable("raw_rewrite_file", optional=TRUE)) {
         check_output_format("raw_rewrite_format")
     } else {
-        check_no_paired_variable("raw_rewrite_format", "raw_rewrite_file") 
+        check_not_variable("raw_rewrite_format", "parameter raw_rewrite_file not supplied")
     }
 }
 
@@ -431,6 +406,18 @@ global_filter_options <- function(){
                     help="One or more filter to apply to the data")
     )
     return (new_options)
+}
+
+check_global_filter <- function(){ 
+    opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
+    check_variable("filter_symbol", legal_values=filter_symbol, values_required=FALSE)
+    opt$filter_value <<- remove_symbols(opt$filter_value)
+    check_variable("filter_value")
+}
+
+check_not_global_filter <- function(reason){ 
+    check_not_variable("filter_symbol", reason)
+    check_not_variable("filter_value", reason)
 }
 
 create_filter <- function(flag){

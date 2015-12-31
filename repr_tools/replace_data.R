@@ -19,21 +19,16 @@ load_utils <- function(){
     }
 }
  
-symbols <- c("==","!=","<","<=",">",">=",",%in%","%in%")
-
 replace_options <- function(){
     new_options = list(
         make_option("--replace_value", action="store", type='character', default=NULL,
                     help="Value to replace any filtered values by")
     )
-    return (new_options)
+    return (c(global_filter_options(), new_options))
 }
 
 check_replace <- function(){ 
-    opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
-    check_variable("filter_symbol", legal_values=filter_symbol, values_required=FALSE)
-    opt$filter_value <<- remove_symbols(opt$filter_value)
-    check_variable("filter_value")
+    check_global_filter()
     opt$replace_value <<- remove_symbols(opt$replace_value)
     check_variable("replace_value")
 }
@@ -53,7 +48,7 @@ if (!exists("main_flag")){
 
     load_utils()
 
-    init_utils (c(replace_options(), global_filter_options()))
+    init_utils (replace_options())
 
     check_replace()
 

@@ -32,18 +32,18 @@ filter_options <- function(){
         make_option("--filter_column_number", action="store", type='integer', default=NULL,
                     help="Number the column to filter on.")
     )
-    return (new_options)
+    return (c(global_filter_options(), new_options))
 }
 
 check_filter  <- function(){ 
     opt$filter <<- remove_symbols(opt$filter)
     check_variable("filter", optional=TRUE)
-    values<-list()
-    values[[1]] <- filter_symbol
-    names(values) <- c("filter_symbol")
-    opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
-    opt$filter_value <<- remove_symbols(opt$filter_value)
-    check_variables(c("filter_column_name","filter_column_number"),c("filter_symbol","filter_value"), optional=TRUE, values=values, values_required=FALSE)
+    found_name <- check_one_of(c("filter_column_name","filter_column_number"))
+    if (is.na(found_name)){
+        check_not_global_filter("neither filter_column_name nor filter_column_number provided")
+    } else {
+        check_global_filter()
+    }
 }
 
 do_filter  <- function(data){ 
@@ -79,7 +79,7 @@ if (!exists("main_flag")){
 
     load_utils()
 
-    init_utils (c(filter_options(), global_filter_options()))
+    init_utils (filter_options())
 
     check_filter()
 
