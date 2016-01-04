@@ -36,10 +36,10 @@ filter_options <- function(){
 }
 
 check_filter  <- function(){ 
-    opt$filter <<- remove_symbols(opt$filter)
-    check_variable("filter", optional=TRUE)
     found_name <- check_one_of(c("filter_column_name","filter_column_number"))
     if (is.na(found_name)){
+        opt$filter <<- remove_symbols(opt$filter)
+        check_variable("filter")
         check_not_global_filter("neither filter_column_name nor filter_column_number provided")
     } else {
         check_global_filter()

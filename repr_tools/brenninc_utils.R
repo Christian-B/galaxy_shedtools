@@ -388,9 +388,9 @@ graph_end <- function(data){
 }
 
 ## Shared filter stuff
-filter_symbol <<- c("==","!=","<","<=",">",">=",",%in%","!%in%")
+filter_symbol <<- c("==","!=","<","<=",">",">=",",%in%","!%in%","is.na","!is.na")
 
-symbols_option <<- "(Optional: Use __gt__ and __lt__ for < and >) "
+symbols_option <<- "(Optional: Use __not__, __gt__ and __lt__ for !, < and >) "
 
 global_filter_options <- function(){
     help_symbol = paste("Symbol for the filter. ",
@@ -412,7 +412,7 @@ check_global_filter <- function(){
     opt$filter_symbol <<- remove_symbols(opt$filter_symbol)
     check_variable("filter_symbol", legal_values=filter_symbol, values_required=FALSE)
     opt$filter_value <<- remove_symbols(opt$filter_value)
-    check_variable("filter_value")
+    check_unless_secondary_variable("filter_symbol", c("is.na","!is.na"),"filter_value")
 }
 
 check_not_global_filter <- function(reason){ 
@@ -421,17 +421,23 @@ check_not_global_filter <- function(reason){
 }
 
 create_filter <- function(flag){
-    if (grepl("%in%$",opt$filter_symbol)){
-        if (!grepl("^c\\(", opt$filter_value)){
-            opt$filter_value <<- paste0("c(", opt$filter_value, ")", collapse = " ")
-        }
-    }
     if (opt$filter_symbol =="!="){
         filter = paste(flag, "!=", opt$filter_value, collapse ="")
-    } else if (grepl("^!",opt$filter_symbol)){
-        filter = paste("!(",flag, substring(opt$filter_symbol, 2), opt$filter_value,")", collapse ="")
+    } else if (opt$filter_symbol =="is.na"){
+        filter = paste("is.na(",flag, ")", collapse ="")
+    } else if (opt$filter_symbol =="!is.na"){
+        filter = paste("!(is.na(",flag, "))", collapse ="")
     } else {
-        filter = paste(flag, opt$filter_symbol, opt$filter_value, collapse ="")
+        if (grepl("%in%$",opt$filter_symbol)){
+            if (!grepl("^c\\(", opt$filter_value)){
+                opt$filter_value <<- paste0("c(", opt$filter_value, ")", collapse = " ")
+            }
+        }
+        if (grepl("^!",opt$filter_symbol)){
+            filter = paste("!(",flag, substring(opt$filter_symbol, 2), opt$filter_value,")", collapse ="")
+        } else {
+            filter = paste(flag, opt$filter_symbol, opt$filter_value, collapse ="")
+        }
     }
     mymessages(c("Filter set to ", filter))
     return (filter)
@@ -479,6 +485,7 @@ remove_symbols <- function(text){
         text <- gsub("__sq__","'",text)
         text <- gsub("__dq__",'"',text)
         text <- gsub("__in__",'%in%',text)
+        text <- gsub("__not__",'!',text)
     }
     return (text)
 }

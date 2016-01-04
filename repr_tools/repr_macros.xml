@@ -20,18 +20,57 @@
          <param name="output_na" type="text" value="NA" label="Value to be considered NA in output file." />
     </xml>
 
+    <xml name="filter_value_params">
+                <param name="value" type="text" value="" label="Value to compare data with. No spaces please. Remember strings don;t forget the quotes." />
+     </xml>
+
+    <xml name="filter_value_in_params">
+                <param name="value" type="text" value="" label="Value to compare data with. No spaces please. Remember strings don;t forget the quotes. Note: Do  not include the opening c( or closing )." />
+     </xml>
+
     <xml name="filter_params">
-         <param name="symbol" type="select" label="Symbol for the filter. Applied data symbol value." help="">
-            <option value="=="  selected="true">Equals. Keep only rows where column equals this value.</option>
-            <option value="!=" >Not qquals. Keep only rows where column not equal to this value.</option>
-            <option value="__lt__" >Less than. Keep only rows where column less than this value.</option>
-            <option value="__lt__=" >Less than equals. Keep only rows where column less than or equal to this value.</option>
-            <option value="__gt__" >Greater than. Keep only rows where column greater than this value.</option>
-            <option value="__gt__=" >Greater than equals. Keep only rows where column greater than or equal to this value.</option>
-            <option value="__in__" >In. Keep only rows where column %in% list.</option>
-            <option value="!__in__" >Not In. Remove rows where column %in% list.</option>
-         </param>
-         <param name="value" type="text" value="" label="Value to compare data with. No spaces please. Remember strings don;t forget the quotes.Notes:  For In and Not In, do  not include the opening c( or closing )." />
+        <conditional name="filter">
+            <param name="symbol" type="select" label="Symbol for the filter. Applied data symbol value." help="">
+                <option value="=="  selected="true">Equals. Keep only rows where column equals this value.</option>
+                <option value="!=" >Not qquals. Keep only rows where column not equal to this value.</option>
+                <option value="__lt__" >Less than. Keep only rows where column less than this value.</option>
+                <option value="__lt__=" >Less than equals. Keep only rows where column less than or equal to this value.</option>
+                <option value="__gt__" >Greater than. Keep only rows where column greater than this value.</option>
+                <option value="__gt__=" >Greater than equals. Keep only rows where column greater than or equal to this value.</option>
+                <option value="__in__" >In. Keep only rows where column %in% list.</option>
+                <option value="!__in__" >Not In. Remove rows where column %in% list.</option>
+                <option value="is.na" >Is NA. Keep only rows where column has an NA value.</option>
+                <option value="__not__is.na" >Not NA. Keep only rows where column has is not an NA value.</option>
+            </param>
+            <when value="==">
+                <expand macro="filter_value_params" />
+           </when>
+            <when value="!=">
+                <expand macro="filter_value_params" />
+           </when>
+            <when value="__lt__">
+                <expand macro="filter_value_params" />
+            </when>
+            <when value="__lt__=">
+                <expand macro="filter_value_params" />
+            </when>
+            <when value="__gt__">
+                <expand macro="filter_value_params" />
+            </when>
+            <when value="__gt__=">
+                <expand macro="filter_value_params" />
+            </when>
+            <when value="__in__">
+                <expand macro="filter_value_in_params" />
+            </when>
+            <when value="!__in__">
+                <expand macro="filter_value_in_params" />
+            </when>
+            <when value="is.na">
+            </when>
+            <when value="__not__is.na">
+            </when>
+         </conditional>
     </xml>
 
     <xml name="graph_params">

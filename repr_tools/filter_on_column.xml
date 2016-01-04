@@ -11,9 +11,15 @@
             --input_na=$input_na
         #end if 
 
-        --filter_column_number $col --filter_symbol $symbol --filter_value $value
-  
-        --data_output_file=$output_file
+        --filter_column_number $col --filter_symbol $filter.symbol 
+       
+        #if $filter.symbol in ['is.na','__not__is.na']
+            --data_output_file=$output_file_no_value
+        #else
+            --filter_value $filter.value
+            --data_output_file=$output_file_value
+        #end if
+
         #if $output_na
             --output_na=$output_na
         #end if 
@@ -26,7 +32,11 @@
         <expand macro="output_params" />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="${on_string} Filtered on column ${col} ${symbol} ${value}">
+        <data format="tabular" type="data" name="output_file_no_value" label="${on_string} Filtered on column ${col} ${filter.symbol} ">
+            <filter>(filter['symbol'] in ['is.na','__not__is.na'])</filter>
+        </data>
+        <data format="tabular" type="data" name="output_file_value" label="${on_string} Filtered on column ${col} ${filter.symbol} ${filter.value}">
+            <filter>(filter['symbol'] not in ['is.na','__not__is.na'])</filter>
         </data>
     </outputs>
 
@@ -35,10 +45,10 @@
             <param name="input_file" value="mini_delta.tsv" />
             <param name="input_na" value="999" />
             <param name="col" value="6"/> 
-            <param name="symbol" value="__lt__="/> 
-            <param name="value" value="1000"/> 
+            <param name="filter|symbol" value="__lt__="/> 
+            <param name="filter|value" value="1000"/> 
             <param name="output_na" value="999" />
-            <output name="output_file" file="mini_filtered.tsv" />
+            <output name="output_file_value" file="mini_filtered.tsv" />
        </test>
        <test>
             <param name="input_file" value="mini_delta.tsv" />
@@ -58,7 +68,22 @@
             <param name="output_na" value="999" />
             <output name="output_file" file="mini_alpha_beta.tsv" />
        </test>
- 
+       <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="col" value="5"/> 
+            <param name="filter|symbol" value="is.na" /> 
+            <param name="output_na" value="999" />
+            <output name="output_file_no_value" file="mini_is_na_filtered.tsv" />
+       </test>
+       <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="col" value="5"/> 
+            <param name="filter|symbol" value="__not__is.na" /> 
+            <param name="output_na" value="999" />
+            <output name="output_file_no_value" file="mini_not_na_filtered.tsv" />
+       </test> 
     </tests>
 
     <help>
