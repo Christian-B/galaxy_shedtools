@@ -11,9 +11,15 @@
             --input_na=$input_na
         #end if 
 
-        --filter_symbol $symbol --filter_value $value
+        --filter_symbol $filter.symbol 
         --replace_value $replace_value
-        --data_output_file=$output_file
+
+        #if $filter.symbol in ['is.na','__not__is.na']
+            --data_output_file=$output_file_no_value
+        #else
+            --filter_value $filter.value
+            --data_output_file=$output_file_value
+        #end if
         #if $output_na
             --output_na=$output_na
         #end if 
@@ -26,29 +32,39 @@
         <expand macro="output_params" />
     </inputs>
     <outputs>
-        <data format="tabular" type="data" name="output_file" label="${on_string} ${symbol} ${value} replaced by ${replace_value}">
+        <data format="tabular" type="data" name="output_file_no_value" label="${on_string} ${filter.symbol} replaced by ${replace_value}">
+            <filter>(filter['symbol'] in ['is.na','__not__is.na'])</filter>
+        </data>
+        <data format="tabular" type="data" name="output_file_value" label="${on_string} ${filter.symbol} ${filter.value} replaced by ${replace_value}">
+            <filter>(filter['symbol'] not in ['is.na','__not__is.na'])</filter>
         </data>
     </outputs>
-
     <tests>
         <test>
             <param name="input_file" value="mini_delta.tsv" />
             <param name="input_na" value="999" />
-            <param name="symbol" value="__gt__"/> 
-            <param name="value" value="100"/> 
+            <param name="filter|symbol" value="__gt__"/> 
+            <param name="filter|value" value="100"/> 
             <param name="replace_value" value="99"/> 
             <param name="output_na" value="999" />
-            <output name="output_file" file="mini_replaced.tsv" />
+            <output name="output_file_value" file="mini_replaced.tsv" />
        </test>
        <test>
             <param name="input_file" value="mini_delta.tsv" />
             <param name="input_na" value="999" />
-            <param name="col" value="2"/> 
-            <param name="symbol" value="!="/> 
-            <param name="value" value="3" /> 
+            <param name="filter|symbol" value="!="/> 
+            <param name="filter|value" value="3" /> 
             <param name="replace_value" value="3"/> 
             <param name="output_na" value="999" />
-            <output name="output_file" file="mini_all_three.tsv" />
+            <output name="output_file_value" file="mini_all_three.tsv" />
+       </test> 
+       <test>
+            <param name="input_file" value="mini_delta.tsv" />
+            <param name="input_na" value="999" />
+            <param name="filter|symbol" value="is.na"/> 
+            <param name="replace_value" value="888"/> 
+            <param name="output_na" value="999" />
+            <output name="output_file_no_value" file="mini_na_as_888.tsv" />
        </test> 
     </tests>
 
