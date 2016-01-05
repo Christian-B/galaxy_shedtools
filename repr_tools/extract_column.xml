@@ -1,0 +1,50 @@
+<tool id="extract_column_script" name="Extract single column" version="0.1">
+    <description>Extract single column using R</description>
+    <macros>
+        <import>repr_macros.xml</import>
+    </macros>
+    <expand macro="requirements_and_stdio" />
+    <command interpreter="bash">
+    r_wrapper.sh $__tool_directory__/extract_column.R --script_dir=$__tool_directory__  
+        --input_file=$input_file
+        #if $input_na
+            --input_na=$input_na
+        #end if 
+
+        --extract_column $col 
+        --data_output_file=$output_file
+
+        #if $output_na
+            --output_na=$output_na
+        #end if 
+        --debug
+    </command>
+    <inputs>
+        <expand macro="input_params" />
+        <param name="col" label="Column to be extracted" type="data_column" data_ref="input_file" use_header_names="true" force_select="true"/>
+        <expand macro="output_params" />
+    </inputs>
+    <outputs>
+        <data format="tabular" type="data" name="output_file" label="Column ${col} from {on_string}">
+        </data>
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="input_file" value="mini_cleaned.tsv" />
+            <param name="input_na" value="999" />
+            <param name="col" value="5"/> 
+            <param name="output_na" value="999" />
+            <output name="output_file" file="mini_column_5.tsv" />
+       </test>
+    </tests>
+
+    <help>
+<![CDATA[
+Filters data from a file.
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
