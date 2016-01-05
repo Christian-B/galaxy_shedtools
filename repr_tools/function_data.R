@@ -19,21 +19,29 @@ load_utils <- function(){
     }
 }
  
+no_value_functions <<- c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose","transpose_impute_knn")
+value_functions <<- c("two_power_relative")
+all_functions <<- c(no_value_functions, value_functions)
+
 function_options <- function(){
+    funtion_help = paste("Function to apply on all the data. ",
+                        paste("Currently supported funtions are (",paste(all_functions,collapse =", "),") "),
+                        sep="")
+    value_help = paste("If applicable the value for the function to use. ",
+                        paste("Required for (",paste(value_functions,collapse =", "),") "),
+                        sep="")
     new_list = list(
         make_option("--data_function", action="store", type='character', 
-                    help="Function to apply on all the data. Currently supported funtions are col_names_to_data, impute_knn, na_per_column, na_per_row, two_power_relative, transpose, transpose_impute_knn"),
+                    help=funtion_help),
         make_option("--compare_value", action="store", type='double', 
-                    help="If applicable the value for the function to use. Required for two_power_relative")
+                    help="value_help")
     )
     return (new_list)
 }
 
 check_function  <- function(){ 
-    check_variable("data_function", legal_values=c("col_names_to_data","impute_knn","na_per_column","na_per_row","transpose","transpose_impute_knn","two_power_relative"))
-    required_if<-list()
-    required_if[[1]] <- "two_power_relative"
-    check_secondary_variable("data_function", required_if,"compare_value")
+    check_variable("data_function", legal_values=all_functions)
+    check_secondary_variable("data_function", value_functions,"compare_value")
 }
 
 apply_function <- function(data){
@@ -62,10 +70,6 @@ apply_function <- function(data){
     }
     mysummary("data after function", new_data)
     return (new_data)
-}
-  
-set_input <- function(){
-    opt$input_file <<- "test-data/khan_expr.tsv"
 }
 
 #Main
