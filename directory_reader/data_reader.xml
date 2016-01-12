@@ -5,121 +5,116 @@
         <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
     </stdio>        
     <command>
-    mkdir output ;
-    #if $directory.startswith('/'):
-        ln -s ${directory}/*.${extension.file_type} output ;
-    #else
-        ln -s $__tool_directory__/${directory}/*.${extension.file_type} output ;
-    #end if
-    cd output ;
     #if $results.required=="data"
-        #if $extension.file_type in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx']
-            ls *.${extension.file_type} >> ${listing}
+        mkdir output ;
+        #if $directory.startswith('/'):
+            ln -s ${directory}/${results.start}*${results.ending}.${results.extension.file_type} output ;
+        #else
+            ln -s $__tool_directory__/${directory}/${results.start}*${results.ending}.${results.extension.file_type} output ;
         #end if
-        #if $extension.file_type=="fasta.gz"
-            ls *.fasta.gz> ${listing_fasta_gz}
+        cd output ;
+        #if $results.extension.file_type in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx']
+            ls *.${results.extension.file_type} >> ${listing}
         #end if
-        #if $extension.file_type=="fastq.gz"
+        #if $results.extension.file_type=="fasta.gz"
+            ls *.fasta.gz > ${listing_fasta_gz}
+        #end if
+        #if $results.extension.file_type=="fastq.gz"
             ls *.fastq.gz > ${listing_fastq_gz}
         #end if
-        #if $extension.file_type=="text"
+        #if $results.extension.file_type=="text"
             ls *.text > ${listing_text}
         #end if
-        #if $extension.file_type=="tsv"
+        #if $results.extension.file_type=="tsv"
             ls *.tsv > ${listing_tsv}
         #end if
     #else
+        #if $directory.startswith('/'):
+            ln -s ${directory} symlink ;
+        #else
+            ln -s $__tool_directory__/${directory} symlink ;
+        #end if
+        cd symlink ;
         ls | egrep '\.(csv$|fasta|fasta.gz|fastq|fastq.gz|sam|tabular|text|tsv|txt|xls|xlsx)' > ${listing_all} ;
     #end if
     </command>
     <inputs>
         <param name="directory" type="text" label="Directory to read data from." />
-        <param name="start" type="text" value="sam" label="String which must be at the start of each file name" />
         <conditional name="results">
             <param name="required" type="select" label="Download data or just directory listing" help="Select type of action required.">
                 <option value="data" selected="true">Data and listing of selected type</option>
-                <option value="listing">Only get listing of all supported file types </option>
+                <option value="listing">Get listing of selected file types </option>
             </param>
             <when value="data">
+                <param name="start" type="text" value="" label="String which must be at the start of each file name" />
+                <param name="ending" type="text" value="" label="String which must be at the end of the file name followed only by a point and the extenstion" />
+                <conditional name="extension">
+                    <param name="file_type" type="select" label="File Type" help="File Type.">
+                        <option value="csv">csv files</option>
+                        <option value="fasta">fatsa files</option>
+                        <option value="fasta.gz">fatsa.gz files</option>
+                        <option value="fastq">fastq files</option>
+                        <option value="fastq.gz">fastq.gz files</option>
+                        <option value="sam">sam files</option>
+                        <option value="tabular">tabular Files</option>
+                        <option value="text">text Files</option>
+                        <option value="tsv">tsv files</option>
+                        <option value="txt">txt Files</option>
+                        <option value="xls">xls files</option>
+                        <option value="xlsx">xlsx files</option>
+                    </param> 
+                    <when value="csv" />
+                    <when value="fasta" />
+                    <when value="fasta.gz" />
+                    <when value="fastq" />
+                    <when value="fastq.gz" />
+                    <when value="sam" />
+                    <when value="tabular" />
+                    <when value="text" />
+                    <when value="tsv" />
+                    <when value="txt" />
+                    <when value="xls" />
+                    <when value="xlsx" />
+                </conditional>
             </when>
             <when value="listing">
-            </when>
-        </conditional>
-        <conditional name="extension">
-            <param name="file_type" type="select" label="File Type" help="File Type.">
-                <option value="csv">csv files</option>
-                <option value="fasta">fatsa files</option>
-                <option value="fasta.gz">fatsa.gz files</option>
-                <option value="fastq">fastq files</option>
-                <option value="fastq.gz">fastq.gz files</option>
-                <option value="sam">sam files</option>
-                <option value="tabular">tabular Files</option>
-                <option value="text">text Files</option>
-                <option value="tsv">tsv files</option>
-                <option value="txt">txt Files</option>
-                <option value="xls">xls files</option>
-                <option value="xlsx">xlsx files</option>
-            </param>
-            <when value="csv">
-            </when>
-            <when value="fasta">
-            </when>
-            <when value="fasta.gz">
-            </when>
-            <when value="fastq">
-            </when>
-            <when value="fastq.gz">
-            </when>
-            <when value="sam">
-            </when>
-            <when value="tabular">
-            </when>
-            <when value="text">
-            </when>
-            <when value="tsv">
-            </when>
-            <when value="txt">
-            </when>
-            <when value="xls">
-            </when>
-            <when value="xlsx">
             </when>
         </conditional>
     </inputs>
     <outputs>
         <data format="txt" name="listing" label="Files">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(extension['file_type'] == in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx'])</filter>
+            <filter>(results['extension']['file_type'] == in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx'])</filter>
             <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
         </data>
         <data format="txt" name="listing_fasta_gz" label="List of  files">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(extension['file_type'] == 'fasta.gz')</filter>
+            <filter>(results['extension']['file_type'] == 'fasta.gz')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fasta.gz$" directory="output" ext="fasta" visible="true" />
         </data>
         <data format="txt" name="listing_fastq_gz" label="List of fastq.gz files">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(extension['file_type'] == 'fastq.gz')</filter>
+            <filter>(results['extension']['file_type'] == 'fastq.gz')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fastq.gz$" directory="output" ext="fastq" visible="true" />
         </data>
         <data format="txt" name="listing_text" label="List of text files">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(extension['file_type'] == 'text')</filter>
+            <filter>(results['extension']['file_type'] == 'text')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.text$" directory="output" ext="txt" visible="true" />
         </data>
         <data format="txt" name="listing_tsv" label="List of tsv files">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(extension]['file_type'] == 'tsv')</filter>
+            <filter>(results['extension']['file_type'] == 'tsv')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.tsv$" directory="output" ext="tabular" visible="true" />
         </data>
-        <!--data format="txt" name="listing_all" label="List of supported files">
+        <data format="txt" name="listing_all" label="List of supported files">
             <filter>(results['required'] == 'listing')</filter>
-        </data-->
+        </data>
     </outputs>
     <tests>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="csv"/>
+            <param name="results|extension|file_type" value="csv"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.csv" />
@@ -130,10 +125,12 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="fasta"/>
+            <param name="results|extension|file_type" value="fasta"/>
+            <param name="results|start" value="sam" />
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.fasta" />
+                    <not_has_text text="other.fasta" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta">
                 </discovered_dataset>
@@ -141,10 +138,12 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="fasta.gz"/>
+            <param name="results|extension|file_type" value="fasta.gz"/>
+            <param name="results|ending" value="le1" />
             <output name="listing_fasta_gz">
                 <assert_contents>
                     <has_line line="sample1.fasta.gz" />
+                    <not_has_text text="other.fasta.gz" />
                 </assert_contents>
                 <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta.gz">
                 </discovered_dataset>
@@ -152,7 +151,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="fastq"/>
+            <param name="results|extension|file_type" value="fastq"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.fastq" />
@@ -163,7 +162,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="fastq.gz"/>
+            <param name="results|extension|file_type" value="fastq.gz"/>
             <output name="listing_fastq_gz">
                 <assert_contents>
                     <has_line line="sample1.fastq.gz" />
@@ -174,7 +173,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="sam"/>
+            <param name="results|extension|file_type" value="sam"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.sam" />
@@ -185,7 +184,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="tabular"/>
+            <param name="results|extension|file_type" value="tabular"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.tabular" />
@@ -196,7 +195,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="text"/>
+            <param name="results|extension|file_type" value="text"/>
             <output name="listing_text">
                 <assert_contents>
                     <has_line line="sample1.text" />
@@ -207,7 +206,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="tsv"/>
+            <param name="results|extension|file_type" value="tsv"/>
             <output name="listing_tsv">
                 <assert_contents>
                     <has_line line="sample1.tsv" />
@@ -218,7 +217,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="txt" />
+            <param name="results|extension|file_type" value="txt" />
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.txt" />
@@ -233,7 +232,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="xls"/>
+            <param name="results|extension|file_type" value="xls"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.xls" />
@@ -244,7 +243,7 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
-            <param name="extension|file_type" value="xlsx"/>
+            <param name="results|extension|file_type" value="xlsx"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.xlsx" />
@@ -253,7 +252,7 @@
                 </discovered_dataset>
             </output>
         </test>
-        <!--test>
+        <test>
             <param name="directory" value="test-data" />
             <param name="results|required" value="listing"/>
             <output name="listing_all">
@@ -272,7 +271,7 @@
                     <has_line line="sample1.xlsx" />
                  </assert_contents>
             </output>
-        </test-->
+        </test>
 
     </tests>
 
