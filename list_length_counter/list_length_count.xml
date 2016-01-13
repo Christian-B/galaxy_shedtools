@@ -1,0 +1,40 @@
+<tool id="list_length_counter" name="Count the length of each list in a collection" version="0.0.1">
+    <description>Count the length of each list in a collection</description>
+    <stdio>
+        <exit_code range="1:" />
+        <exit_code range=":-1" />
+        <regex match="Error:" />
+        <regex match="Exception:" />
+    </stdio>
+    <command interpreter="python">
+        list_length_count.py
+        -o ${output}
+        -l ${file_names}
+        #for $input in $inputs
+            -f $input 
+        #end for
+    </command>
+    <inputs>
+        <param name="file_names" type="data" format="txt" label="Files to count" />
+        <param name="inputs" type="data" multiple="True" label="File with names for the files" />
+    </inputs>
+    <outputs>
+        <data name="output" format="txt" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="file_names" value="list.txt" ftype="txt" /> 
+            <param name="inputs" value="file1.txt,file2.txt" ftype="txt" /> 
+            <output name="output" file="output.txt" ftype="txt" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+**What it does**
+
+Counts the number of lines and characters in a list of datasets
+]]>
+    </help>
+    <citations>
+    </citations>
+</tool>

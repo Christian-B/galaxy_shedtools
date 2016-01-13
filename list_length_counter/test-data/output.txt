@@ -1,0 +1,2 @@
+file1.txt   lines: 1  chars: 11
+file2.txt   lines: 3  chars: 75
