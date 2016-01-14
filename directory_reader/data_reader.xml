@@ -13,21 +13,7 @@
             ln -s $__tool_directory__/${directory}/${results.start}*${results.ending}.${results.extension.file_type} output ;
         #end if
         cd output ;
-        #if $results.extension.file_type in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx']
-            ls *.${results.extension.file_type} >> ${listing}
-        #end if
-        #if $results.extension.file_type=="fasta.gz"
-            ls *.fasta.gz > ${listing_fasta_gz}
-        #end if
-        #if $results.extension.file_type=="fastq.gz"
-            ls *.fastq.gz > ${listing_fastq_gz}
-        #end if
-        #if $results.extension.file_type=="text"
-            ls *.text > ${listing_text}
-        #end if
-        #if $results.extension.file_type=="tsv"
-            ls *.tsv > ${listing_tsv}
-        #end if
+        ls * >> ${listing} | LC_COLLATE=C sort ;
     #else
         #if $directory.startswith('/'):
             ln -s ${directory} symlink ;
@@ -35,11 +21,12 @@
             ln -s $__tool_directory__/${directory} symlink ;
         #end if
         cd symlink ;
-        ls | egrep '\.(csv$|fasta|fasta.gz|fastq|fastq.gz|sam|tabular|text|tsv|txt|xls|xlsx)' > ${listing_all} ;
+        ls | egrep '\.(csv$|fasta|fasta.gz|fastq|fastq.gz|sam|tabular|text|tsv|txt|xls|xlsx)' | LC_COLLATE=C sort > ${listing} ;
     #end if
     </command>
     <inputs>
         <param name="directory" type="text" label="Directory to read data from." />
+        <param name="list_name" type="text" size="25" label="output name" value="input data"/>
         <conditional name="results">
             <param name="required" type="select" label="Download data or just directory listing" help="Select type of action required.">
                 <option value="data" selected="true">Data and listing of selected type</option>
@@ -50,18 +37,18 @@
                 <param name="ending" type="text" value="" label="String which must be at the end of the file name followed only by a point and the extenstion" />
                 <conditional name="extension">
                     <param name="file_type" type="select" label="File Type" help="File Type.">
-                        <option value="csv">csv files</option>
-                        <option value="fasta">fatsa files</option>
-                        <option value="fasta.gz">fatsa.gz files</option>
-                        <option value="fastq">fastq files</option>
-                        <option value="fastq.gz">fastq.gz files</option>
-                        <option value="sam">sam files</option>
-                        <option value="tabular">tabular Files</option>
-                        <option value="text">text Files</option>
-                        <option value="tsv">tsv files</option>
-                        <option value="txt">txt Files</option>
-                        <option value="xls">xls files</option>
-                        <option value="xlsx">xlsx files</option>
+                        <option value="csv">*.csv files</option>
+                        <option value="fasta">*.fatsa files</option>
+                        <option value="fasta.gz">*.fatsa.gz files</option>
+                        <option value="fastq">*.fastq files</option>
+                        <option value="fastq.gz">*.fastq.gz files</option>
+                        <option value="sam">*.sam files</option>
+                        <option value="tabular">*.tabular Files</option>
+                        <option value="text">*.text Files</option>
+                        <option value="tsv">*.tsv files</option>
+                        <option value="txt">*.txt Files</option>
+                        <option value="xls">*.xls files</option>
+                        <option value="xlsx">*.xlsx files</option>
                     </param> 
                     <when value="csv" />
                     <when value="fasta" />
@@ -82,46 +69,49 @@
         </conditional>
     </inputs>
     <outputs>
-        <data format="txt" name="listing" label="Files">
-            <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] == in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx'])</filter>
-            <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
+        <data format="txt" name="listing" label="List of supported files">
         </data>
-        <data format="txt" name="listing_fasta_gz" label="List of  files">
+        <!-- Ideally galaxy can get the type based on the file extensions. If so just add the type here -->
+        <collection type="list" label="$list_name" name="as_galaxy_list">
+            <filter>(results['required'] == 'data')</filter>
+            <filter>(results['extension']['file_type'] in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx'])</filter>
+                <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
+        </collection>
+        <!-- Where the exstention is not a galaxy one the ext has to be specifically specified -->
+        <collection type="list" label="$list_name" name="fasta.gz_list">
             <filter>(results['required'] == 'data')</filter>
             <filter>(results['extension']['file_type'] == 'fasta.gz')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fasta.gz$" directory="output" ext="fasta" visible="true" />
-        </data>
-        <data format="txt" name="listing_fastq_gz" label="List of fastq.gz files">
+        </collection>
+        <collection type="list" label="$list_name" name="fastq.gz_list">
             <filter>(results['required'] == 'data')</filter>
             <filter>(results['extension']['file_type'] == 'fastq.gz')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fastq.gz$" directory="output" ext="fastq" visible="true" />
-        </data>
-        <data format="txt" name="listing_text" label="List of text files">
+        </collection>
+        <collection type="list" label="$list_name" name="text_list">
             <filter>(results['required'] == 'data')</filter>
             <filter>(results['extension']['file_type'] == 'text')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.text$" directory="output" ext="txt" visible="true" />
-        </data>
-        <data format="txt" name="listing_tsv" label="List of tsv files">
+        </collection>
+        <collection type="list" label="$list_name" name="tsv_list">
             <filter>(results['required'] == 'data')</filter>
             <filter>(results['extension']['file_type'] == 'tsv')</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.tsv$" directory="output" ext="tabular" visible="true" />
-        </data>
-        <data format="txt" name="listing_all" label="List of supported files">
-            <filter>(results['required'] == 'listing')</filter>
-        </data>
+        </collection>
     </outputs>
     <tests>
         <test>
             <param name="directory" value="test-data" />
+            <param name="list_name" value="csv_files" />
             <param name="results|extension|file_type" value="csv"/>
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.csv" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="csv" file="sample1.csv">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="csv" file="sample1.csv" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -132,22 +122,24 @@
                     <has_line line="sample1.fasta" />
                     <not_has_text text="other.fasta" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="fasta" file="sample1.fasta" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fasta.gz"/>
             <param name="results|ending" value="le1" />
-            <output name="listing_fasta_gz">
+            <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.fasta.gz" />
                     <not_has_text text="other.fasta.gz" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="fasta" file="sample1.fasta.gz">
-                </discovered_dataset>
             </output>
+            <output_collection name="fasta.gz_list" type="list">
+                <element name="sample1" ftype="fasta" file="sample1.fasta.gz" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -156,9 +148,10 @@
                 <assert_contents>
                     <has_line line="sample1.fastq" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="fastq" file="sample1.fastq">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="fastq" file="sample1.fastq" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -167,9 +160,10 @@
                 <assert_contents>
                     <has_line line="sample1.fastq.gz" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="fastq" file="sample1.fastq.gz">
-                </discovered_dataset>
             </output>
+            <output_collection name="fastq.gz_list" type="list">
+                <element name="sample1" ftype="fastq" file="sample1.fastq.gz" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -178,9 +172,10 @@
                 <assert_contents>
                     <has_line line="sample1.sam" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="sam" file="sample1.sam">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="sam" file="sample1.sam" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -189,9 +184,10 @@
                 <assert_contents>
                     <has_line line="sample1.tabular" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="tabular" file="sample1.tabular">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="tabular" file="sample1.tabular" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -200,9 +196,10 @@
                 <assert_contents>
                     <has_line line="sample1.text" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="txt" file="sample1.text">
-                </discovered_dataset>
             </output>
+            <output_collection name="text_list" type="list">
+                <element name="sample1" ftype="txt" file="sample1.text" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -211,9 +208,10 @@
                 <assert_contents>
                     <has_line line="sample1.tsv" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="tabular" file="sample1.tsv">
-                </discovered_dataset>
             </output>
+            <output_collection name="tsv_list" type="list">
+                <element name="sample1" ftype="tabular" file="sample1.tsv" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -222,13 +220,11 @@
                 <assert_contents>
                     <has_line line="sample1.txt" />
                 </assert_contents>cd 
-                <discovered_dataset designation="sample1" ftype="txt" file="sample1.txt">
-                    <assert_contents><has_line line="1" /></assert_contents>
-                </discovered_dataset>
-                <discovered_dataset designation="sample2" ftype="txt" file="sample2.txt">
-                    <assert_contents><has_line line="2" /></assert_contents>
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="txt" file="sample1.txt" />
+                <element name="sample2" ftype="txt" file="sample2.txt" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -237,9 +233,10 @@
                 <assert_contents>
                     <has_line line="sample1.xls" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="xls" file="sample1.xls">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="xls" file="sample1.xls" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
@@ -248,9 +245,10 @@
                 <assert_contents>
                     <has_line line="sample1.xlsx" />
                 </assert_contents>
-                <discovered_dataset designation="sample1" ftype="xlsx" file="sample1.xlsx">
-                </discovered_dataset>
             </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="xlsx" file="sample1.xlsx" />
+           </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
