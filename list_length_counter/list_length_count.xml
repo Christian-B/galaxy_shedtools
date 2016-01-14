@@ -9,23 +9,51 @@
     <command interpreter="python">
         list_length_count.py
         -o ${output}
-        -l ${file_names}
+        #if $names.type =="file"
+            -l ${names.file_of}
+        #end if
+        #if $names.type =="numbered"
+            -s ${names.start_number}
+        #end if
         #for $input in $inputs
             -f $input 
         #end for
     </command>
     <inputs>
-        <param name="file_names" type="data" format="txt" label="Files to count" />
-        <param name="inputs" type="data" multiple="True" label="File with names for the files" />
+        <param name="inputs" type="data" format="txt" multiple="True" label="Files to count" />
+        <conditional name="names">
+            <param name="type" type="select" label="How should file names be obtained." help="Select type of action required.">
+                <option value="file" selected="true">File names loaded from a file</option>
+                <option value="numbered">Use numbers for the file names</option>
+            </param>
+            <when value="file" >
+               <param name="file_of" type="data" format="txt" label="File with names for the files" />
+            </when>
+            <when value="numbered" >
+               <param name="start_number" size="4" type="integer" value="1" label="Start number for numbering files" />
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data name="output" format="txt" />
     </outputs>
     <tests>
         <test>
-            <param name="file_names" value="list.txt" ftype="txt" /> 
             <param name="inputs" value="file1.txt,file2.txt" ftype="txt" /> 
+            <param name="names|type" value="file" /> 
+            <param name="names|file_of" value="list.txt" ftype="txt" /> 
             <output name="output" file="output.txt" ftype="txt" />
+        </test>
+        <test>
+            <param name="inputs" value="file1.txt,file2.txt" ftype="txt" /> 
+            <param name="names|type" value="numbered" /> 
+            <param name="names|start_number" value="4" /> 
+            <output name="output" file="output_from_4.txt" ftype="txt" />
+        </test>
+        <test>
+            <param name="inputs" value="file1.txt" ftype="txt" /> 
+            <param name="names|type" value="numbered" /> 
+            <output name="output" file="output_single.txt" ftype="txt" />
         </test>
     </tests>
     <help>
@@ -37,4 +65,4 @@ Counts the number of lines and characters in a list of datasets
     </help>
     <citations>
     </citations>
-</tool>
+</tool>     
