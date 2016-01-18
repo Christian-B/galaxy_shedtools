@@ -480,12 +480,20 @@ init_utils <- function(extra_options){
 
 remove_symbols <- function(text){
     if (is.character(text)){
+        text <- gsub("__cb__",']',text)
+        text <- gsub("__cc__",'}',text)
+        text <- gsub("__dq__",'"',text)
         text <- gsub("__lt__","<",text)
         text <- gsub("__gt__",">",text)
+        text <- gsub("__ob__",'[',text)
+        text <- gsub("__oc__",'{',text)
         text <- gsub("__sq__","'",text)
-        text <- gsub("__dq__",'"',text)
+        
         text <- gsub("__in__",'%in%',text)
         text <- gsub("__not__",'!',text)
+        text <- gsub("__92__",'\\',text)
+        text <- gsub("__36__",'$',text)
+        text <- gsub("__37__",'%',text)
     }
     return (text)
 }
