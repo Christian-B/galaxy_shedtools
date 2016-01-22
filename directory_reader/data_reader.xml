@@ -1,27 +1,61 @@
 <tool id="directory_data_reader_script" name="Directory Data Finder" version="0.1">
     <description>Reads a particular data type from a directory on the server</description>
-    <command >
-        python $__tool_directory__/directory_checker.py  --path_to_check $directory ;
-    #if $results.required=="data"
-        mkdir output ;
-        #if $directory.startswith('/'):
-            ln -s ${directory}/${results.start}*${results.ending}.${results.extension.file_type} output ;
+    <command interpreter="python">
+<![CDATA[
+        directory_copier.py  
+        #if $results.required=="data"
+            --ending .${results.extension.file_type} 
+            --link
+            #if $results.start
+                --start $results.start
+            #end if      
+            #if $results.last
+                --last $results.last
+            #end if      
+            #if $results.extension.file_type=="text"
+                --new_ending .txt
+            #end if
+            #if $results.extension.file_type=="tsv"
+                --new_ending .tabular
+            #end if
+            #if $results.extension.file_type in ["fasta.gz","fastq.gz"]
+                #if $results.extension.decompress.doit=="yes"
+                    --decompress
+                #end if
+            #end if
+            #if $results.extension.file_type=="fastq"
+                --new_ending .$results.extension.new_galaxy.new_ending
+            #end if
+            #if $results.extension.file_type=="fastq.gz"
+                #if $results.extension.decompress.doit=="yes"
+                    --new_ending .${results.extension.new_galaxy.new_ending}
+                #else
+                    --new_ending .${results.extension.new_galaxy.new_ending}.gz
+                #end if
+            #end if
         #else
-            ln -s $__tool_directory__/${directory}/${results.start}*${results.ending}.${results.extension.file_type} output ;
-        #end if
-        cd output ;
-        ls * >> ${listing} | LC_COLLATE=C sort ;
-    #else
+            --ending csv 
+            --ending fasta 
+            --ending fasta.gz 
+            --ending fastq 
+            --ending fastq.gz 
+            --ending sam 
+            --ending tabular 
+            --ending text 
+            --ending tsv 
+            --ending txt 
+            --ending xls 
+            --ending xlsx
+        #end if      
         #if $directory.startswith('/'):
-            ln -s ${directory} symlink ;
+            --path ${directory}
         #else
-            ln -s $__tool_directory__/${directory} symlink ;
-        #end if
-        cd symlink ;
-        ls | egrep '\.(csv$|fasta|fasta.gz|fastq|fastq.gz|sam|tabular|text|tsv|txt|xls|xlsx)' | LC_COLLATE=C sort > ${listing} ;
-    #end if
+            --path $__tool_directory__/${directory}
+        #end if      
+        --list ${listing}
+]]>
     </command>
-   <inputs>
+    <inputs>
         <param name="directory" type="text" label="Directory to read data from." />
         <param name="list_name" type="text" size="25" label="output name" value="input data"/>
         <conditional name="results">
@@ -31,7 +65,7 @@
             </param>
             <when value="data">
                 <param name="start" type="text" value="" label="String which must be at the start of each file name" />
-                <param name="ending" type="text" value="" label="String which must be at the end of the file name followed only by a point and the extenstion" />
+                <param name="last" type="text" value="" label="String which must be at the end of the file name (excluding the file type)" />
                 <conditional name="extension">
                     <param name="file_type" type="select" label="File Type" help="File Type.">
                         <option value="csv">*.csv files</option>
@@ -39,19 +73,52 @@
                         <option value="fasta.gz">*.fatsa.gz files</option>
                         <option value="fastq">*.fastq files</option>
                         <option value="fastq.gz">*.fastq.gz files</option>
+                        <option value="fastq">*.fastq files</option>
+                        <option value="fastq.gz">*.fastq.gz files</option>
                         <option value="sam">*.sam files</option>
                         <option value="tabular">*.tabular Files</option>
-                        <option value="text">*.text Files</option>
-                        <option value="tsv">*.tsv files</option>
+                        <option value="text">*.text Files saved as *.txt for galaxy</option>
+                        <option value="tsv">*.tsv files saved as *.tabular for galaxy</option>
                         <option value="txt">*.txt Files</option>
                         <option value="xls">*.xls files</option>
                         <option value="xlsx">*.xlsx files</option>
-                    </param> 
+                    </param>
                     <when value="csv" />
                     <when value="fasta" />
-                    <when value="fasta.gz" />
-                    <when value="fastq" />
-                    <when value="fastq.gz" />
+                    <when value="fasta.gz" >
+                        <conditional name="decompress">
+                            <param name="doit" type="select" label="Decompress data" help="If selected will decompress the data.">
+                                <option value="yes" selected="true">Yes decompress and change the extension to *.fasta</option>
+                                <option value="no">No copy as is.</option>
+                            </param>
+                        </conditional>
+                    </when>
+                    <when value="fastq" >
+                        <conditional name="new_galaxy">
+                            <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will detetmine which down stream tools can be used.">
+                                <option value="fastq" selected="true">Keep data as general fastq format</option>
+                                <option value="fastqsanger">Tag data was fastq sanger in galaxy</option>
+                                <option value="fastqsolexa">Tag data was fastq solexa in galaxy</option>
+                                <option value="fastqsolexaillumina">Tag data was fastq illumina in galaxy</option>
+                             </param>
+                        </conditional>
+                    </when>
+                    <when value="fastq.gz" >
+                        <conditional name="decompress">
+                            <param name="doit" type="select" label="Decompress data" help="If selected will decompress the data.">
+                                <option value="yes" selected="true">Yes decompress and change the extension to *.fasta</option>
+                                <option value="no">No copy as is.</option>
+                            </param>
+                        </conditional>
+                        <conditional name="new_galaxy">
+                            <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will detetmine which down stream tools can be used.">
+                                <option value="fastq" selected="true" >Keep data as general fastq format</option>
+                                <option value="fastqsanger">Tag data was fastq sanger in galaxy</option>
+                                <option value="fastqsolexa">Tag data was fastq solexa in galaxy</option>
+                                <option value="fastqsolexaillumina">Tag data was fastq illumina in galaxy</option>
+                             </param>
+                        </conditional>
+                    </when>
                     <when value="sam" />
                     <when value="tabular" />
                     <when value="text" />
@@ -66,34 +133,26 @@
         </conditional>
     </inputs>
     <outputs>
-        <data format="txt" name="listing" label="List of supported files">
+        <data format="txt" name="listing" label="List of files in $list_name">
         </data>
         <!-- Ideally galaxy can get the type based on the file extensions. If so just add the type here -->
         <collection type="list" label="$list_name" name="as_galaxy_list">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] in ['csv','fasta','fastq','sam','tabular','txt','xls','xlsx'])</filter>
+            <filter>(results['extension']['file_type'] in ['csv','fasta','fastq','sam','tabular','text','tsv','txt','xls','xlsx'])</filter>
                 <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
         </collection>
-        <!-- Where the exstention is not a galaxy one the ext has to be specifically specified -->
-        <collection type="list" label="$list_name" name="fasta.gz_list">
+        <collection type="list" label="$list_name" name="decompressed_list">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] == 'fasta.gz')</filter>
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fasta.gz$" directory="output" ext="fasta" visible="true" />
+            <filter>(results['extension']['file_type'] in ['fasta.qz','fastq.gz'])</filter>
+            <filter>(results['extension']['decompress']['doit'] == "yes")</filter>
+                <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
         </collection>
-        <collection type="list" label="$list_name" name="fastq.gz_list">
+        <!-- The .gz at the end of a compressed file is useful for the user but confuses galaxy -->
+        <collection type="list" label="$list_name" name="gz_list">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] == 'fastq.gz')</filter>
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.fastq.gz$" directory="output" ext="fastq" visible="true" />
-        </collection>
-        <collection type="list" label="$list_name" name="text_list">
-            <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] == 'text')</filter>
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.text$" directory="output" ext="txt" visible="true" />
-        </collection>
-        <collection type="list" label="$list_name" name="tsv_list">
-            <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] == 'tsv')</filter>
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.tsv$" directory="output" ext="tabular" visible="true" />
+            <filter>(results['extension']['file_type']in ['fasta.gz','fastq.gz'])</filter>
+            <filter>(results['extension']['decompress']['doit']  == "no")</filter>
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.(?P&lt;ext&gt;.+).gz" directory="output" visible="true" />
         </collection>
     </outputs>
     <tests>
@@ -127,14 +186,15 @@
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fasta.gz"/>
-            <param name="results|ending" value="le1" />
+            <param name="results|extension|decompress|doit" value="no"/>
+            <param name="results|last" value="le1" />
             <output name="listing">
                 <assert_contents>
                     <has_line line="sample1.fasta.gz" />
                     <not_has_text text="other.fasta.gz" />
                 </assert_contents>
             </output>
-            <output_collection name="fasta.gz_list" type="list">
+            <output_collection name="gz_list" type="list">
                 <element name="sample1" ftype="fasta" file="sample1.fasta.gz" />
            </output_collection>
         </test>
@@ -152,14 +212,70 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
+            <param name="results|extension|file_type" value="fastq"/>
+            <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
+            <output name="listing">
+                <assert_contents>
+                    <has_line line="sample1.fastqsanger" />
+                </assert_contents>
+            </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
+           </output_collection>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fastq.gz"/>
+            <param name="results|extension|decompress|doit" value="no"/>
             <output name="listing_fastq_gz">
                 <assert_contents>
                     <has_line line="sample1.fastq.gz" />
                 </assert_contents>
             </output>
-            <output_collection name="fastq.gz_list" type="list">
+            <output_collection name="gz_list" type="list">
                 <element name="sample1" ftype="fastq" file="sample1.fastq.gz" />
+           </output_collection>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="results|extension|file_type" value="fastq.gz"/>
+            <param name="results|extension|decompress|doit" value="yes"/>
+            <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
+            <output name="listing_fastq_gz">
+                <assert_contents>
+                    <has_line line="sample1.fastqsanger" />
+                </assert_contents>
+            </output>
+            <output_collection name="decompressed_list" type="list">
+                <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
+           </output_collection>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="results|extension|file_type" value="fastq.gz"/>
+            <param name="results|extension|decompress|doit" value="no"/>
+            <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
+            <output name="listing_fastq_gz">
+                <assert_contents>
+                    <has_line line="sample1.fastqsanger.gz" />
+                </assert_contents>
+            </output>
+            <output_collection name="gz_list" type="list">
+                <element name="sample1" ftype="fastqsanger" file="sample1.fastq.gz" />
+           </output_collection>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="results|extension|file_type" value="fastq.gz"/>
+            <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
+            <param name="results|extension|decompress|doit" value="yes"/>
+            <output name="listing_fastq_gz">
+                <assert_contents>
+                    <has_line line="sample1.fastqsanger" />
+                </assert_contents>
+            </output>
+            <output_collection name="decompressed_list" type="list">
+                <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
            </output_collection>
         </test>
         <test>
@@ -191,22 +307,22 @@
             <param name="results|extension|file_type" value="text"/>
             <output name="listing_text">
                 <assert_contents>
-                    <has_line line="sample1.text" />
+                    <has_line line="sample1.txt" />
                 </assert_contents>
             </output>
-            <output_collection name="text_list" type="list">
+            <output_collection name="as_galaxy_list" type="list">
                 <element name="sample1" ftype="txt" file="sample1.text" />
            </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="tsv"/>
-            <output name="listing_tsv">
+            <output name="as_galaxy_list">
                 <assert_contents>
-                    <has_line line="sample1.tsv" />
+                    <has_line line="sample1.tabular" />
                 </assert_contents>
             </output>
-            <output_collection name="tsv_list" type="list">
+            <output_collection name="as_galaxy_list" type="list">
                 <element name="sample1" ftype="tabular" file="sample1.tsv" />
            </output_collection>
         </test>
