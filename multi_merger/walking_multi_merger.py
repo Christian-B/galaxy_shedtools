@@ -48,7 +48,7 @@ def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose
                     file_paths.append(file_path)
                     if verbose:
                         print "Merging",file_path
-    merge_files(file_paths, names_path, target_path)
+    merge_files(file_paths, names_path, target_path, verbose)
 
 
 if __name__ == '__main__':
@@ -62,7 +62,7 @@ if __name__ == '__main__':
                   "Default is the current directory")
     parser.add_option("-c", "--code", action="store", type="string",
                   help="Path to file that defines what to do with the files. "
-                  "Must define the function merge_files(file_paths, names_path, target_path)")
+                  "Must define the function merge_files(file_paths, names_path, target_path, verbose)")
     parser.add_option("-r", "--regex", action="store", type="string",
                   help="Regex pattern for identifying the left file")
     parser.add_option("-t", "--target_path", action="store", type="string",

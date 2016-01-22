@@ -6,7 +6,7 @@ Every time a matching file is found its full path is added to a temporary names 
 
 Once all the files and names have been found the merge_files(file_paths, names_path, target_path) method is called in the code pointed to by the code parameter.
 
-## Example
+### Example
 
 python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/merged.tsv --verbose
 
@@ -24,7 +24,10 @@ These lines are then split into two to polulate a dictionary of dictionaies. Whe
 This dictionary is then writen out as a tab seperated file such that the coumn names are the unique parts of the names and the row names are the first part of each line.
 
 ## Directly callable
-Directly callable version to do
+This tool is directly callable but this was many implemented for the galaxy tool.
+
+###
+python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt --names_path=test-data/names.txt --target_path=test-data/merged.tsv 
 
 ## Galaxy
 Galaxy version of this tool is a TODO!
