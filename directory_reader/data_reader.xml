@@ -97,9 +97,9 @@
                         <conditional name="new_galaxy">
                             <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will detetmine which down stream tools can be used.">
                                 <option value="fastq" selected="true">Keep data as general fastq format</option>
-                                <option value="fastqsanger">Tag data was fastq sanger in galaxy</option>
-                                <option value="fastqsolexa">Tag data was fastq solexa in galaxy</option>
-                                <option value="fastqsolexaillumina">Tag data was fastq illumina in galaxy</option>
+                                <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
+                                <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
+                                <option value="fastqsolexaillumina">Tag data as fastq illumina in galaxy</option>
                              </param>
                         </conditional>
                     </when>
@@ -113,9 +113,9 @@
                         <conditional name="new_galaxy">
                             <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will detetmine which down stream tools can be used.">
                                 <option value="fastq" selected="true" >Keep data as general fastq format</option>
-                                <option value="fastqsanger">Tag data was fastq sanger in galaxy</option>
-                                <option value="fastqsolexa">Tag data was fastq solexa in galaxy</option>
-                                <option value="fastqsolexaillumina">Tag data was fastq illumina in galaxy</option>
+                                <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
+                                <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
+                                <option value="fastqsolexaillumina">Tag data as fastq illumina in galaxy</option>
                              </param>
                         </conditional>
                     </when>
