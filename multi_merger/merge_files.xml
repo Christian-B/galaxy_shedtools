@@ -1,0 +1,42 @@
+<tool id="file_merge" name="Merge txt files" version="0.0.1">
+    <description>merges txt files together</description>
+    <stdio>
+        <exit_code range="1:" />
+        <exit_code range=":-1" />
+        <regex match="Error:" />
+        <regex match="Exception:" />
+    </stdio>
+    <command interpreter="python">
+        merge_files.py 
+        #for $input in $inputs
+            --file_path=$input 
+        #end for
+        --names_path=$names_path
+        --target_path=$output 
+    </command>
+    <inputs>
+        <param name="inputs" type="data" format="txt" multiple="True" label="Files to merge" />
+        <param name="names_path" type="data" format="txt" label="File with the names of the files being merged." />
+    </inputs>
+    <outputs>
+        <data name="output" format="txt" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
+            <param name="names_path" value="names.txt" ftype="txt" /> 
+            <output name="output" file="merged.tsv" ftype="txt" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+**What it does**
+
+Merges multiple text files end to end.
+]]>
+    </help>
+    <citations>
+    </citations>
+</tool>
+
+
