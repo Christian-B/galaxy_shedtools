@@ -48,6 +48,10 @@ def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose
                     file_paths.append(file_path)
                     if verbose:
                         print "Merging",file_path
+                #else:
+                #    print "NO",name, root
+    if len(file_paths) == 0:
+        report_error("NO files found to match "+ regex)
     if divider:
         merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider)
     else:

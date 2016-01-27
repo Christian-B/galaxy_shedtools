@@ -1,0 +1,4 @@
+test-data/C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out
+test-data/C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out
+test-data/C62_GGACTCCT-TATCCTCT_L003_/Log.final.out
+

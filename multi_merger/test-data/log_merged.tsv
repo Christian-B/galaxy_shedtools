@@ -1,0 +1,28 @@
+	43_TAAGGCGA-CTAAGCC	08_CGTACTAG-CTCTCTA	62_GGACTCCT-TATCCTC
+Uniquely mapped reads %	20.95%	31.12%	17.09%
+% of reads unmapped: too many mismatches	0.00%	0.00%	0.00%
+Deletion average length	1.48	2.33	1.26
+Number of splices: Non-canonical	23	403	86
+% of reads unmapped: too short	69.68%	49.89%	72.37%
+Number of input reads	90318	110869	44220
+Number of splices: Annotated (sjdb)	112	3936	424
+Started job on	Sep 15 10:38:42	Sep 15 10:47:38	Sep 15 10:38:42
+Number of splices: Total	164	5014	575
+Started mapping on	Sep 15 10:43:52	Sep 15 10:52:26	Sep 15 10:43:41
+Uniquely mapped reads number	18920	34500	7555
+% of reads unmapped: other	0.09%	0.67%	0.69%
+% of reads mapped to too many loci	1.31%	0.53%	1.57%
+% of reads mapped to multiple loci	7.97%	17.78%	8.28%
+Mapping speed, Million of reads per hour	2.60	1.68	1.66
+Number of splices: GC/AG	3	0	7
+Number of reads mapped to multiple loci	7194	19718	3663
+Average mapped length	179.75	178.22	181.49
+Average input read length	187	190	188
+Deletion rate per base	0.00%	0.03%	0.01%
+Number of splices: AT/AC	0	0	0
+Mismatch rate per base, %	0.33%	0.41%	0.57%
+Number of splices: GT/AG	138	4611	482
+Insertion average length	1.11	1.27	1.06
+Finished on	Sep 15 10:45:57	Sep 15 10:56:24	Sep 15 10:45:17
+Insertion rate per base	0.00%	0.00%	0.00%
+Number of reads mapped to too many loci	1186	586	694

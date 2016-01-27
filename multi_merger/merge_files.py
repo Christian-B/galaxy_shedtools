@@ -46,7 +46,7 @@ def remove_symbols(s):
     # tab = 9
     # | = 124
     while True:
-        start = s.find("__", end + 2)
+        start = s.find("__", end + 2) + 2
         if start == 1:
             return s
         end = s.find("__", start)
@@ -86,19 +86,26 @@ def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t"
     if len(names) != len(file_paths):
         report_error("Found " + str(len(file_paths)) + " file_paths but " + names_path + " contains " + str(len(names)) + " lines.")
     new_names = remove_common(names)
+    clean_divider = remove_symbols(divider)
     all_values = collections.defaultdict(black_dict)
     for count, file_path in enumerate(file_paths):
+        mis_match = 0
         with open(file_path, 'r') as f:
             for line in f:
-                parts = line.strip().split(divider)
+                parts = line.strip().split(clean_divider)
                 if len(parts) == 2:
                     key = clean_part(parts[0])
                     value = clean_part(parts[1])
                     all_values[key][new_names[count]] = value
                 else:
+                    mis_match+= 1
                     if verbose:
-                        print "ignoring following line from", file_path
-                        print line
+                        if mis_match < 5:
+                            print "ignoring following line from", file_path
+                            print line
+        if mis_match > 0:
+            print "In file " + file_path + " " + str(mis_match) + " lines did not have 1 divider (" + clean_divider + ") " + divider
+
     with open(target_path, 'w') as f:
         for name in new_names:
             f.write("\t")
@@ -113,7 +120,6 @@ def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t"
 
 if __name__ == '__main__' and not 'parser' in locals():
 
-    print "HELLO"
     parser = optparse.OptionParser()
     parser.add_option("-v", "--verbose", action="store_true", default=False,
                       help="If set will generate output of what the tool is doing.")
