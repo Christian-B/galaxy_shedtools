@@ -21,7 +21,7 @@ def expanderuser(path):
 def multiple_match(regex, old_name, name):
     report_error(regex+" matched both " + old_name + " and " + name + "strickter regex required")
 
-def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose=True):
+def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose=True, divider=None):
     """
     Walker method
     Inputs are:
@@ -48,7 +48,10 @@ def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose
                     file_paths.append(file_path)
                     if verbose:
                         print "Merging",file_path
-    merge_files(file_paths, names_path, target_path, verbose)
+    if divider:
+        merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider)
+    else:
+        merge_files(file_paths, names_path, target_path, verbose)
 
 
 if __name__ == '__main__':
@@ -62,11 +65,14 @@ if __name__ == '__main__':
                   "Default is the current directory")
     parser.add_option("-c", "--code", action="store", type="string",
                   help="Path to file that defines what to do with the files. "
-                  "Must define the function merge_files(file_paths, names_path, target_path, verbose)")
+                  "Must define the function merge_files(file_paths, names_path, target_path, verbose)  May include and optional divider field.")
     parser.add_option("-r", "--regex", action="store", type="string",
                   help="Regex pattern for identifying the left file")
     parser.add_option("-t", "--target_path", action="store", type="string",
                   help="Path to write merged data to")
+    parser.add_option("-d", "--divider", action="store", type="string",
+                      help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ . "
+                           "Note: After splitiing on divider both parts will be trimmed for whitespace.")
     (options, args) = parser.parse_args()
 
     if not options.code:
@@ -77,5 +83,5 @@ if __name__ == '__main__':
     if not options.target_path:
         report_error("No TARGET_PATH parameter provided")
 
-    do_walk(source=options.source, regex=options.regex, target_path=options.target_path, verbose=options.verbose)
+    do_walk(source=options.source, regex=options.regex, target_path=options.target_path, verbose=options.verbose, divider=options.divider)
 

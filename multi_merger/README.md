@@ -4,11 +4,13 @@ This repository contains code to merge multile files.
 walking_multi_merger.py will walk through all the directories in the source directory looking for files that match the regex pattern.
 Every time a matching file is found its full path is added to a temporary names files, and the path is also added to a list of file paths.
 
-Once all the files and names have been found the merge_files(file_paths, names_path, target_path) method is called in the code pointed to by the code parameter.
+Once all the files and names have been found the merge_files(file_paths, names_path, target_path, divider) method is called in the code pointed to by the code parameter.
+
+The divider parameter is optional and only passed to merge_files if required.  For symbols that are hard to pass in a command line use __ascii__ for example __9__ is tab and __124__ is the horizontal line.
 
 ### Example
 
-python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/merged.tsv --verbose
+python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/merged.tsv --divider __9__ --verbose
 
 # merge_files.py 
 Implements merge_files(file_paths, names_path, target_path)
@@ -30,4 +32,5 @@ This tool is directly callable but this was many implemented for the galaxy tool
 python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt --names_path=test-data/names.txt --target_path=test-data/merged.tsv 
 
 ## Galaxy
-Galaxy version of this tool is a TODO!
+planemo test --galaxy_root=/home/christian/galaxy  --no_cleanup   merge_files.xml
+
