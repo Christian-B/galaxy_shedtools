@@ -34,6 +34,7 @@
                 #end if
             #end if
         #else
+            --ending bam 
             --ending csv 
             --ending fasta 
             --ending fasta.gz 
@@ -68,6 +69,7 @@
                 <param name="last" type="text" value="" label="String which must be at the end of the file name (excluding the file type)" />
                 <conditional name="extension">
                     <param name="file_type" type="select" label="File Type" help="File Type.">
+                        <option value="bam">*.bam files</option>
                         <option value="csv">*.csv files</option>
                         <option value="fasta">*.fatsa files</option>
                         <option value="fasta.gz">*.fatsa.gz files</option>
@@ -138,7 +140,7 @@
         <!-- Ideally galaxy can get the type based on the file extensions. If so just add the type here -->
         <collection type="list" label="$list_name" name="as_galaxy_list">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] in ['csv','fasta','fastq','sam','tabular','text','tsv','txt','xls','xlsx'])</filter>
+            <filter>(results['extension']['file_type'] in ['bam','csv','fasta','fastq','sam','tabular','text','tsv','txt','xls','xlsx'])</filter>
                 <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
         </collection>
         <collection type="list" label="$list_name" name="decompressed_list">
