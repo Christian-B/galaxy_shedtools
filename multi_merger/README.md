@@ -42,3 +42,6 @@ This tool is directly callable but this was many implemented for the galaxy tool
 ## Galaxy
 planemo test --galaxy_root=/home/christian/galaxy  --no_cleanup   merge_files.xml
 
+built doing:
+tar --create --file=merge_files.tar --gzip --verbose merge_files.xml merge_files.py test-data/*
+

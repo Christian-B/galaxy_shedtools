@@ -1,4 +1,4 @@
-<tool id="file_merge" name="Merge txt files" version="0.0.1">
+<tool id="file_merge" name="Merge txt files into a tabular" version="0.0.1">
     <description>merges txt files together</description>
     <stdio>
         <exit_code range="1:" />
@@ -13,18 +13,43 @@
         #end for
         --names_path=$names_path
         --target_path=$output 
+        #if $divider.type=="user"
+            --divider $divider.specific
+        #else
+            --divider $divider.type
+        #end if
     </command>
     <inputs>
         <param name="inputs" type="data" format="txt" multiple="True" label="Files to merge" />
         <param name="names_path" type="data" format="txt" label="File with the names of the files being merged." />
+        <conditional name="divider">
+            <param name="type" type="select" label="Divider for the data" help="Select the divider between labels and data. White space is trimmed after splitting on divider.">
+                <option value="__9__"  selected="true">Tab</option>
+                <option value="__124__">Vertical bar.</option>
+                <option value="user">User specified.</option>
+            </param>
+            <when value="__9__" />
+            <when value="__124__" />
+            <when value="user" >
+                <param name="specific" type="text" value="" label="Divider to be used.  Note: Special characters can be entered as __asci__" />
+            </when>
+        </conditional>
     </inputs>
     <outputs>
-        <data name="output" format="txt" />
+        <data name="output" format="tabular" />
     </outputs>
     <tests>
         <test>
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
             <param name="names_path" value="names.txt" ftype="txt" /> 
+            <param name="divider|type" value="__9__" />
+            <output name="output" file="merged.tsv" ftype="txt" />
+        </test>
+        <test>
+            <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
+            <param name="names_path" value="names.txt" ftype="txt" /> 
+            <param name="divider|type" value="user" />
+            <param name="divider|specific" value="__9__" />
             <output name="output" file="merged.tsv" ftype="txt" />
         </test>
     </tests>
@@ -32,7 +57,12 @@
 <![CDATA[
 **What it does**
 
-Merges multiple text files end to end.
+Merges various files into a single tabular files based on a divider.
+
+For each line in each file that has the divider
+The stuff on the left of the divider is considered the lables on the right the data.
+
+This data is then put into a large tabular file with the row names being the file names, the column names the labels.
 ]]>
     </help>
     <citations>
