@@ -74,7 +74,9 @@ commands.txt
 
 #Code which should not go to git
 unused/
-repr_tools/repr_tool.tar
-directory_reader/directory_reader.tar
+
+#tar files
+*.tar
+
 
 
