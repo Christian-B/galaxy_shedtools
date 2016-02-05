@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<!-- Copied from https://testtoolshed.g2.bx.psu.edu/view/iuc/package_atlas_3_10/86b7c19454fa -->
+<!-- Copied from https://testtoolshed.g2.bx.psu.edu/view/iuc/package_atlas_3_10/86b7c19454fa 
+     Same as         https://toolshed.g2.bx.psu.edu/view/iuc/package_atlas_3_10/0538fd672119-->
 <tool_dependency>
     <package name="atlas" version="3.10.2">
         <install version="1.0">

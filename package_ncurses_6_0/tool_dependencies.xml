@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<!-- Copied from https://testtoolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/7fae9c4b2d10 -->
+<!-- Copied from https://testtoolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/7fae9c4b2d10 
+     Same as     https://toolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/c921f7ce9ca7 -->
 <tool_dependency>
     <package name="ncurses" version="6.0">
         <install version="1.0">
