@@ -1,0 +1,37 @@
+<tool id="syncpairs" name="Sync Fasta Pairs" version="0.0.1">
+    <description>Runes sncy pairs on two fastq files.</description>
+    <requirements>
+        <requirement type="package" version="1.66">biopython</requirement>
+    </requirements>
+    <stdio>
+        <!-- Anything other than zero is an error -->
+        <exit_code range="1:" />
+        <exit_code range=":-1" />
+    </stdio>
+    <command interpreter="python">
+        syncpairs.py $reads1 $reads2 $reads1_output $reads2_output
+    </command>
+    <inputs>
+        <param name="reads1" type="data" format="fastq" label="R1 Fasta File" />
+        <param name="reads2" type="data" format="fastq" label="R2 Fasta File" />
+    </inputs>
+    <outputs>
+        <data name="reads1_output" format="fastq" label="R1 output"/>
+        <data name="reads2_output" format="fastq" label="R2 output"/>
+     </outputs>
+    <tests>
+        <test>
+            <param name="reads1" value="C75_S29_R1_001.fq" ftype="fastq" /> 
+            <param name="reads2" value="C75_S29_R2_001.fastq" ftype="fastq" /> 
+            <output name="reads1_output" file="C75_S29_R1_001_extracted.fastq" ftype="fastq" />
+            <output name="reads2_output" file="C75_S29_R2_001_extracted.fastq" ftype="fastq" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+    Runs syncpairs
+]]>
+    </help>
+    <citations>
+    </citations>
+</tool>
