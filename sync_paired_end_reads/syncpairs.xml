@@ -16,8 +16,8 @@
         <param name="reads2" type="data" format="fastq" label="R2 Fasta File" />
     </inputs>
     <outputs>
-        <data name="reads1_output" format="fastq" label="R1 output"/>
-        <data name="reads2_output" format="fastq" label="R2 output"/>
+        <data name="reads1_output" format="fastq" label="Synced ${reads1.name}"/>
+        <data name="reads2_output" format="fastq" label="Synced ${reads2.name}"/>
      </outputs>
     <tests>
         <test>
@@ -29,7 +29,7 @@
     </tests>
     <help>
 <![CDATA[
-    Runs syncpairs
+    Runs syncpairs See https://github.com/mmendez12/sync_paired_end_reads
 ]]>
     </help>
     <citations>
