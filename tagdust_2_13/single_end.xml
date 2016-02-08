@@ -20,13 +20,13 @@
     <inputs>
         <param name="fastq_file" type="data" format="fastq" label="Single Fastq file to process" />
         <repeat name="hmm" title="HMM Building Blocks">
-            <param name="block" type="text" size="25" label="Next HMM Building block" />
+            <param name="block" type="text" size="25" label="Next HMM Building block (Note: Barcode/Index currently not supported)" />
         </repeat>
     </inputs>
     <outputs>
-        <data format="txt" name="logfile" label="The tagdust logoutput." from_work_dir="output/data_logfile.txt"/>
-        <data format="fastq" name="extracted" label="The tagdust extracted reads." from_work_dir="output/data.fq"/>
-        <data format="fastq" name="unextracted" label="The tagdust un-extracted reads." from_work_dir="output/data_un.fq"/>
+        <data format="txt" name="logfile" label="The tagdust log output for ${fastq_file.name}." from_work_dir="output/data_logfile.txt"/>
+        <data format="fastq" name="extracted" label="The tagdust extracted reads from ${fastq_file.name}." from_work_dir="output/data.fq"/>
+        <data format="fastq" name="unextracted" label="The tagdust un-extracted reads from ${fastq_file.name}." from_work_dir="output/data_un.fq"/>
     </outputs>
     <tests>
         <test>
