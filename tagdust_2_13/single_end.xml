@@ -1,4 +1,4 @@
-<tool id="tagdust_single_end" name="Tagdust single ed processor" version="0.1">
+<tool id="tagdust_single_end" name="Tagdust single end processor" version="0.1.1">
     <description>Runs tagdust in single end mode</description>
     <requirements>
         <requirement type="package" version="2.13">tagdust</requirement>
@@ -10,11 +10,18 @@
     <command >
         cp $fastq_file input.fastq ;
         mkdir output ;
-        tagdust -t8 -o output/data -1 F:NNNNNNNN -2 S:TATAGGG -3 R:N input.fastq ;
+        tagdust -t8 -o output/data 
+        #for $i, $building in enumerate( $hmm, 1 )
+            -$i ${building.block}
+        #end for
+        input.fastq ;
         ls -al output 
     </command>
     <inputs>
         <param name="fastq_file" type="data" format="fastq" label="Single Fastq file to process" />
+        <repeat name="hmm" title="HMM Building Blocks">
+            <param name="block" type="text" size="25" label="Next HMM Building block" />
+        </repeat>
     </inputs>
     <outputs>
         <data format="txt" name="logfile" label="The tagdust logoutput." from_work_dir="output/data_logfile.txt"/>
@@ -23,7 +30,10 @@
     </outputs>
     <tests>
         <test>
-            <param name="fastq_file" value="C75_S29_R1_001.fastq.gz" ftype="fastq" /> 
+            <param name="fastq_file" value="C75_S29_R1_001.fastq" ftype="fastq" /> 
+            <param name="hmm_0|block" value="F:NNNNNNNN"/>
+            <param name="hmm_1|block" value="S:TATAGGG"/>
+            <param name="hmm_2|block" value="R:N"/>
             <output name="logfile" >
                 <assert_contents>
                     <has_text text="Tagdust 2.13" />
@@ -35,7 +45,14 @@
     </tests>
     <help>
 <![CDATA[
-    prints tagdust version
+    Runs Tagdust 2.13 (see http://tagdust.sourceforge.net)
+
+    This tool processes a single end.
+
+    Example HMM BUilding blocks are:
+        F:NNNNNNNN
+        S:TATAGGG
+        R:N
 ]]>
     </help>
     <citations>
