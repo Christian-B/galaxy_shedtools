@@ -21,7 +21,7 @@ def expanderuser(path):
 def multiple_match(regex, old_name, name):
     report_error(regex+" matched both " + old_name + " and " + name + "strickter regex required")
 
-def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose=True, divider=None):
+def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose=True, divider=None, sort=None):
     """
     Walker method
     Inputs are:
@@ -53,9 +53,15 @@ def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose
     if len(file_paths) == 0:
         report_error("NO files found to match "+ regex)
     if divider:
-        merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider)
+        if sort:
+            merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider, sort = sort)
+        else:
+            merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider)
     else:
-        merge_files(file_paths, names_path, target_path, verbose)
+        if sort:
+            merge_files(file_paths, names_path, target_path, verbose, sort=sort)
+        else:
+            merge_files(file_paths, names_path, target_path, verbose)
 
 
 if __name__ == '__main__':
@@ -77,6 +83,8 @@ if __name__ == '__main__':
     parser.add_option("-d", "--divider", action="store", type="string",
                       help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ . "
                            "Note: After splitiing on divider both parts will be trimmed for whitespace.")
+    parser.add_option("--sort", action="store", type="string",
+                      help="Allows the output file to be sorted on column_names, row_names, both or none (default). ")
     (options, args) = parser.parse_args()
 
     if not options.code:
@@ -87,5 +95,5 @@ if __name__ == '__main__':
     if not options.target_path:
         report_error("No TARGET_PATH parameter provided")
 
-    do_walk(source=options.source, regex=options.regex, target_path=options.target_path, verbose=options.verbose, divider=options.divider)
+    do_walk(source=options.source, regex=options.regex, target_path=options.target_path, verbose=options.verbose, divider=options.divider, sort=options.sort)
 

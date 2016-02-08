@@ -8,9 +8,13 @@ Once all the files and names have been found the merge_files(file_paths, names_p
 
 The divider parameter is optional and only passed to merge_files if required.  For symbols that are hard to pass in a command line use \_\_ascii\_\_ for example \_\_9\_\_ is tab and \_\_124\_\_ is the horizontal line.
 
+The sort parameter is also optional and similarly only passed if required. Legal values are: column_names, row_names, both or none (default)
+
 ### Example
 
     python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/merged.tsv --divider __9__ --verbose
+
+    python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/sorted_merged.tsv --divider __9__ --verbose --sort both
 
     python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=Log.final.out --target_path=test-data/log_merged.tsv --divider __124__ --verbose
 
@@ -29,10 +33,12 @@ These lines are then split into two to polulate a dictionary of dictionaies. Whe
 This dictionary is then writen out as a tab seperated file such that the coumn names are the unique parts of the names and the row names are the first part of each line.
 
 ## Directly callable
-This tool is directly callable but this was many implemented for the galaxy tool.
+This tool is directly callable but this was mainly implemented for the galaxy tool.
 
 ### Example
     python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt --names_path=test-data/names.txt --target_path=test-data/merged.tsv  --divider __9__ 
+
+    python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt --names_path=test-data/names.txt --target_path=test-data/sorted_merged.tsv  --divider __9__ --sort both
 
     python merge_files.py  --file_path=test-data/C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out --file_path=test-data/C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out --file_path=test-data/C62_GGACTCCT-TATCCTCT_L003_/Log.final.out --names_path=test-data/log_names.txt --target_path=test-data/log_merged.tsv  --divider __124__ 
 

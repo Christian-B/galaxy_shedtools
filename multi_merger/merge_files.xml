@@ -18,6 +18,7 @@
         #else
             --divider $divider.type
         #end if
+        --sort $sort.order
     </command>
     <inputs>
         <param name="inputs" type="data" format="txt" multiple="True" label="Files to merge" />
@@ -34,6 +35,18 @@
                 <param name="specific" type="text" value="" label="Divider to be used.  Note: Special characters can be entered as __asci__" />
             </when>
         </conditional>
+        <conditional name="sort">
+            <param name="order" type="select" label="Select how to sort the data" help="Allows the data to be sorted">
+                <option value="none"  selected="true">Keep data in the input order.</option>
+                <option value="column_names">Sort the data by column names. Remember column names are the unique parts of the input file names</option>
+                <option value="row_names">Sort the data by row names. Remember row names are part before the divieder in each line</option>
+                <option value="both">Sort by both column and rows names.</option>
+            </param>
+            <when value="none" />
+            <when value="column_names" />
+            <when value="row_names" />
+            <when value="both" />
+        </conditional>
     </inputs>
     <outputs>
         <data name="output" format="tabular" />
@@ -43,14 +56,21 @@
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
             <param name="names_path" value="names.txt" ftype="txt" /> 
             <param name="divider|type" value="__9__" />
-            <output name="output" file="merged.tsv" ftype="txt" />
+            <output name="output" file="merged.tsv" ftype="tabular" />
+        </test>
+        <test>
+            <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
+            <param name="names_path" value="names.txt" ftype="txt" /> 
+            <param name="divider|type" value="__9__" />
+            <param name="sort|order" value="both" />
+            <output name="output" file="sorted_merged.tsv" ftype="tabular" />
         </test>
         <test>
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
             <param name="names_path" value="names.txt" ftype="txt" /> 
             <param name="divider|type" value="user" />
             <param name="divider|specific" value="__9__" />
-            <output name="output" file="merged.tsv" ftype="txt" />
+            <output name="output" file="merged.tsv" ftype="tabular" />
         </test>
     </tests>
     <help>

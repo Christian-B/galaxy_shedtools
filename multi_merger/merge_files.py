@@ -76,7 +76,26 @@ def black_dict():
     return collections.defaultdict(return_blank)
 
 
-def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t"):
+def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t", sort = None):
+    if sort:
+        if sort == "column_names":
+            column_sort = True
+            row_sort = False
+        elif sort == "row_names":
+            column_sort = False
+            row_sort = true
+        elif sort == "both":
+            column_sort = True
+            row_sort = True
+        elif sort == "none":
+            column_sort = False
+            row_sort = False
+        else:
+            report_error("Unexpected value: " + sort + " for sort parameter. Legeal values are: column_names, row_names, both or none")
+    else:
+        column_sort = False
+        row_sort = False
+
     names = []
     with open(names_path, 'r') as f:
         for line in f:
@@ -106,12 +125,19 @@ def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t"
         if mis_match > 0:
             print "In file " + file_path + " " + str(mis_match) + " lines did not have 1 divider (" + clean_divider + ") " + divider
 
+    if column_sort:
+        new_names = sorted(new_names)
+    if row_sort:
+        row_names = sorted(all_values.keys())
+    else:
+        row_names = all_values.keys()
+
     with open(target_path, 'w') as f:
         for name in new_names:
             f.write("\t")
             f.write(name)
         f.write("\n")
-        for key in all_values:
+        for key in row_names:
             f.write(key)
             for name in new_names:
                 f.write("\t")
@@ -130,8 +156,10 @@ if __name__ == '__main__' and not 'parser' in locals():
                            "Note: After splitiing on divider both parts will be trimmed for whitespace.")
     parser.add_option("-n", "--names_path", action="store", type="string",
                       help="Path to file that holds the names of the files to be merged. "
-                           "This must be a text files with exactly the same number of lines as file_path apramteres passed in."
-                           "Order is respected.")
+                           "This must be a text files with exactly the same number of lines as file_path paramtere passed in."
+                           "Output order depends on sort value.")
+    parser.add_option("-s", "--sort", action="store", type="string",
+                      help="Allows the output file to be sorted on column_names, row_names, both or none (default). ")
     parser.add_option("-t", "--target_path", action="store", type="string",
                       help="Path to write merged data to")
     (options, args) = parser.parse_args()
@@ -140,4 +168,7 @@ if __name__ == '__main__' and not 'parser' in locals():
         report_error("No NAMES_PATH parameter provided")
     if not options.target_path:
         report_error("No TARGET_PATH parameter provided")
-    merge_files(options.file_paths, options.names_path, options.target_path, options.verbose, options.divider)
+
+
+
+    merge_files(options.file_paths, options.names_path, options.target_path, options.verbose, options.divider, options.sort)
