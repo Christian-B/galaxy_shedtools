@@ -21,7 +21,7 @@ def expanderuser(path):
 def multiple_match(regex, old_name, name):
     report_error(regex+" matched both " + old_name + " and " + name + "strickter regex required")
 
-def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose=True, divider=None, sort=None):
+def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose=True, divider=None, sort=None, na_value=None):
     """
     Walker method
     Inputs are:
@@ -52,37 +52,39 @@ def do_walk(source, regex, target_path, onerror=None, followlinks=False, verbose
                 #    print "NO",name, root
     if len(file_paths) == 0:
         report_error("NO files found to match "+ regex)
+
+    kwargs = {"verbose": verbose}
     if divider:
-        if sort:
-            merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider, sort = sort)
-        else:
-            merge_files(file_paths, names_path, target_path, verbose=verbose, divider = divider)
-    else:
-        if sort:
-            merge_files(file_paths, names_path, target_path, verbose, sort=sort)
-        else:
-            merge_files(file_paths, names_path, target_path, verbose)
+        kwargs["divider"] = divider
+    if sort:
+        kwargs["sort"] = sort
+    if na_value:
+        kwargs["na_value"] = na_value
+    merge_files(file_paths, names_path, target_path, **kwargs)
 
 
 if __name__ == '__main__':
 
     parser = optparse.OptionParser()
-    parser.add_option("-v", "--verbose", action="store_true", default=False,
+    parser.add_option("--verbose", action="store_true", default=False,
                       help="If set will generate output of what the tool is doing.")
-    parser.add_option("-s", "--source", action="store", type="string",
+    parser.add_option("--source", action="store", type="string",
                   default=os.getcwd(),
                   help="SOURCE directory of the sub directories to hold the data for each run "
                   "Default is the current directory")
-    parser.add_option("-c", "--code", action="store", type="string",
+    parser.add_option("--code", action="store", type="string",
                   help="Path to file that defines what to do with the files. "
                   "Must define the function merge_files(file_paths, names_path, target_path, verbose)  May include and optional divider field.")
-    parser.add_option("-r", "--regex", action="store", type="string",
+    parser.add_option("--regex", action="store", type="string",
                   help="Regex pattern for identifying the left file")
-    parser.add_option("-t", "--target_path", action="store", type="string",
+    parser.add_option("--target_path", action="store", type="string",
                   help="Path to write merged data to")
-    parser.add_option("-d", "--divider", action="store", type="string",
+    parser.add_option("--divider", action="store", type="string",
                       help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ . "
                            "Note: After splitiing on divider both parts will be trimmed for whitespace.")
+    parser.add_option("--na_value", action="store", type="string",
+                      help="String to use when the part before the divider/ row name is found in some files but not in others. "
+                           "If not specified the default of the code meathod will be used. ")
     parser.add_option("--sort", action="store", type="string",
                       help="Allows the output file to be sorted on column_names, row_names, both or none (default). ")
     (options, args) = parser.parse_args()
@@ -95,5 +97,6 @@ if __name__ == '__main__':
     if not options.target_path:
         report_error("No TARGET_PATH parameter provided")
 
-    do_walk(source=options.source, regex=options.regex, target_path=options.target_path, verbose=options.verbose, divider=options.divider, sort=options.sort)
+    do_walk(source=options.source, regex=options.regex, target_path=options.target_path, 
+            verbose=options.verbose, divider=options.divider, sort=options.sort, na_value=options.na_value)
 

@@ -10,14 +10,17 @@ The divider parameter is optional and only passed to merge_files if required.  F
 
 The sort parameter is also optional and similarly only passed if required. Legal values are: column_names, row_names, both or none (default)
 
+The na_value is also optional and defines what to put when one or more files does not have all the rows.  This will default to a blank.
+
 ### Example
 
     python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/merged.tsv --divider __9__ --verbose
 
     python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=htseq_count.txt --target_path=test-data/sorted_merged.tsv --divider __9__ --verbose --sort both
 
-    python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=Log.final.out --target_path=test-data/log_merged.tsv --divider __124__ --verbose
+    python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=Log.final.out$ --target_path=test-data/log_merged_no_na.tsv --divider __124__ --verbose 
 
+    python walking_multi_merger.py --source=test-data --code=merge_files.py --regex=Log.final.out --target_path=test-data/log_merged.tsv --divider __124__ --na_value "0"
 
 # merge_files.py 
 Implements merge_files(file_paths, names_path, target_path)
@@ -40,12 +43,15 @@ This tool is directly callable but this was mainly implemented for the galaxy to
 
     python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt --names_path=test-data/names.txt --target_path=test-data/sorted_merged.tsv  --divider __9__ --sort both
 
-    python merge_files.py  --file_path=test-data/C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out --file_path=test-data/C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out --file_path=test-data/C62_GGACTCCT-TATCCTCT_L003_/Log.final.out --names_path=test-data/log_names.txt --target_path=test-data/log_merged.tsv  --divider __124__ 
+    python merge_files.py  --file_path=test-data/C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out --file_path=test-data/C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out --file_path=test-data/C62_GGACTCCT-TATCCTCT_L003_/Log.final.out --names_path=test-data/log_names.txt --target_path=test-data/log_merged.tsv  --divider __124__ --na_value "0" 
 
+    python merge_files.py  --file_path=test-data/C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out --file_path=test-data/C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out --file_path=test-data/C62_GGACTCCT-TATCCTCT_L003_/Log.final.out --names_path=test-data/log_names.txt --target_path=test-data/log_merged_no_na.tsv  --divider __124__ 
 
 
 
 ## Galaxy
+planemo lint  merge_files.xml
+
 planemo test --galaxy_root=/home/christian/galaxy  --no_cleanup   merge_files.xml
 
 built doing:

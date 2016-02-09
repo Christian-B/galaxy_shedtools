@@ -18,7 +18,10 @@
         #else
             --divider $divider.type
         #end if
-        --sort $sort.order
+        #if $na_value
+            --na_value $na_value
+        #end if
+            --sort $sort.order
     </command>
     <inputs>
         <param name="inputs" type="data" format="txt" multiple="True" label="Files to merge" />
@@ -47,6 +50,7 @@
             <when value="row_names" />
             <when value="both" />
         </conditional>
+        <param name="na_value" type="text" value="" label="Na Value to be used when not every row name/ part before the divider is found in very file." />
     </inputs>
     <outputs>
         <data name="output" format="tabular" />
@@ -71,6 +75,21 @@
             <param name="divider|type" value="user" />
             <param name="divider|specific" value="__9__" />
             <output name="output" file="merged.tsv" ftype="tabular" />
+        </test>
+        <test>
+            <param name="inputs" value="C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out,C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out,C62_GGACTCCT-TATCCTCT_L003_/Log.final.out" ftype="txt" /> 
+            <param name="names_path" value="log_names.txt" ftype="txt" /> 
+            <param name="divider|type" value="user" />
+            <param name="divider|specific" value="__124__" />
+            <output name="output" file="log_merged_no_na.tsv" ftype="tabular" />
+        </test>
+        <test>
+            <param name="inputs" value="C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out,C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out,C62_GGACTCCT-TATCCTCT_L003_/Log.final.out" ftype="txt" /> 
+            <param name="names_path" value="log_names.txt" ftype="txt" /> 
+            <param name="divider|type" value="user" />
+            <param name="divider|specific" value="__124__" />
+            <param name="na_value" value="0" />
+            <output name="output" file="log_merged.tsv" ftype="tabular" />
         </test>
     </tests>
     <help>

@@ -22,7 +22,10 @@ def remove_common(names):
             end = end[1:]
     new_names = []
     for name in names:
-        new_name = name[len(start): -len(end)]
+        if len(end) > 0:
+            new_name = name[len(start): -len(end)]
+        else:
+            new_name = name[len(start):]
         new_names.append(new_name)
     return new_names
 
@@ -68,15 +71,7 @@ def clean_part(part):
     return part
 
 
-def return_blank():
-    return ""
-
-
-def black_dict():
-    return collections.defaultdict(return_blank)
-
-
-def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t", sort = None):
+def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t", sort = None, na_value=""):
     if sort:
         if sort == "column_names":
             column_sort = True
@@ -105,8 +100,9 @@ def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t"
     if len(names) != len(file_paths):
         report_error("Found " + str(len(file_paths)) + " file_paths but " + names_path + " contains " + str(len(names)) + " lines.")
     new_names = remove_common(names)
+    print new_names
     clean_divider = remove_symbols(divider)
-    all_values = collections.defaultdict(black_dict)
+    all_values = collections.defaultdict(lambda: collections.defaultdict(lambda: na_value))
     for count, file_path in enumerate(file_paths):
         mis_match = 0
         with open(file_path, 'r') as f:
@@ -147,20 +143,23 @@ def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t"
 if __name__ == '__main__' and not 'parser' in locals():
 
     parser = optparse.OptionParser()
-    parser.add_option("-v", "--verbose", action="store_true", default=False,
+    parser.add_option("--verbose", action="store_true", default=False,
                       help="If set will generate output of what the tool is doing.")
-    parser.add_option("-f", "--file_path", dest="file_paths", action="append", type="string",
+    parser.add_option("--file_path", dest="file_paths", action="append", type="string",
                       help="Path to one of the files to be merged together. Order is relavant and must match names_path.")
-    parser.add_option("-d", "--divider", action="store", type="string",
+    parser.add_option("--divider", action="store", type="string",
                       help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ . "
                            "Note: After splitiing on divider both parts will be trimmed for whitespace.")
-    parser.add_option("-n", "--names_path", action="store", type="string",
+    parser.add_option("--names_path", action="store", type="string",
                       help="Path to file that holds the names of the files to be merged. "
                            "This must be a text files with exactly the same number of lines as file_path paramtere passed in."
                            "Output order depends on sort value.")
-    parser.add_option("-s", "--sort", action="store", type="string",
+    parser.add_option("--na_value", action="store", type="string",
+                      help="String to use when the part before the divider/ row name is found in some files but not in others. "
+                           "Default if not specified is a blank. ")
+    parser.add_option("--sort", action="store", type="string",
                       help="Allows the output file to be sorted on column_names, row_names, both or none (default). ")
-    parser.add_option("-t", "--target_path", action="store", type="string",
+    parser.add_option("--target_path", action="store", type="string",
                       help="Path to write merged data to")
     (options, args) = parser.parse_args()
 
@@ -168,7 +167,9 @@ if __name__ == '__main__' and not 'parser' in locals():
         report_error("No NAMES_PATH parameter provided")
     if not options.target_path:
         report_error("No TARGET_PATH parameter provided")
+    if not options.na_value:
+        if options.verbose:
+            print "As no na-value provided a blank space will be used"
+        options.na_value = ""
 
-
-
-    merge_files(options.file_paths, options.names_path, options.target_path, options.verbose, options.divider, options.sort)
+    merge_files(options.file_paths, options.names_path, options.target_path, options.verbose, options.divider, options.sort, options.na_value)
