@@ -1,5 +1,6 @@
 import collections
-import optparse
+import optparse #using optparse as hyrda still python 2.6
+import re
 import sys
 
 
@@ -10,6 +11,121 @@ def report_error(error):
     sys.stderr.write("\n")
     sys.stderr.flush()
     sys.exit(1)
+
+
+def clean_part(part, tab_replace=" "):
+    part = part.strip()
+    part = part.replace("\t", tab_replace)
+    return part
+
+
+def merge_files(file_paths, file_names, target_path=None, divider="\t", reguired_row_regexes=[], negative_row_regexes=[], 
+                column_sort=False, row_sort=False, na_value="", tab_replace=" ", verbose=False):
+    """
+    Merges a list of files into a single tsv file.
+
+    file_paths is a list of paths to the input files
+
+    file_names is an equally long list of names for these files which will be taken as the column names. 
+    Note: use run_merge_files to shorten the file_names, read them from a file or to use the file_paths as file names
+
+    target_path specifies where the tsv file will be written
+
+    divider is the string to be search for in each line of the input files. 
+    If found exactly once the part before will be considered a row_name and the part after the data
+    Note: If the same row_name is found only the last line is used.
+
+    column_sort and row_sort if set cause the data to be sorted accordingly.
+
+    reguired_row_regexes if provided must be a list of regex patterns. Each row_name must match at least one of these for the row to be included
+
+    negative_row_regexes if provided must be a list of regex patterns. Each row_name must match none of these for the row to be included
+
+    na_value whenever a file does not have data for a row_name
+
+    tab_replace is used to replace any tabs that remain in the row_names and or data after they have been striped of starting and ending whitespace
+
+    verbose if set will cause more verbose infomormation such as lines that do not have the divider
+    """
+    # Check parameters
+    if not file_paths:
+        report_error("One or more file_paths parameter must be provided")
+    if not target_path:
+        report_error("No target_path parameter provided")
+    if len(file_names) != len(file_paths):
+        report_error("Found " + str(len(file_paths)) + " file_paths but file_names/names_path contains " + str(len(file_names)) + " values.")
+
+    # Read data from file
+    all_values = collections.defaultdict(lambda: collections.defaultdict(lambda: na_value))
+    for count, file_path in enumerate(file_paths):
+        mis_match = 0
+        with open(file_path, 'r') as f:
+            for line in f:
+                parts = line.strip().split(divider)
+                if len(parts) == 2:
+                    key = clean_part(parts[0], tab_replace)
+                    value = clean_part(parts[1], tab_replace)
+                    all_values[key][file_names[count]] = value
+                else:
+                    mis_match+= 1
+                    if verbose:
+                        if mis_match < 5:
+                            print "ignoring following line from", file_path
+                            print line
+        if mis_match > 0:
+            print "In file " + file_path + " " + str(mis_match) + " lines did not have 1 divider (" + divider + ") " 
+
+    # rows names are all the keys from the data found
+    row_names = all_values.keys()
+
+    # check row_names against the regex rules
+    if reguired_row_regexes or negative_row_regexes:
+        ok_names = []
+        if reguired_row_regexes:
+            reguired_res = []
+            for reguired_row_regex in reguired_row_regexes:
+                reguired_res.append(re.compile(reguired_row_regex))
+        if negative_row_regexes:
+            negative_res = []
+            for negative_row_regex in negative_row_regexes:
+                negative_res.append(re.compile(negative_row_regex))
+        for row_name in row_names:
+            if reguired_row_regexes:
+                ok = False 
+                for reguired_re in reguired_res:
+                    if reguired_re.search(row_name):
+                        ok = True
+            else: 
+                ok = True 
+            if negative_row_regexes and ok:
+                for negative_re in negative_res:
+                    if negative_re.search(row_name):
+                        ok = False
+            if ok:
+                ok_names.append(row_name)
+        row_names = ok_names
+
+    # Sort keys if required
+    if column_sort:
+        file_names = sorted(file_names)
+    if row_sort:
+        row_names = sorted(row_names)
+
+    # Write the data
+    with open(target_path, 'w') as f:
+        for name in file_names:
+            f.write("\t")
+            f.write(name)
+        f.write("\n")
+        for key in row_names:
+            f.write(key)
+            for name in file_names:
+                f.write("\t")
+                f.write(all_values[key][name])
+            f.write("\n")
+
+
+# To run the method shortening and if reguried getting file_names or file_paths use this section
 
 
 def remove_common(names):
@@ -28,6 +144,47 @@ def remove_common(names):
             new_name = name[len(start):]
         new_names.append(new_name)
     return new_names
+
+
+# See merge_files method for kwargs 
+
+def run_merge_files(file_paths=[], file_names=[], files_path=None, **kwargs):
+    """
+    Handles file paths and file names before calling merge-files.
+
+    file_paths is a list of the paths to be merge together.
+
+    file_names is a list of names that will be shortened and then used for column names.
+    The lenght of file_names must match file_paths, and the order is relevant to file_names.
+
+    files_path if provided will the path of files paths and or file names to be used if they are not supplied directly.
+
+    The kwargs arguements are defined by merge_files method which is called at the end of this method.
+    """
+
+    # read file_paths and/or file_names if required
+    if files_path:
+        if file_paths:
+            print "Using parameters file_paths and not the ones in files_path"
+        else:
+            file_paths = read_names(files_path)
+        if file_names:
+            print "Using parameters file_names and not the ones in files_path"
+        else:
+            file_names = read_names(files_path)
+
+    # use file_paths if no file_names provided
+    if not file_names:
+        file_names = file_paths
+
+    #To avoid wide column names the start and end text shared by all names is removed
+    file_names = remove_common(file_names)
+
+    #Call the name merge_files method
+    merge_files(file_paths, file_names, **kwargs)
+
+
+# From here on down is the code if this is being run from the command line including galaxy.
 
 
 def remove_symbols(s):
@@ -65,111 +222,66 @@ def remove_symbols(s):
     return s
 
 
-def clean_part(part):
-    part = part.strip()
-    part = part.replace("\t", "__9__")
-    return part
-
-
-def merge_files(file_paths, names_path, target_path, verbose=False, divider="\t", sort = None, na_value=""):
-    if sort:
-        if sort == "column_names":
-            column_sort = True
-            row_sort = False
-        elif sort == "row_names":
-            column_sort = False
-            row_sort = true
-        elif sort == "both":
-            column_sort = True
-            row_sort = True
-        elif sort == "none":
-            column_sort = False
-            row_sort = False
-        else:
-            report_error("Unexpected value: " + sort + " for sort parameter. Legeal values are: column_names, row_names, both or none")
-    else:
-        column_sort = False
-        row_sort = False
-
+def read_names(names_path):
     names = []
     with open(names_path, 'r') as f:
         for line in f:
             line = line.strip()
             if len(line) > 0:
                 names.append(line)
-    if len(names) != len(file_paths):
-        report_error("Found " + str(len(file_paths)) + " file_paths but " + names_path + " contains " + str(len(names)) + " lines.")
-    new_names = remove_common(names)
-    print new_names
-    clean_divider = remove_symbols(divider)
-    all_values = collections.defaultdict(lambda: collections.defaultdict(lambda: na_value))
-    for count, file_path in enumerate(file_paths):
-        mis_match = 0
-        with open(file_path, 'r') as f:
-            for line in f:
-                parts = line.strip().split(clean_divider)
-                if len(parts) == 2:
-                    key = clean_part(parts[0])
-                    value = clean_part(parts[1])
-                    all_values[key][new_names[count]] = value
-                else:
-                    mis_match+= 1
-                    if verbose:
-                        if mis_match < 5:
-                            print "ignoring following line from", file_path
-                            print line
-        if mis_match > 0:
-            print "In file " + file_path + " " + str(mis_match) + " lines did not have 1 divider (" + clean_divider + ") " + divider
+    return names
 
-    if column_sort:
-        new_names = sorted(new_names)
-    if row_sort:
-        row_names = sorted(all_values.keys())
-    else:
-        row_names = all_values.keys()
 
-    with open(target_path, 'w') as f:
-        for name in new_names:
-            f.write("\t")
-            f.write(name)
-        f.write("\n")
-        for key in row_names:
-            f.write(key)
-            for name in new_names:
-                f.write("\t")
-                f.write(all_values[key][name])
-            f.write("\n")
-
-if __name__ == '__main__' and not 'parser' in locals():
+if __name__ == '__main__':
 
     parser = optparse.OptionParser()
     parser.add_option("--verbose", action="store_true", default=False,
                       help="If set will generate output of what the tool is doing.")
-    parser.add_option("--file_path", dest="file_paths", action="append", type="string",
-                      help="Path to one of the files to be merged together. Order is relavant and must match names_path.")
+    parser.add_option("--file_path", action="append", type="string",
+                      help="Path to one of the files to be merged together.")
+    parser.add_option("--file_name", action="append", type="string",
+                      help="Names for the files. To be used to generate column names. "
+                           "Order and size are relavant and must match file_path. "
+                           "Optional: Can also be provides as a path to a file using names_path "
+                            "If neither are provide the file_paths are used.")
+    parser.add_option("--files_path", action="store", type="string",
+                      help="Path to file that holds the file_paths and or file_names. "
+                           "Ignored if file_paths and or file_names are provided directly.")
+    parser.add_option("--target_path", action="store", type="string",
+                      help="Path to write merged data to")
     parser.add_option("--divider", action="store", type="string",
                       help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ . "
                            "Note: After splitiing on divider both parts will be trimmed for whitespace.")
-    parser.add_option("--names_path", action="store", type="string",
-                      help="Path to file that holds the names of the files to be merged. "
-                           "This must be a text files with exactly the same number of lines as file_path paramtere passed in."
-                           "Output order depends on sort value.")
     parser.add_option("--na_value", action="store", type="string",
                       help="String to use when the part before the divider/ row name is found in some files but not in others. "
                            "Default if not specified is a blank. ")
-    parser.add_option("--sort", action="store", type="string",
-                      help="Allows the output file to be sorted on column_names, row_names, both or none (default). ")
-    parser.add_option("--target_path", action="store", type="string",
-                      help="Path to write merged data to")
+    parser.add_option("--column_sort", action="store_true", default=False,
+                      help="If set will sort the columns based on shortened file names.")
+    parser.add_option("--row_sort", action="store_true", default=False,
+                      help="If set will sort the row based on shortened file names.") 
+    parser.add_option("--reguired_row_regex", action="append", type="string", 
+                      help="If provided, only rows whose cleaned name matches one or more of these regex rules will be kept. ")
+    parser.add_option("--negative_row_regex", action="append", type="string", 
+                      help="If provided, only rows whose cleaned name matches none of these regex rules will be kept. ")
+    parser.add_option("--tab_replace", action="store", type="string", default=" ",
+                      help="Value to beinserted in data including column and row names whenever a tab is found. "
+                           "Default is a single space.")
     (options, args) = parser.parse_args()
 
-    if not options.names_path:
-        report_error("No NAMES_PATH parameter provided")
-    if not options.target_path:
-        report_error("No TARGET_PATH parameter provided")
+    if not options.divider:
+        report_error("No divider parameter provided")
+    options.divider = remove_symbols(options.divider)
+
     if not options.na_value:
         if options.verbose:
             print "As no na-value provided a blank space will be used"
         options.na_value = ""
 
-    merge_files(options.file_paths, options.names_path, options.target_path, options.verbose, options.divider, options.sort, options.na_value)
+    if not options.tab_replace:
+        options.tab_replace = " "
+
+    run_merge_files(file_paths=options.file_path, file_names=options.file_name, files_path=options.files_path , 
+                    target_path=options.target_path, verbose=options.verbose, divider=options.divider,
+                    column_sort=options.column_sort, row_sort=options.row_sort, na_value=options.na_value, tab_replace=options.tab_replace, 
+                    reguired_row_regexes=options.reguired_row_regex, negative_row_regexes=options.negative_row_regex)
+

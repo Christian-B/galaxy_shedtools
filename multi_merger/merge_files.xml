@@ -11,7 +11,7 @@
         #for $input in $inputs
             --file_path=$input 
         #end for
-        --names_path=$names_path
+        --files_path=$files_path
         --target_path=$output 
         #if $divider.type=="user"
             --divider $divider.specific
@@ -21,11 +21,16 @@
         #if $na_value
             --na_value $na_value
         #end if
-            --sort $sort.order
+        #if $row.sort=="yes"
+            --row_sort
+        #end if
+        #if $column.sort=="yes"
+            --column_sort
+        #end if
     </command>
     <inputs>
         <param name="inputs" type="data" format="txt" multiple="True" label="Files to merge" />
-        <param name="names_path" type="data" format="txt" label="File with the names of the files being merged." />
+        <param name="files_path" type="data" format="txt" label="File with the names of the files being merged." />
         <conditional name="divider">
             <param name="type" type="select" label="Divider for the data" help="Select the divider between labels and data. White space is trimmed after splitting on divider.">
                 <option value="__9__"  selected="true">Tab</option>
@@ -38,17 +43,21 @@
                 <param name="specific" type="text" value="" label="Divider to be used.  Note: Special characters can be entered as __asci__" />
             </when>
         </conditional>
-        <conditional name="sort">
-            <param name="order" type="select" label="Select how to sort the data" help="Allows the data to be sorted">
-                <option value="none"  selected="true">Keep data in the input order.</option>
-                <option value="column_names">Sort the data by column names. Remember column names are the unique parts of the input file names</option>
-                <option value="row_names">Sort the data by row names. Remember row names are part before the divieder in each line</option>
-                <option value="both">Sort by both column and rows names.</option>
+        <conditional name="row">
+            <param name="sort" type="select" label="Do you want the data sorted by row name" help="Data can be sorted alphabetically by row name.">
+                <option value="no"  >No Return the data in any order. Probably the order of the when they where first found.</option>
+                <option value="yes" selected="true">Yes Sort the data by row name (Part before the divider)</option>
             </param>
-            <when value="none" />
-            <when value="column_names" />
-            <when value="row_names" />
-            <when value="both" />
+            <when value="no" />
+            <when value="yes" />
+        </conditional>
+        <conditional name="column">
+            <param name="sort" type="select" label="Do you want the data sorted by column" help="Data can be sorted alphabetically by file name.">
+                <option value="no" selected="true" >No Return the data in the input order.</option>
+                <option value="yes" >Yes Sort the data by column name (Name of the files)</option>
+            </param>
+            <when value="no" />
+            <when value="yes" />
         </conditional>
         <param name="na_value" type="text" value="" label="Na Value to be used when not every row name/ part before the divider is found in very file." />
     </inputs>
@@ -58,36 +67,45 @@
     <tests>
         <test>
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
-            <param name="names_path" value="names.txt" ftype="txt" /> 
+            <param name="files_path" value="names.txt" ftype="txt" /> 
             <param name="divider|type" value="__9__" />
+            <param name="column|sort" value="no" />
+            <param name="row|sort" value="no" />
             <output name="output" file="merged.tsv" ftype="tabular" />
         </test>
         <test>
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
-            <param name="names_path" value="names.txt" ftype="txt" /> 
+            <param name="files_path" value="names.txt" ftype="txt" /> 
             <param name="divider|type" value="__9__" />
-            <param name="sort|order" value="both" />
+            <param name="column|sort" value="yes" />
+            <param name="row|sort" value="yes" />
             <output name="output" file="sorted_merged.tsv" ftype="tabular" />
         </test>
-        <test>
+        <!--test>
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
-            <param name="names_path" value="names.txt" ftype="txt" /> 
+            <param name="files_path" value="names.txt" ftype="txt" /> 
             <param name="divider|type" value="user" />
             <param name="divider|specific" value="__9__" />
+            <param name="column|sort" value="no" />
+            <param name="row|sort" value="no" />
             <output name="output" file="merged.tsv" ftype="tabular" />
-        </test>
+        </test-->
         <test>
             <param name="inputs" value="C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out,C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out,C62_GGACTCCT-TATCCTCT_L003_/Log.final.out" ftype="txt" /> 
-            <param name="names_path" value="log_names.txt" ftype="txt" /> 
+            <param name="files_path" value="log_names.txt" ftype="txt" /> 
             <param name="divider|type" value="user" />
             <param name="divider|specific" value="__124__" />
+            <param name="column|sort" value="no" />
+            <param name="row|sort" value="no" />
             <output name="output" file="log_merged_no_na.tsv" ftype="tabular" />
         </test>
         <test>
             <param name="inputs" value="C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out,C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out,C62_GGACTCCT-TATCCTCT_L003_/Log.final.out" ftype="txt" /> 
-            <param name="names_path" value="log_names.txt" ftype="txt" /> 
+            <param name="files_path" value="log_names.txt" ftype="txt" /> 
             <param name="divider|type" value="user" />
             <param name="divider|specific" value="__124__" />
+            <param name="column|sort" value="no" />
+            <param name="row|sort" value="no" />
             <param name="na_value" value="0" />
             <output name="output" file="log_merged.tsv" ftype="tabular" />
         </test>
