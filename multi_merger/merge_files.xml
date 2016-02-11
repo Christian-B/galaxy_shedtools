@@ -11,7 +11,13 @@
         #for $input in $inputs
             --file_path=$input 
         #end for
+        #if $files_path
         --files_path=$files_path
+        #else
+            #for $input in $inputs
+                --file_name=$input.name 
+            #end for
+        #end if
         --target_path=$output 
         #if $divider.type=="user"
             --divider $divider.specific
@@ -27,10 +33,17 @@
         #if $column.sort=="yes"
             --column_sort
         #end if
+        #for $rule in $reguired_row
+            --reguired_row_regex $rule.regex
+        #end for 
+        #for $rule in $negative_row
+            --negative_row_regex $rule.regex
+        #end for 
     </command>
     <inputs>
         <param name="inputs" type="data" format="txt" multiple="True" label="Files to merge" />
-        <param name="files_path" type="data" format="txt" label="File with the names of the files being merged." />
+        <param name="files_path" type="data" format="txt" optional="true" 
+               label="File with the names of the files being merged. Note: If the names of the datasets can be used this paramters is not required." />
         <conditional name="divider">
             <param name="type" type="select" label="Divider for the data" help="Select the divider between labels and data. White space is trimmed after splitting on divider.">
                 <option value="__9__"  selected="true">Tab</option>
@@ -40,7 +53,7 @@
             <when value="__9__" />
             <when value="__124__" />
             <when value="user" >
-                <param name="specific" type="text" value="" label="Divider to be used.  Note: Special characters can be entered as __asci__" />
+                <param name="specific" type="text" value="" label="Divider to be used.  Note: See Special characters in help section." />
             </when>
         </conditional>
         <conditional name="row">
@@ -60,6 +73,12 @@
             <when value="yes" />
         </conditional>
         <param name="na_value" type="text" value="" label="Na Value to be used when not every row name/ part before the divider is found in very file." />
+        <repeat name="reguired_row" title="Keep only rows that meet any of these rules">
+            <param name="regex" type="text" label="A regex rule on row names to keep data. Note: See Special characters in help section."/>
+        </repeat>
+        <repeat name="negative_row" title="Keep only rows that meet none of these rules">
+            <param name="regex" type="text" label="A regex rule on row names to remove data.  Note: See Special characters in help section."/>
+        </repeat>
     </inputs>
     <outputs>
         <data name="output" format="tabular" />
@@ -81,15 +100,26 @@
             <param name="row|sort" value="yes" />
             <output name="output" file="sorted_merged.tsv" ftype="tabular" />
         </test>
-        <!--test>
+        <test>
             <param name="inputs" value="C03/htseq_count.txt,C01/htseq_count.txt,C02/htseq_count.txt,C05/htseq_count.txt" ftype="txt" /> 
             <param name="files_path" value="names.txt" ftype="txt" /> 
+            <param name="divider|type" value="__9__" />
+            <param name="column|sort" value="no" />
+            <param name="row|sort" value="yes" />
+            <param name="reguired_row_0|regex" value="1" />
+            <param name="reguired_row_1|regex" value="__50__" /> 
+            <param name="negative_row_0|regex" value="__56__" />
+            <param name="negative_row_1|regex" value="9" />
+            <output name="output" file="merged_regex.tsv" ftype="tabular" />
+        </test>
+        <test>
+            <param name="inputs" value="C43_TAAGGCGA-CTAAGCCT.log,C08_CGTACTAG-CTCTCTAT.log,C62_GGACTCCT-TATCCTCT.log" ftype="txt" /> 
             <param name="divider|type" value="user" />
-            <param name="divider|specific" value="__9__" />
+            <param name="divider|specific" value="__124__" />
             <param name="column|sort" value="no" />
             <param name="row|sort" value="no" />
-            <output name="output" file="merged.tsv" ftype="tabular" />
-        </test-->
+            <output name="output" file="log_merged_no_na.tsv" ftype="tabular" />
+        </test>
         <test>
             <param name="inputs" value="C43_TAAGGCGA-CTAAGCCT_L003_/Log.final.out,C08_CGTACTAG-CTCTCTAT_L003_/Log.final.out,C62_GGACTCCT-TATCCTCT_L003_/Log.final.out" ftype="txt" /> 
             <param name="files_path" value="log_names.txt" ftype="txt" /> 
@@ -120,6 +150,49 @@ For each line in each file that has the divider
 The stuff on the left of the divider is considered the lables on the right the data.
 
 This data is then put into a large tabular file with the row names being the file names, the column names the labels.
+
+
+** Special charaters **
+
+The command line makes if difficult to use many specially characters.
+
+Therefor Galaxy replaces some of these with a __*__ replacement string.
+
+ascii  char   code
+ 34     "     __dq__
+ 35     #     __pd__
+ 39     '     __sq__
+ 60     <     __lt__
+ 62     >     __gt__
+ 64     @     __at__
+ 91     [     __ob__
+ 93     ]     __cb__
+123     {     __oc__
+125     }     __cc__
+
+For others Galaxy just inserts an X.  For these use you can use the format __ascii__
+
+This includes all charaacters below ascii 31 above ascii 126 and the following:
+
+ascii  char   code
+  9    tab    __9__
+ 36     $     __36__
+ 37     %     __37__
+ 38     &     __38__
+ 59     ;     __59__
+ 92     \     __92__
+ 96     `     __96__
+124     |     __124__
+126     ~     __126__
+
+All of these, including any __ascii__ combination will be converted back by the tool before compiling the regex pattern.
+
+As __ (2 underscores) is used here: ____ (4 underscores) will be read as __ (2 underscores)
+
+So for example to use either a or b  (a|b) enter (a__124__b) 
+
+The regex pattern to detect two underscores at the end __$ needs to be entered as __36______
+
 ]]>
     </help>
     <citations>

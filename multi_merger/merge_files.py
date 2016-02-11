@@ -187,6 +187,7 @@ def run_merge_files(file_paths=[], file_names=[], files_path=None, **kwargs):
 # From here on down is the code if this is being run from the command line including galaxy.
 
 
+
 def remove_symbols(s):
     if s.find("__") == -1:
         return s
@@ -202,23 +203,28 @@ def remove_symbols(s):
     # Patterns added by Christian
     s = s.replace("__in__", '%in%')
     s = s.replace("__not__", '!')
-    end = -2
+    end = 0
     # tab = 9
     # | = 124
     while True:
-        start = s.find("__", end + 2) + 2
-        if start == 1:
+        start = s.find("__", end)
+        if start == -1:
             return s
-        end = s.find("__", start)
-        if end == -1:
+        end = s.find("__", start + 2) +2
+        if end == 1:
             return s
-        part = s[start: end]
-        try:
-            ascii = int(part)
-            s = s.replace("__" + part + "__", chr(ascii))
-            end = -2
-        except ValueError:
-            pass
+        part = s[start + 2: end -2]
+        if part == "":
+            # start + 2 to leave one set of __ behind 
+            s = s[:start + 2] + s[end:]
+            end = start + 2
+        else:
+            try:
+                ascii = int(part)
+                s = s[:start] + chr(ascii) + s[end:]
+                end = start - 1 #  (2) __ removed before start and one character added after so -1
+            except ValueError:
+                pass
     return s
 
 
@@ -250,7 +256,7 @@ if __name__ == '__main__':
     parser.add_option("--target_path", action="store", type="string",
                       help="Path to write merged data to")
     parser.add_option("--divider", action="store", type="string",
-                      help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ . "
+                      help="Divider between key and value. Special symbols can be entered using galaxy code or __acsii__ (for __ use ____). "
                            "Note: After splitiing on divider both parts will be trimmed for whitespace.")
     parser.add_option("--na_value", action="store", type="string",
                       help="String to use when the part before the divider/ row name is found in some files but not in others. "
@@ -260,9 +266,11 @@ if __name__ == '__main__':
     parser.add_option("--row_sort", action="store_true", default=False,
                       help="If set will sort the row based on shortened file names.") 
     parser.add_option("--reguired_row_regex", action="append", type="string", 
-                      help="If provided, only rows whose cleaned name matches one or more of these regex rules will be kept. ")
+                      help="If provided, only rows whose cleaned name matches one or more of these regex rules will be kept. "
+                            "Special symbols can be entered using galaxy code or __acsii__ (for __ use ____) ")
     parser.add_option("--negative_row_regex", action="append", type="string", 
-                      help="If provided, only rows whose cleaned name matches none of these regex rules will be kept. ")
+                      help="If provided, only rows whose cleaned name matches none of these regex rules will be kept. "
+                            "Special symbols can be entered using galaxy code or __acsii__ (for __ use ____) ")
     parser.add_option("--tab_replace", action="store", type="string", default=" ",
                       help="Value to beinserted in data including column and row names whenever a tab is found. "
                            "Default is a single space.")
@@ -270,7 +278,10 @@ if __name__ == '__main__':
 
     if not options.divider:
         report_error("No divider parameter provided")
-    options.divider = remove_symbols(options.divider)
+    clean_divider = remove_symbols(options.divider)
+    if options.verbose and (clean_divider != options.divider):
+        print "divider",options.divider,"cleaned to",clean_divider
+    options.divider = clean_divider
 
     if not options.na_value:
         if options.verbose:
@@ -279,6 +290,22 @@ if __name__ == '__main__':
 
     if not options.tab_replace:
         options.tab_replace = " "
+
+    if not options.reguired_row_regex:
+        options.reguired_row_regex = []
+    for i, rule in enumerate(options.reguired_row_regex):
+        clean_rule = remove_symbols(rule)
+        if options.verbose and (clean_rule != rule):
+            print "reguired_row_regex",rule,"cleaned to",clean_rule
+        options.reguired_row_regex[i] = clean_rule
+
+    if not options.negative_row_regex:
+        options.negative_row_regex = []
+    for i, rule in enumerate(options.negative_row_regex):
+        clean_rule = remove_symbols(rule)
+        if options.verbose and (clean_rule != rule):
+            print "negative_row_regex",rule,"cleaned to",clean_rule
+        options.negative_row_regex[i] = remove_symbols(rule)
 
     run_merge_files(file_paths=options.file_path, file_names=options.file_name, files_path=options.files_path , 
                     target_path=options.target_path, verbose=options.verbose, divider=options.divider,

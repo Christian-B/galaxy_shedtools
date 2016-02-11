@@ -45,10 +45,11 @@ tab_replace is used to replace any tabs that remain in the row_names and or data
 verbose if set will cause more verbose infomormation such as lines that do not have the divider
 
 ## Special charaters
+<pre>
 The command line makes if difficult to use many specially characters.
 
 Therefor Galaxy replaces some of these with a __*__ replacement string.
-<pre>
+
 ascii  char   code
  34     "     __dq__
  35     #     __pd__
@@ -79,6 +80,10 @@ ascii  char   code
 All of these, including any __ascii__ combination will be converted back by the tool before compiling the regex pattern.
 
 As __ (2 underscores) is used here: ____ (4 underscores) will be read as __ (2 underscores)
+
+So for example to use either a or b  (a|b) enter (a__124__b) 
+
+The regex pattern to detect two underscores at the end __$ needs to be entered as __36______
 </pre>
 
 ## Key methods
