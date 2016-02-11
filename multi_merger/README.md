@@ -28,20 +28,58 @@ target_path specifies where the tsv file will be written
 divider is the string to be search for in each line of the input files. 
 If found exactly once the part before will be considered a row_name and the part after the data
 Note: If the same row_name is found only the last line is used.
-For the command line version ONLY the galaxy replacement __*__ symbols can be used. 
-Also __ascii__ where ascii is the numberical ascii code of a character can be used too.
+See:  Special charaters
 
 column_sort and row_sort if set cause the data to be sorted accordingly.
 
-reguired_row_regexes if provided must be a list of regex patterns. Each row_name must match at least one of these for the row to be included
+reguired_row_regexes if provided must be a list of regex patterns. Each row_name must match at least one of these for the row to be included. 
+See:  Special charaters
 
-negative_row_regexes if provided must be a list of regex patterns. Each row_name must match none of these for the row to be included
+negative_row_regexes if provided must be a list of regex patterns. Each row_name must match none of these for the row to be included. 
+See:  Special charaters
 
 na_value whenever a file does not have data for a row_name
 
 tab_replace is used to replace any tabs that remain in the row_names and or data after they have been striped of starting and ending whitespace
 
 verbose if set will cause more verbose infomormation such as lines that do not have the divider
+
+## Special charaters
+The command line makes if difficult to use many specially characters.
+
+Therefor Galaxy replaces some of these with a __*__ replacement string.
+<pre>
+ascii  char   code
+ 34     "     __dq__
+ 35     #     __pd__
+ 39     '     __sq__
+ 60     <     __lt__
+ 62     >     __gt__
+ 64     @     __at__
+ 91     [     __ob__
+ 93     ]     __cb__
+123     {     __oc__
+125     }     __cc__
+
+For others Galaxy just inserts an X.  For these use you can use the format __ascii__
+
+This includes all charaacters below ascii 31 above ascii 126 and the following:
+
+ascii  char   code
+  9    tab    __9__
+ 36     $     __36__
+ 37     %     __37__
+ 38     &     __38__
+ 59     ;     __59__
+ 92     \     __92__
+ 96     `     __96__
+124     |     __124__
+126     ~     __126__
+
+All of these, including any __ascii__ combination will be converted back by the tool before compiling the regex pattern.
+
+As __ (2 underscores) is used here: ____ (4 underscores) will be read as __ (2 underscores)
+</pre>
 
 ## Key methods
 The key method is merge_files(file_paths,  file_names, target_path, divider="\t", reguired_row_regexes=[], negative_row_regexes=[], column_sort=False, row_sort=False, na_value="", tab_replace=" ", verbose=False)
@@ -63,7 +101,7 @@ The file_names are shortened by removing any
 
     python merge_files.py --files_path=test-data/names.txt --target_path=test-data/merged.tsv  --divider __9__ 
 
-    python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt  --target_path=test-data/merged_regex.tsv  --divider __9__ --reguired_row_regex 1 --reguired_row_regex 2 --negative_row_regex 8 --negative_row_regex 9 --row_sort
+    python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt  --target_path=test-data/merged_regex.tsv  --divider __9__ --reguired_row_regex 1 --reguired_row_regex __50__ --negative_row_regex __56__ --negative_row_regex 9 --row_sort --verbose
 
     python merge_files.py --file_path=test-data/C03/htseq_count.txt --file_path=test-data/C01/htseq_count.txt --file_path=test-data/C02/htseq_count.txt --file_path=test-data/C05/htseq_count.txt --names_path=test-data/names.txt --target_path=test-data/sorted_merged.tsv  --divider __9__ --column_sort --row_sort
 
