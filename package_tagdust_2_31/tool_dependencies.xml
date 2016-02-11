@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="tagdust" version="2.31">
+        <install version="1.0">
+            <actions>
+            
+                <!-- Not using offical code as it contains a weird repeating WTF error message
+                 action type="download_by_url">http://sourceforge.net/projects/tagdust/files/tagdust-2.31.tar.gz/download</action-->
+                <action type="download_by_url">https://github.com/Christian-B/galaxy_shedtools/raw/master/package_tagdust_2_31/tagdust-2.31.tar.gz</action>
+                <action type="shell_command">./configure --prefix=$INSTALL_DIR</action>
+                <action type="shell_command">make</action>
+                <action type="move_directory_files">
+                    <source_directory>src</source_directory>
+                    <destination_directory>$INSTALL_DIR/src</destination_directory>
+                </action>
+                <action type="set_environment">
+                  <environment_variable action="prepend_to" name="PATH">$INSTALL_DIR/src</environment_variable>
+                  <environment_variable action="set_to" name="TAGDUST_ROOT">$INSTALL_DIR</environment_variable>
+                </action>
+            </actions>
+        </install>
+        <readme />
+    </package>
+</tool_dependency>
