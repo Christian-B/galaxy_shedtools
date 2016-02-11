@@ -191,7 +191,7 @@ As __ (2 underscores) is used here: ____ (4 underscores) will be read as __ (2 u
 
 So for example to use either a or b  (a|b) enter (a__124__b) 
 
-The regex pattern to detect two underscores at the end __$ needs to be entered as __36______
+The regex pattern to detect two underscores at the end __$ needs to be entered as ______36__
 
 ]]>
     </help>
