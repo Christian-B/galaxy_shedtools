@@ -78,5 +78,7 @@ unused/
 #tar files
 *.tar
 
+#Folder with unpacked tagdust code
+tagdust-2.31
 
 
