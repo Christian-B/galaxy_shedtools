@@ -1,5 +1,5 @@
 import collections
-import optparse #using optparse as hyrda still python 2.6
+import optparse  # using optparse as hyrda still python 2.6
 import re
 import sys
 
@@ -19,19 +19,19 @@ def clean_part(part, tab_replace=" "):
     return part
 
 
-def merge_files(file_paths, file_names, target_path=None, divider="\t", reguired_row_regexes=[], negative_row_regexes=[], 
+def merge_files(file_paths, file_names, target_path=None, divider="\t", reguired_row_regexes=[], negative_row_regexes=[],
                 column_sort=False, row_sort=False, na_value="", tab_replace=" ", verbose=False):
     """
     Merges a list of files into a single tsv file.
 
     file_paths is a list of paths to the input files
 
-    file_names is an equally long list of names for these files which will be taken as the column names. 
+    file_names is an equally long list of names for these files which will be taken as the column names.
     Note: use run_merge_files to shorten the file_names, read them from a file or to use the file_paths as file names
 
     target_path specifies where the tsv file will be written
 
-    divider is the string to be search for in each line of the input files. 
+    divider is the string to be search for in each line of the input files.
     If found exactly once the part before will be considered a row_name and the part after the data
     Note: If the same row_name is found only the last line is used.
 
@@ -67,13 +67,13 @@ def merge_files(file_paths, file_names, target_path=None, divider="\t", reguired
                     value = clean_part(parts[1], tab_replace)
                     all_values[key][file_names[count]] = value
                 else:
-                    mis_match+= 1
+                    mis_match += 1
                     if verbose:
                         if mis_match < 5:
                             print "ignoring following line from", file_path
                             print line
         if mis_match > 0:
-            print "In file " + file_path + " " + str(mis_match) + " lines did not have 1 divider (" + divider + ") " 
+            print "In file " + file_path + " " + str(mis_match) + " lines did not have 1 divider (" + divider + ") "
 
     # rows names are all the keys from the data found
     row_names = all_values.keys()
@@ -91,12 +91,12 @@ def merge_files(file_paths, file_names, target_path=None, divider="\t", reguired
                 negative_res.append(re.compile(negative_row_regex))
         for row_name in row_names:
             if reguired_row_regexes:
-                ok = False 
+                ok = False
                 for reguired_re in reguired_res:
                     if reguired_re.search(row_name):
                         ok = True
-            else: 
-                ok = True 
+            else:
+                ok = True
             if negative_row_regexes and ok:
                 for negative_re in negative_res:
                     if negative_re.search(row_name):
@@ -146,7 +146,7 @@ def remove_common(names):
     return new_names
 
 
-# See merge_files method for kwargs 
+# See merge_files method for kwargs
 
 def run_merge_files(file_paths=[], file_names=[], files_path=None, **kwargs):
     """
@@ -187,7 +187,6 @@ def run_merge_files(file_paths=[], file_names=[], files_path=None, **kwargs):
 # From here on down is the code if this is being run from the command line including galaxy.
 
 
-
 def remove_symbols(s):
     if s.find("__") == -1:
         return s
@@ -210,19 +209,19 @@ def remove_symbols(s):
         start = s.find("__", end)
         if start == -1:
             return s
-        end = s.find("__", start + 2) +2
+        end = s.find("__", start + 2) + 2
         if end == 1:
             return s
-        part = s[start + 2: end -2]
+        part = s[start + 2: end - 2]
         if part == "":
-            # start + 2 to leave one set of __ behind 
+            # start + 2 to leave one set of __ behind
             s = s[:start + 2] + s[end:]
             end = start + 2
         else:
             try:
                 ascii = int(part)
                 s = s[:start] + chr(ascii) + s[end:]
-                end = start - 1 #  (2) __ removed before start and one character added after so -1
+                end = start - 1  # (2) __ removed before start and one character added after so -1
             except ValueError:
                 pass
     return s
@@ -249,7 +248,7 @@ if __name__ == '__main__':
                       help="Names for the files. To be used to generate column names. "
                            "Order and size are relavant and must match file_path. "
                            "Optional: Can also be provides as a path to a file using names_path "
-                            "If neither are provide the file_paths are used.")
+                           "If neither are provide the file_paths are used.")
     parser.add_option("--files_path", action="store", type="string",
                       help="Path to file that holds the file_paths and or file_names. "
                            "Ignored if file_paths and or file_names are provided directly.")
@@ -264,13 +263,13 @@ if __name__ == '__main__':
     parser.add_option("--column_sort", action="store_true", default=False,
                       help="If set will sort the columns based on shortened file names.")
     parser.add_option("--row_sort", action="store_true", default=False,
-                      help="If set will sort the row based on shortened file names.") 
-    parser.add_option("--reguired_row_regex", action="append", type="string", 
+                      help="If set will sort the row based on shortened file names.")
+    parser.add_option("--reguired_row_regex", action="append", type="string",
                       help="If provided, only rows whose cleaned name matches one or more of these regex rules will be kept. "
-                            "Special symbols can be entered using galaxy code or __acsii__ (for __ use ____) ")
-    parser.add_option("--negative_row_regex", action="append", type="string", 
+                           "Special symbols can be entered using galaxy code or __acsii__ (for __ use ____) ")
+    parser.add_option("--negative_row_regex", action="append", type="string",
                       help="If provided, only rows whose cleaned name matches none of these regex rules will be kept. "
-                            "Special symbols can be entered using galaxy code or __acsii__ (for __ use ____) ")
+                           "Special symbols can be entered using galaxy code or __acsii__ (for __ use ____) ")
     parser.add_option("--tab_replace", action="store", type="string", default=" ",
                       help="Value to beinserted in data including column and row names whenever a tab is found. "
                            "Default is a single space.")
@@ -280,7 +279,7 @@ if __name__ == '__main__':
         report_error("No divider parameter provided")
     clean_divider = remove_symbols(options.divider)
     if options.verbose and (clean_divider != options.divider):
-        print "divider",options.divider,"cleaned to",clean_divider
+        print "divider", options.divider, "cleaned to", clean_divider
     options.divider = clean_divider
 
     if not options.na_value:
@@ -296,7 +295,7 @@ if __name__ == '__main__':
     for i, rule in enumerate(options.reguired_row_regex):
         clean_rule = remove_symbols(rule)
         if options.verbose and (clean_rule != rule):
-            print "reguired_row_regex",rule,"cleaned to",clean_rule
+            print "reguired_row_regex", rule, "cleaned to", clean_rule
         options.reguired_row_regex[i] = clean_rule
 
     if not options.negative_row_regex:
@@ -304,11 +303,10 @@ if __name__ == '__main__':
     for i, rule in enumerate(options.negative_row_regex):
         clean_rule = remove_symbols(rule)
         if options.verbose and (clean_rule != rule):
-            print "negative_row_regex",rule,"cleaned to",clean_rule
+            print "negative_row_regex", rule, "cleaned to", clean_rule
         options.negative_row_regex[i] = remove_symbols(rule)
 
-    run_merge_files(file_paths=options.file_path, file_names=options.file_name, files_path=options.files_path , 
+    run_merge_files(file_paths=options.file_path, file_names=options.file_name, files_path=options.files_path,
                     target_path=options.target_path, verbose=options.verbose, divider=options.divider,
-                    column_sort=options.column_sort, row_sort=options.row_sort, na_value=options.na_value, tab_replace=options.tab_replace, 
+                    column_sort=options.column_sort, row_sort=options.row_sort, na_value=options.na_value, tab_replace=options.tab_replace,
                     reguired_row_regexes=options.reguired_row_regex, negative_row_regexes=options.negative_row_regex)
-

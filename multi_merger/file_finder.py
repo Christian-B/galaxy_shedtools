@@ -2,7 +2,6 @@ import optparse  # using optparse as hydra still python 2.6
 import os
 import re
 import sys
-import tempfile
 
 
 def report_error(error):
@@ -17,7 +16,7 @@ def report_error(error):
 def expanderuser(path):
     """Replaces the ~ with the users home directory"""
     if path.startswith("~"):
-        return os.path.expanduser("~") + path[1: ]
+        return os.path.expanduser("~") + path[1:]
     return path
 
 
@@ -43,9 +42,9 @@ def do_walk(source, regex, onerror=None, followlinks=False, verbose=True):
                 file_path = os.path.join(root, name)
                 file_paths.append(file_path)
                 if verbose:
-                    print "Found",file_path
+                    print "Found", file_path
     if len(file_paths) == 0:
-        report_error("NO files found to match "+ regex)
+        report_error("NO files found to match " + regex)
     return file_paths
 
 
@@ -53,13 +52,13 @@ if __name__ == '__main__':
 
     parser = optparse.OptionParser()
     parser.add_option("--source", action="store", type="string",
-                  default=os.getcwd(),
-                  help="SOURCE directory of the sub directories to hold the data for each run "
-                  "Default is the current directory")
+                      default=os.getcwd(),
+                      help="SOURCE directory of the sub directories to hold the data for each run "
+                           "Default is the current directory")
     parser.add_option("--regex", action="store", type="string",
-                  help="Regex pattern for identifying the left file")
+                      help="Regex pattern for identifying the left file")
     parser.add_option("--target_path", action="store", type="string",
-                  help="Path to write file_names to")
+                      help="Path to write file_names to")
     parser.add_option("--verbose", action="store_true", default=False,
                       help="If set will generate output of what the tool is doing.")
     (options, args) = parser.parse_args()
