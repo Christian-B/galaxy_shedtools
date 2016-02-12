@@ -12,7 +12,11 @@
         cp $read2_file read2.fastq ;
         mkdir output ;
         tagdust -t8 -o output/data 
-            -ref /home/christian/Dropbox/Gene_data//ercc_and_TPA_mouse_rRNA.fa 
+            #if $reference_source.reference_source_selector=='history':
+                -ref $reference_source.ref_file
+            #else
+                -ref $reference_source.ref_path.fields.path
+            #end if
             #for $i, $building in enumerate( $hmm, 1 )
                 -$i ${building.block}
             #end for
@@ -26,6 +30,21 @@
         <repeat name="hmm" title="HMM Building Blocks">
             <param name="block" type="text" size="25" label="Next HMM Building block (Note: Barcode/Index currently not supported)" />
         </repeat>
+        <conditional name="reference_source">
+            <param name="reference_source_selector" type="select" label="Choose the source for the reference fasta">
+                <option value="cached">Locally cached</option>
+                <option value="history">History</option>
+            </param>
+            <when value="cached">
+                <param name="ref_path" type="select" label="Using reference fasta">
+                    <options from_data_table="tagdust_index"/>
+                    <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
+                </param>
+            </when>
+            <when value="history"> 
+                <param name="ref_file" type="data" format="fasta" label="Using reference file" />
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data format="txt" name="logfile" label="The tagdust log output for ${read1_file.name}." from_work_dir="output/data_logfile.txt"/>
@@ -39,6 +58,8 @@
             <param name="read1_file" value="C75_S29_R1_001_extracted.fastq" ftype="fastq" /> 
             <param name="read2_file" value="C75_S29_R2_001_extracted.fastq" ftype="fastq" /> 
             <param name="hmm_0|block" value="R:N"/>
+            <param name="reference_source|reference_source_selector" value="history"/>
+            <param name="reference_source|ref_file" value="ercc_and_TPA_mouse_rRNA.fa" ftype="fasta"/>
             <output name="logfile" >
                 <assert_contents>
                     <has_text text="Determining threshold for read0." />
