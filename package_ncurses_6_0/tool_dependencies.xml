@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
-<!-- Copied from https://testtoolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/7fae9c4b2d10 
-     Same as     https://toolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/c921f7ce9ca7 -->
+<!-- Copied from https://toolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/0efde9889efd
+     Same as     https://testtoolshed.g2.bx.psu.edu/view/iuc/package_ncurses_6_0/15e2190c87ca -->
 <tool_dependency>
     <package name="ncurses" version="6.0">
         <install version="1.0">
             <actions>
-                <action type="download_by_url" sha256sum="3c1d9534d6d5b3a691d23199a7621f25ffbfa0ccc333f680fcdfc192ea362c84">ftp://invisible-island.net/ncurses/current/ncurses-6.0-20150725.tgz</action>
-                <action type="shell_command">
-                    ./configure --prefix $INSTALL_DIR --with-shared --enable-symlinks
+                <action type="download_by_url" sha256sum="3c1d9534d6d5b3a691d23199a7621f25ffbfa0ccc333f680fcdfc192ea362c84">
+                    https://depot.galaxyproject.org/software/ncurses/ncurses_6.0_src_all.tar.gz
                 </action>
-                <action type="shell_command">make</action>
-                <action type="shell_command">make install</action>
+                <action type="autoconf">--with-shared --enable-symlinks</action>
                 <action type="set_environment">
                     <environment_variable action="set_to" name="NCURSES_INCLUDE_PATH">$INSTALL_DIR/include</environment_variable>
                     <environment_variable action="set_to" name="NCURSES_LIB_PATH">$INSTALL_DIR/lib/</environment_variable>
@@ -27,3 +25,5 @@
         <readme>ncurses (new curses) is a programming library that provides an API which allows the programmer to write text-based user interfaces in a terminal-independent manner</readme>
     </package>
 </tool_dependency>
+
+
