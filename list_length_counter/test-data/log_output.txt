@@ -1,2 +1,0 @@
-test-data/left.txt 11
-test-data/right.txt 11

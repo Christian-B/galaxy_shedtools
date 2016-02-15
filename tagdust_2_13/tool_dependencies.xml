@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<tool_dependency>
-    <package name="tagdust" version="2.13">
-        <repository name="package_tagdust_2_13" owner="brenninc" prior_installation_required="True" />
-    </package>
-</tool_dependency>
-
-

@@ -1,3 +1,15 @@
+brenninc/repr_tools
+    brenninc/package_r_repr
+        brenninc/package_r_3_2_1
+            Others indirectly only
+
+
+brenninc/scde_tools
+    brenninc/package_r_scde
+        brenninc/package_r_3_2_1
+            Others indirectly only
+
+
 brenninc/package_r_3_2_1
     iuc/package_atlas_3_10
         iuc/package_readline_6_3
@@ -32,25 +44,27 @@ brenninc/package_r_3_2_1
         iuc/package_ncurses_6_0
 
 
-
-iuc/package_biopython_1_66
-    iuc/package_readline_6_3 
-        iuc/package_ncurses_6_0
-    iuc/package_numpy_1_9 iuc 
-        iuc/package_atlas_3_10
-            iuc/package_readline_6_3
-                iuc/package_ncurses_6_0
-            iuc/package_xz_5_0_5
-        iuc/package_python_2_7
-            iuc/package_xz_5_0_5
-                iuc/package_libtool_2_4
+brenninc/sync_paired_end_reads
+    iuc/package_biopython_1_66
+        iuc/package_readline_6_3 
+            iuc/package_ncurses_6_0
+        iuc/package_numpy_1_9 iuc 
+            iuc/package_atlas_3_10
+                iuc/package_readline_6_3
+                    iuc/package_ncurses_6_0
+                iuc/package_xz_5_0_5
+            iuc/package_python_2_7
+                iuc/package_xz_5_0_5
+                    iuc/package_libtool_2_4
+                    iuc/package_bzlib_1_0
+                iuc/package_zlib_1_2_8
                 iuc/package_bzlib_1_0
-            iuc/package_zlib_1_2_8
-            iuc/package_bzlib_1_0
-            iuc/package_sqlite_3_8_3
-            iuc/package_gdbm_1_11
-            iuc/package_atlas_3_10 
+                iuc/package_sqlite_3_8_3
+                iuc/package_gdbm_1_11
+                iuc/package_atlas_3_10 
 
+
+package_tagdust_2_31
 
 
 
