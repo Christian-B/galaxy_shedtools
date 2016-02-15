@@ -1,0 +1,56 @@
+brenninc/package_r_3_2_1
+    iuc/package_atlas_3_10
+        iuc/package_readline_6_3
+            iuc/package_ncurses_6_0
+    mvdbeek/package_cairo_1_14_2
+        iuc/package_pixman_0_32_6
+            iuc/package_libpng_1_6_7
+                iuc/package_zlib_1_2_8
+        iuc/package_libpng_1_6_7
+            iuc/package_zlib_1_2_8
+        mvdbeek/package_freetype_2_5_2
+            iuc/package_libpng_1_6_7
+        mvdbeek/package_fontconfig_2_11_1
+            mvdbeek/package_freetype_2_5_2
+                iuc/package_libpng_1_6_7
+            devteam/package_libxml2_2_9_1
+    mvdbeek/package_fontconfig_2_11_1
+        mvdbeek/package_freetype_2_5_2
+        devteam/package_libxml2_2_9_1
+    mvdbeek/package_freetype_2_5_2
+        iuc/package_libpng_1_6_7
+            iuc/zlib_1_2_8
+    iuc/package_libpng_1_6_7
+        iuc/zlib_1_2_8
+    devteam/package_libxml2_2_9_1
+    iuc/package_ncurses_6_0
+    iuc/package_pixman_0_32_6
+        iuc/package_libpng_1_6_7
+            iuc/zlib_1_2_8
+    iuc/package_readline_6_3
+        iuc/package_ncurses_6_0
+
+
+
+iuc/package_biopython_1_66
+    iuc/package_readline_6_3 
+        iuc/package_ncurses_6_0
+    iuc/package_numpy_1_9 iuc 
+        iuc/package_atlas_3_10
+            iuc/package_readline_6_3
+                iuc/package_ncurses_6_0
+            iuc/package_xz_5_0_5
+        iuc/package_python_2_7
+            iuc/package_xz_5_0_5
+                iuc/package_libtool_2_4
+                iuc/package_bzlib_1_0
+            iuc/package_zlib_1_2_8
+            iuc/package_bzlib_1_0
+            iuc/package_sqlite_3_8_3
+            iuc/package_gdbm_1_11
+            iuc/package_atlas_3_10 
+
+
+
+
+

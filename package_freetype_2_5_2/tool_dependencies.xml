@@ -2,14 +2,14 @@
 <!-- https://testtoolshed.g2.bx.psu.edu/view/mvdbeek/package_freetype_2_5_2/d39e2eb401ec -->
 <tool_dependency>
     <package name="libpng" version="1.6.7">
-        <repository name="package_libpng_1_6_7" owner="brenninc" prior_installation_required="True" />
+        <repository name="package_libpng_1_6_7" owner="iuc" prior_installation_required="True" />
     </package>
     <package name="freetype" version="2.5.2">
         <install version="1.0">
             <actions>
                 <action type="download_by_url">http://download.savannah.gnu.org/releases/freetype/freetype-2.5.2.tar.gz</action>
                 <action type="set_environment_for_install">
-                    <repository name="package_libpng_1_6_7" owner="brenninc" prior_installation_required="True" >
+                    <repository name="package_libpng_1_6_7" owner="iuc" prior_installation_required="True" >
                         <package name="libpng" version="1.6.7" />
                     </repository>
                 </action>
