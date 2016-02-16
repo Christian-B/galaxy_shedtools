@@ -12,6 +12,12 @@
             #if $results.last
                 --last $results.last
             #end if      
+            #if $results.extension.file_type=="fa"
+                --new_ending .fasta
+            #end if
+            #if $results.extension.file_type=="fq"
+                --new_ending .fastq
+            #end if
             #if $results.extension.file_type=="text"
                 --new_ending .txt
             #end if
@@ -36,10 +42,12 @@
         #else
             --ending bam 
             --ending csv 
+            --ending fa 
             --ending fasta 
             --ending fasta.gz 
             --ending fastq 
             --ending fastq.gz 
+            --ending fasta 
             --ending sam 
             --ending tabular 
             --ending text 
@@ -71,12 +79,14 @@
                     <param name="file_type" type="select" label="File Type" help="File Type.">
                         <option value="bam">*.bam files</option>
                         <option value="csv">*.csv files</option>
-                        <option value="fasta">*.fatsa files</option>
-                        <option value="fasta.gz">*.fatsa.gz files</option>
+                        <option value="fa">*.fa files Files saved as *.fasta for galaxy</option>
+                        <option value="fasta">*.fasta files</option>
+                        <option value="fasta.gz">*.fasta.gz files</option>
                         <option value="fastq">*.fastq files</option>
                         <option value="fastq.gz">*.fastq.gz files</option>
                         <option value="fastq">*.fastq files</option>
                         <option value="fastq.gz">*.fastq.gz files</option>
+                        <option value="fq">*.fq files Files saved as *.fastq for galaxy</option>
                         <option value="sam">*.sam files</option>
                         <option value="tabular">*.tabular Files</option>
                         <option value="text">*.text Files saved as *.txt for galaxy</option>
@@ -86,6 +96,7 @@
                         <option value="xlsx">*.xlsx files</option>
                     </param>
                     <when value="csv" />
+                    <when value="fa" />
                     <when value="fasta" />
                     <when value="fasta.gz" >
                         <conditional name="decompress">
@@ -101,7 +112,7 @@
                                 <option value="fastq" selected="true">Keep data as general fastq format</option>
                                 <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
                                 <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
-                                <option value="fastqsolexaillumina">Tag data as fastq illumina in galaxy</option>
+                                <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
                              </param>
                         </conditional>
                     </when>
@@ -117,10 +128,11 @@
                                 <option value="fastq" selected="true" >Keep data as general fastq format</option>
                                 <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
                                 <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
-                                <option value="fastqsolexaillumina">Tag data as fastq illumina in galaxy</option>
+                                <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
                              </param>
                         </conditional>
                     </when>
+                    <when value="fa" />
                     <when value="sam" />
                     <when value="tabular" />
                     <when value="text" />
@@ -140,7 +152,7 @@
         <!-- Ideally galaxy can get the type based on the file extensions. If so just add the type here -->
         <collection type="list" label="$list_name" name="as_galaxy_list">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] in ['bam','csv','fasta','fastq','sam','tabular','text','tsv','txt','xls','xlsx'])</filter>
+            <filter>(results['extension']['file_type'] in ['bam','csv','fa','fasta','fastq','fq','sam','tabular','text','tsv','txt','xls','xlsx'])</filter>
                 <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
         </collection>
         <collection type="list" label="$list_name" name="decompressed_list">
@@ -173,6 +185,20 @@
         </test>
         <test>
             <param name="directory" value="test-data" />
+            <param name="results|extension|file_type" value="fa"/>
+             <output name="listing">
+                <assert_contents>
+                    <has_line line="sample1.fasta" />
+                    <has_line line="other.fasta" />
+                </assert_contents>
+            </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="fasta" file="sample1.fasta" />
+                <element name="other" ftype="fasta" file="sample1.fasta" />
+           </output_collection>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fasta"/>
             <param name="results|start" value="sam" />
             <output name="listing">
@@ -198,6 +224,18 @@
             </output>
             <output_collection name="gz_list" type="list">
                 <element name="sample1" ftype="fasta" file="sample1.fasta.gz" />
+           </output_collection>
+        </test>
+        <test>
+            <param name="directory" value="test-data" />
+            <param name="results|extension|file_type" value="fq"/>
+            <output name="listing">
+                <assert_contents>
+                    <has_line line="sample1.fastq" />
+                </assert_contents>
+            </output>
+            <output_collection name="as_galaxy_list" type="list">
+                <element name="sample1" ftype="fastq" file="sample1.fastq" />
            </output_collection>
         </test>
         <test>
@@ -390,7 +428,50 @@
 
     <help>
 <![CDATA[
-    Reads data of a particuar extension
+This tool will lookup files on the Galaxy server machine, including mounted directories.
+
+Only directories that are included in the white list and not in the black list are allowed.
+If the directory you require does not pass the white list or blacklist test please contact the local galaxy admin.
+(Admins see README)
+
+This tool only supports a limited set of types and file extenstions. 
+No other files are ever returned either by data or listing.
+These endings are case senitive.
+
+====
+
+The data options will look for all files that have a particular ending in the selected directory.
+
+The tool will return two things.
+
+1. A Dataset collection of all the detected files.
+
+2. A file with the names of all the detected files. These will be sorted in the same order as galaxy builds the dataset collection. 
+
+The files can be filtered by setting a specific start strinf for the file name. 
+Only files that start with this string (case senstive) will be included.
+
+Files can also be filter for the last part before the file extsentions.
+
+Assuming the directory has:
+C01_R1_001.fasta   C01_R2_001.fatsa   C02_R1_001.fasta   C02_R2_001.fatsa
+
+Setting start C01 will return just the C01 files:   C01_R1_001.fasta   C01_R2_001.fatsa
+
+Setting last R1_001 will return the read1 files:   C01_R1_001.fasta   C02_R1_001.fasta
+
+As Galaxy detects the file type based on the extension this tool will change the exstension for supported alternative file ends.
+    This includes (manually) setting the exstension to fastqsanger, fastqsolexa, fastqillumina for tools that specify one of these.
+
+As some tools do not accept gz files this tool will offer to unzip gz files.
+
+====
+
+The listing option will return a txt file with all the files found with any of the supported endings. Other files in that directory are not included.
+
+The file exstensions are left as in the directory.
+
+File start and last filters are not supported in this mode.
 ]]>
     </help>
     <citations>
