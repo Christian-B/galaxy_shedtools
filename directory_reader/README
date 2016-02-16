@@ -1,0 +1,32 @@
+This tool will lookup files on the Galaxy server machine, including mounted directories.
+
+The user aspects of the tool are explained in the help section of data_reader.xml
+
+Only directories that are included in the white list and not in the black list are allowed.
+
+The white and black lists can be changed without the requirement to restart the server as these are read from the tools install directory each time the tool is run.
+
+====
+
+The white list is tool-data/white-list.ini
+
+Any directory that starts with any entry from this file will be considered to have passed.
+
+The default file includes a single / so all absolute paths will pass.
+
+====
+
+The black list is tool-data/black-list.ini
+
+Any directory that contains any of the blacklisted strings anywhere in the path are excluded.
+
+The defaulf file excludes most of the standard linux systems directories where data is unlikely to be found.
+
+It also excludes the /galaxy/ pattern to avoid users getting access to galaxy files.
+
+Also .. and ~ are excluded for security reasons.
+
+
+
+
+
