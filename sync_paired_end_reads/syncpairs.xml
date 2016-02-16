@@ -20,16 +20,33 @@
         <data name="reads2_output" format="fastq" label="Synced ${reads2.name}"/>
      </outputs>
     <tests>
-        <test>
+        <!-- Large dataset in github but not toolshed -->
+        <!--test>
             <param name="reads1" value="C75_S29_R1_001.fq" ftype="fastq" /> 
             <param name="reads2" value="C75_S29_R2_001.fastq" ftype="fastq" /> 
             <output name="reads1_output" file="C75_S29_R1_001_extracted.fastq" ftype="fastq" />
             <output name="reads2_output" file="C75_S29_R2_001_extracted.fastq" ftype="fastq" />
+        </test-->
+        <test>
+            <param name="reads1" value="read1.fq" ftype="fastq" /> 
+            <param name="reads2" value="read2.fastq" ftype="fastq" /> 
+            <output name="reads1_output" file="read1_extracted.fastq" ftype="fastq" />
+            <output name="reads2_output" file="read2_extracted.fastq" ftype="fastq" />
         </test>
     </tests>
     <help>
 <![CDATA[
-    Runs syncpairs See https://github.com/mmendez12/sync_paired_end_reads
+Description taken from source: https://github.com/mmendez12/sync_paired_end_reads
+
+sync_paired_end_reads
+
+sync_paired_end_reads is a python tool to synchronise paired-end reads when reads1 or reads2 were modified.
+
+When working with paired-end sequencing data, it is common to filter out reads that do not pass basic quality controls. This leads to pairs that are not synced anymore. This tool streams reads1 and search for the associated read2 in reads2. Additionally it synchronises the sequence identifiers of the reads so if a software modified the sequence identifier of the reads1 then same identifiers will be used for reads2. Finally it replaces all space characters by an arbitrary '___' pattern.
+
+This tool was mainly developed to process the output of tagdust2 when ran in single-end mode which appends the UMIs found in the raw sequences to the sequence identifier.
+Install
+
 ]]>
     </help>
     <citations>
