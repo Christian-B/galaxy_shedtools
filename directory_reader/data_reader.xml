@@ -48,6 +48,7 @@
             --ending fastq 
             --ending fastq.gz 
             --ending fasta 
+            --ending fq 
             --ending sam 
             --ending tabular 
             --ending text 
