@@ -11,8 +11,5 @@
 #
 #value	dbkey	name	barcode	path
 #
-F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN  S:TATAGGG  R:N	no	tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt
-B:GTA_AAC_R:N	B:GTA_AAC_R:N	B:GTA,AAC  R:N	yes	tool-data/B:GTA,AAC_R:N.txt
-R:N	R:N	R:N Only	no	tool-data/R:N.txt
 
 
