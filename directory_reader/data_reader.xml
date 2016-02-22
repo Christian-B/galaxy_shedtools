@@ -96,6 +96,7 @@
                         <option value="xls">*.xls files</option>
                         <option value="xlsx">*.xlsx files</option>
                     </param>
+                    <when value="bam" />
                     <when value="csv" />
                     <when value="fa" />
                     <when value="fasta" />
@@ -105,6 +106,8 @@
                                 <option value="yes" selected="true">Yes decompress and change the extension to *.fasta</option>
                                 <option value="no">No copy as is.</option>
                             </param>
+                            <when value="yes" />
+                            <when value="no" />
                         </conditional>
                     </when>
                     <when value="fastq" >
@@ -115,6 +118,10 @@
                                 <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
                                 <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
                              </param>
+                            <when value="fastq" />
+                            <when value="fastqsanger" />
+                            <when value="fastqsolexa" />
+                            <when value="fastqillumina" />
                         </conditional>
                     </when>
                     <when value="fastq.gz" >
@@ -123,6 +130,8 @@
                                 <option value="yes" selected="true">Yes decompress and change the extension to *.fasta</option>
                                 <option value="no">No copy as is.</option>
                             </param>
+                            <when value="yes" />
+                            <when value="no" />
                         </conditional>
                         <conditional name="new_galaxy">
                             <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will detetmine which down stream tools can be used.">
@@ -131,9 +140,13 @@
                                 <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
                                 <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
                              </param>
+                            <when value="fastq" />
+                            <when value="fastqsanger" />
+                            <when value="fastqsolexa" />
+                            <when value="fastqillumina" />
                         </conditional>
                     </when>
-                    <when value="fa" />
+                    <when value="fq" />
                     <when value="sam" />
                     <when value="tabular" />
                     <when value="text" />
