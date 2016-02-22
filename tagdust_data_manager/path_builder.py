@@ -11,11 +11,15 @@ def _add_data_table_entry( data_manager_dict, data_table_name, data_table_entry 
     return data_manager_dict
 
 
-def check_param(name, value, check_tab=True):
+def check_param(name, value, default=None,  check_tab=True):
     if value in [ None, '', '?' ]:
-        raise Exception( '{0} is not a valid {1}. You must specify a valid {1}.'.format( value, name ) )
+        if default:
+            print "Using {0} for {1} as no value provided".format( default, name )
+            value = default
+        else:
+            raise Exception( '{0} is not a valid {1}. You must specify a valid {1}.'.format( value, name ) )
     if check_tab and "\t" in value:
-        raise Exception( '{0} is not a valid {1}. It may not contain a tab.'.format( value, name ) )
+        raise Exception( '{0} is not a valid {1}. It may not contain a tab because these are used as seperators by galaxy .'.format( value, name ) )
     return value
 
 
@@ -36,17 +40,22 @@ def main():
     parser.add_option( '--json_output_file', action='store', type="string", default=None, help='path' )
     (options, args) = parser.parse_args()
  
-    value = check_param("value", options.value)
-    dbkey = check_param("dbkey", options.dbkey)
-    name = check_param("name", options.name)
-    path = check_param("path", options.path, check_tab=False)
+    path = check_param("path", options.path)
     if not os.path.exists(path):
         raise Exception( 'Unable to find path {0}.'.format( path ) )
+    basename = os.path.basename(path)
+    filename = os.path.splitext(basename)[0]
+    name = check_param("name", options.name, default=filename)
+    value = check_param("value", options.value, default=name)
+    dbkey = check_param("dbkey", options.dbkey, default=value)
     data_table_name = check_param("data_table_name", options.data_table_name)
     json_output_file = check_param("json_output_file", options.json_output_file, check_tab=False)
 
-    params = json.loads( open( json_output_file ).read() )
-    print params
+    if os.path.exists(json_output_file):
+        params = json.loads( open( json_output_file ).read() )
+        print "params", params
+    else:
+        params = {}
 
     data_manager_dict = {}
     data_table_entry = dict( value=value, dbkey=dbkey, name=name, path=path )

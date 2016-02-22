@@ -1,0 +1,8 @@
+#This is a location file for tagdust reference fasta files.
+
+#file has this format (longer white space characters are TAB characters):
+#
+#value	dbkey	name	path
+#
+#mouse	/mnt/galaxyIndices/fasta/mouse.fasta
+
