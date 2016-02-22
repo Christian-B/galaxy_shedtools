@@ -5,5 +5,5 @@
 #value	dbkey	name	path
 #
 #mouse	/mnt/galaxyIndices/fasta/mouse.fasta
-value_pos	dbkey_pos	ercc_and_TPA_mouse_RNA	/home/christian/Dropbox/Gene_data/ercc_and_TPA_mouse_rRNA.fa
+ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/test-data/ercc_and_TPA_mouse_rRNA.fa
 

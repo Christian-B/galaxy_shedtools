@@ -1,0 +1,19 @@
+#This is a location file for tagdust reference fasta files
+
+#See tagdust reference manual for architecture recommendatons
+
+#If the architecure file include a barcode HMM (B:) set the nacode field to yes
+#Otherwise leave is as no
+
+#Planemo does not handle commas in value field well so avoid these if including the file in testing.
+
+#file has this format (white space characters are TAB characters):
+#
+#value	dbkey	name	barcode	path
+#
+F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN  S:TATAGGG  R:N	no	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt
+B:GTA_AAC_R:N	B:GTA_AAC_R:N	B:GTA,AAC  R:N	yes	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/B:GTA,AAC_R:N.txt
+R:N	R:N	R:N Only	no	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/R:N.txt
+
+
+

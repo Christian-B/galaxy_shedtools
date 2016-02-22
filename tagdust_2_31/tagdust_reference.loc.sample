@@ -1,0 +1,9 @@
+#This is a location file for tagdust reference fasta files.
+
+#file has this format (longer white space characters are TAB characters):
+#
+#value	dbkey	name	path
+#
+#mouse	/mnt/galaxyIndices/fasta/mouse.fasta
+ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	test-data/ercc_and_TPA_mouse_rRNA.fa
+

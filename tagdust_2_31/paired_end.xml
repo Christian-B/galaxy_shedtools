@@ -1,4 +1,5 @@
 <tool id="tagdust_paired_end" name="Tagdust paired end processor" version="0.1.1">
+    <!-- Warning incorrect HMM blocks have caused Galaxy to hang so allowing users to specify HMM blocks is not recommended -->
     <description>Runs tagdust in paired end mode</description>
     <requirements>
         <requirement type="package" version="2.31">tagdust</requirement>
@@ -37,7 +38,7 @@
             </param>
             <when value="cached">
                 <param name="ref_path" type="select" label="Using reference fasta">
-                    <options from_data_table="tagdust_index"/>
+                    <options from_data_table="tagdust_reference"/>
                     <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
                 </param>
             </when>

@@ -1,0 +1,345 @@
+<tool id="tagdust_runner_2_31" name="Tagdust runner" version="0.1.1">
+    <description>Runs tagdust in single end mode</description>
+    <requirements>
+        <requirement type="package" version="2.31">tagdust</requirement>
+    </requirements>
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>
+    <command >
+        echo using architecture ;
+        cat $architecture.fields.path ;
+        echo ;
+        #if $input.run_type_selector=="architecture"
+            cp $architecture.fields.path architecture.txt ;
+        #else
+            #if $input.run_type_selector=="single"
+                cp $input.fastq_file input.fastq ;
+            #end if
+            #if $input.run_type_selector=="paired"
+                cp $input.read1_file read1.fastq ;
+                cp $input.read2_file read2.fastq ;
+            #end if
+            mkdir output ;
+            tagdust -t8 -o output/data 
+                -arch $architecture.fields.path
+                #if $input.reference_source.reference_source_selector=='history':
+                    -ref $input.reference_source.ref_file
+                #end if
+                #if $input.reference_source.reference_source_selector=='cached':
+                    -ref $input.reference_source.ref_path.fields.path
+                #end if
+                #if $input.run_type_selector=="single"
+                    input.fastq ;
+                #else
+                    read1.fastq read2.fastq ;
+                #end if
+                echo files in output folder ;
+                ls -al output ;
+            #if $input.include.barcode_files=="yes"
+                #if $architecture.fields.barcode=="yes"
+                    cd output ;
+                    ls *_BC_* > $barcode_files
+                #else
+                    echo Selected architecture not expected to generate any barcode files > $barcode_files ;
+                    echo To avoid this output set Choose to find the barcode files to No >> $barcode_files ;
+                #end if
+            #else 
+                #if $architecture.fields.barcode=="yes"
+                    echo ;
+                    echo Tagdust not included in output at users request! ;
+                    echo To get then set Choose to find the barcode files to Yes and run the tool again ;
+                #end if
+            #end if
+        #end if
+    </command>
+    <inputs>
+        <conditional name="input">
+            <param name="run_type_selector" type="select" label="Choose single or paired mode (Or just show an architecture)">
+                <option value="single"  selected="true">Run with Single-end data</option>
+                <option value="paired">Run with Pair-end data</option>
+                <option value="architecture">Just show architecture file</option>
+            </param>
+            <when value="single">
+                <param name="fastq_file" type="data" format="fastq" label="Single Fastq file to process" />
+                <conditional name="reference_source">
+                    <param name="reference_source_selector" type="select" label="Choose the source for the reference fasta (If any)">
+                        <option value="none"  selected="true">Do not include a reference fatsa</option>
+                        <option value="cached">Locally cached</option>
+                        <option value="history">History</option>
+                    </param>
+                    <when value="none"/>
+                    <when value="cached">
+                        <param name="ref_path" type="select" label="Using reference fasta">
+                            <options from_data_table="tagdust_reference"/>
+                            <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
+                        </param>
+                    </when>
+                    <when value="history"> 
+                        <param name="ref_file" type="data" format="fasta" label="Using reference file" />
+                    </when>
+                </conditional>
+                <conditional name="include">
+                    <param name="barcode_files" type="select" label="Choose to find the barcode files (If any)">
+                        <option value="yes" selected="true">Yes. Look for possible barcode seperated files.</option>
+                        <option value="no" >No. Ignores all barcode files even if these are generated.</option>
+                    </param>
+                    <when value="yes"/>
+                    <when value="no"/>
+                </conditional>
+            </when>
+            <when value="paired">
+                <param name="read1_file" type="data" format="fastq" label="Read 1 Fastq file to process" />
+                <param name="read2_file" type="data" format="fastq" label="Read 2 Fastq file to process" />
+                <conditional name="reference_source">
+                    <param name="reference_source_selector" type="select" label="Choose the source for the reference fasta (If any)">
+                        <option value="none"  selected="true">Do not include a reference fatsa</option>
+                        <option value="cached">Locally cached</option>
+                        <option value="history">History</option>
+                    </param>
+                    <when value="none"/>
+                    <when value="cached">
+                        <param name="ref_path" type="select" label="Using reference fasta">
+                            <options from_data_table="tagdust_reference"/>
+                            <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
+                        </param>
+                    </when>
+                    <when value="history"> 
+                        <param name="ref_file" type="data" format="fasta" label="Using reference file" />
+                    </when>
+                </conditional>
+                <conditional name="include">
+                    <param name="barcode_files" type="select" label="Choose to find the barcode files (If any)">
+                        <option value="yes" selected="true">Yes. Look for possible barcode seperated files.</option>
+                        <option value="no" >No. Ignores all barcode files even if these are generated.</option>
+                    </param>
+                    <when value="yes"/>
+                    <when value="no"/>
+                </conditional>
+            </when>
+            <when value="architecture"/> 
+        </conditional>
+        <param name="architecture" type="select" label="Using architecture">
+            <options from_data_table="tagdust_architecture"/>
+            <validator type="no_options" message="No architecture found"/>
+            <!--filter name="barcode" value="yes" column="3"/-->
+        </param>
+    </inputs>
+    <outputs>
+        <data format="txt" name="logfile1" label="The tagdust log output for ${input.fastq_file.name}." from_work_dir="output/data_logfile.txt">
+            <filter>(input['run_type_selector'] == 'single')</filter>
+        </data>
+        <data format="fastq" name="extracted" label="Tagdust extracted reads from ${input.fastq_file.name}." from_work_dir="output/data.fq">
+            <filter>(input['run_type_selector']=='single')</filter>
+        </data>
+        <data format="fastq" name="unextracted" label="Tagdust un-extracted reads from ${input.fastq_file.name}." from_work_dir="output/data_un.fq">
+            <filter>(input['run_type_selector']=='single')</filter>
+        </data>
+        <data format="txt" name="barcode_files" label="Tagdust barcoded reads from ${input.fastq_file.name}.">
+            <discover_datasets pattern="data_BC_(?P&lt;designation&gt;.+)\.fq" ext="fastq" directory="output" visible="true" />
+            <filter>(input['run_type_selector']=='single')</filter>
+            <filter>(input['include']['barcode_files']=='yes')</filter>
+        </data>
+        <data format="txt" name="logfile2" label="The tagdust log output for ${input.read1_file.name} and ${input.read2_file.name}." from_work_dir="output/data_logfile.txt">
+            <filter>(input['run_type_selector'] == 'paired')</filter>
+        </data>
+        <data format="fastq" name="extracted1" label="The tagdust extracted reads from ${input.read1_file.name}." from_work_dir="output/data_READ1.fq">
+            <filter>(input['run_type_selector']=='paired')</filter>
+        </data>
+        <data format="fastq" name="unextracted1" label="The tagdust un-extracted reads from ${input.read1_file.name}." from_work_dir="output/data_un_READ1.fq">
+            <filter>(input['run_type_selector']=='paired')</filter>
+        </data>
+        <data format="fastq" name="extracted2" label="The tagdust extracted reads from ${input.read2_file.name}." from_work_dir="output/data_READ2.fq">
+            <filter>(input['run_type_selector']=='paired')</filter>
+        </data>
+        <data format="fastq" name="unextracted2" label="The tagdust un-extracted reads from ${input.read2_file.name}." from_work_dir="output/data_un_READ2.fq">
+            <filter>(input['run_type_selector']=='paired')</filter>
+        </data>
+        <data format="txt" name="read1_barcode_files" label="Tagdust barcoded reads from ${input.read1_file.name}.">
+            <discover_datasets pattern="data_BC_(?P&lt;designation&gt;.+)_READ1\.fq" ext="fastq" directory="output" visible="true" />
+            <filter>(input['run_type_selector']=='paired')</filter>
+            <filter>(input['include']['barcode_files']=='yes')</filter>
+        </data>
+        <data format="txt" name="read1_barcode_files" label="Tagdust barcoded reads from ${input.read1_file.name}.">
+            <discover_datasets pattern="data_BC_(?P&lt;designation&gt;.+)_READ1\.fq" ext="fastq" directory="output" visible="true" />
+            <filter>(input['run_type_selector']=='paired')</filter>
+            <filter>(input['include']=='yes')</filter>
+        </data>
+        <data format="txt" name="architecturefile" label="The tagdust architecture." from_work_dir="architecture.txt">
+            <filter>(input['run_type_selector'] == 'architecture')</filter>
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input|run_type_selector" value="architecture"/> 
+            <param name="architecture" value="F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <output name="architecturefile" file="../tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt"/>
+        </test>
+        <test>
+            <param name="input|run_type_selector" value="architecture"/> 
+            <param name="architecture" value="B:GTA_AAC_R:N" /> 
+            <output name="architecturefile" file="../tool-data/B:GTA,AAC_R:N.txt"/>
+        </test>
+       <test>
+            <param name="input|run_type_selector" value="architecture"/> 
+            <param name="architecture" value="R:N" /> 
+            <output name="architecturefile" file="../tool-data/R:N.txt"/>
+        </test>
+        <!-- Large dataset in github but not toolshed -->
+        <!--test>
+            <param name="input|run_type_selector" value="single"/> 
+            <param name="input|fastq_file" value="C75_S29_R1_001.fastq" ftype="fastq" /> 
+            <param name="architecture" value="F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <param name="input|include|barcode_files" value="no" /> 
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted" file="C75_S29_R1_001.fq" compare="sim_size" delta="10000"/>
+            <output name="unextracted" file="C75_S29_R1_001_un.fq"  compare="sim_size" delta="10000"/>
+        </test-->
+        <test>
+            <param name="input|run_type_selector" value="single"/> 
+            <param name="input|fastq_file" value="read1.fastq" ftype="fastq" /> 
+            <param name="architecture" value="F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <param name="include|barcode_files" value="no" /> 
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted" file="read1.fq" compare="sim_size" delta="100"/>
+            <output name="unextracted" file="read1_un.fq" compare="sim_size" delta="100"/>
+        </test>
+        <test>
+            <param name="input|run_type_selector" value="single"/> 
+            <param name="input|fastq_file" value="read1.fastq" ftype="fastq" /> 
+            <param name="architecture" value="B:GTA_AAC_R:N" /> 
+            <param name="input|include|barcode_files" value="yes" /> 
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted" file="with_b_.fq"/>
+            <output name="unextracted" file="with_b_un.fq"/>
+            <output name="barcode_files">
+                <assert_contents>
+                    <has_line line="data_BC_AAC.fq" />
+                    <has_line line="data_BC_GTA.fq" />
+                </assert_contents>
+                <discovered_dataset designation="AAC" ftype="fastq" file="with_b_BC_AAC.fq"/>
+                <discovered_dataset designation="GTA" ftype="fastq" file="with_b_BC_GTA.fq"/>
+            </output>
+        </test>
+        <!-- Large dataset in github but not toolshed -->
+        <!--test>
+            <param name="input|run_type_selector" value="paired"/> 
+            <param name="input|read1_file" value="C75_S29_R1_001_extracted.fastq" ftype="fastq" /> 
+            <param name="input|read2_file" value="C75_S29_R2_001_extracted.fastq" ftype="fastq" /> 
+            <param name="architecture" value="R:N" /> 
+            <param name="input|reference_source|reference_source_selector" value="history"/>
+            <param name="input|reference_source|ref_file" value="ercc_and_TPA_mouse_rRNA.fa" ftype="fasta"/>
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted1" file="C75_S29__READ1.fq" compare="sim_size" delta="10000"/>
+            <output name="unextracted1" file="C75_S29__un_READ1.fq"  compare="sim_size" delta="10000"/>
+            <output name="extracted2" file="C75_S29__READ2.fq" compare="sim_size" delta="10000"/>
+            <output name="unextracted2" file="C75_S29__un_READ2.fq"  compare="sim_size" delta="10000"/>
+        </test-->
+        <test>
+            <param name="input|run_type_selector" value="paired"/> 
+            <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastq" /> 
+            <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastq" /> 
+            <param name="architecture" value="R:N" /> 
+            <param name="input|reference_source|reference_source_selector" value="history"/>
+            <param name="input|reference_source|ref_file" value="ercc_and_TPA_mouse_rRNA.fa" ftype="fasta"/>
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted1" file="paired_READ1.fq" compare="sim_size" delta="100"/>
+            <output name="unextracted1" file="paired_un_READ1.fq"  compare="sim_size" delta="100"/>
+            <output name="extracted2" file="paired_READ2.fq" compare="sim_size" delta="100"/>
+            <output name="unextracted2" file="paired_un_READ2.fq"  compare="sim_size" delta="100"/>
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+This tool runs Tagdust2 in single or paired end mode.
+
+
+Note: Output from Architecture with could have a Barcode HMM building block choose to find the barcode files.
+....If no barcode files are found this will simply be empty.
+....You may have refresh the history for all barcode files to show.
+
+
+====
+
+Taken from The TagDust2 Manual http://tagdust.sourceforge.net (part of Version 2_31 download)
+
+Raw sequences produced by next generation sequencing (NGS) machines can contain adapter, linker, 
+barcode and fingerprint sequences. TagDust2 is a program to extract and correctly label the sequences
+to be mapped in downstream pipelines.
+TagDust allows users to specify the expected architecture of a read and converts it into a hidden
+Markov model. The latter can assign sequences to a particular barcode (or index) even in the presence
+of sequencing errors. Sequences not matching the architecture (primer dimers, contaminants etc.) are
+automatically discarded
+
+TagDust requires an input file containing sequences and a user defined HMM architecture used to ex-
+tract the reads. The architecture is composed of a selection of pre-defined building blocks representing
+indices, barcodes, spacers and other sequences one might encounter in the raw output of a sequenced
+sample.
+
+HMM Building Blocks
+
+TagDust comes with a set of pre-defined HMM building blocks. Each includes a silent state at the
+beginning and end used to link blocks together. Each block is specified by a unique letter following
+by a colon and some information about the sequence.
+
+Read
+Segment modeling the read.
+Code: R:N
+
+Optional
+Segment modeling an optional single or short stretch of nucleotides.
+Code: O:N
+
+G addition
+Segment modeling the occasional addition of guanines to the reads. 
+(89.3% chance of a single G , 19.5% chance of 2 Gs..).
+Code: G:G
+
+Barcode or Index
+Segment modeling a set of barcode sequences. For each sequence a separate HMM is created. The
+barcode sequences must be given as a comma separated list. A null model of the same length as the
+barcode is automatically added and initialized to the background nucleotide frequencies.
+Code: B:GTA,AAC
+
+Fingerprint or Unique Molecular Identifier - UMI
+Segment modeling a fingerprint (or unique molecular identifiers). Insertions and deletions are by
+default not allowed within a fingerprint segment.
+Code: F:NNN
+
+Spacer
+Segment modeling a pre-defined sequence.
+Code: S:GTA
+
+Partial
+This segment is used to model sequences that may only be partially present at the 5‘ or 3‘ end of
+the read. The transition probabilities (orange and blue) are set automatically based on the length
+distribution of exactly matching adapters.
+Code: P:CCTTAA
+
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>

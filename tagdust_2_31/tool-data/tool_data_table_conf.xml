@@ -2,10 +2,10 @@
 <tables>
     <table name="tagdust_reference">
         <columns>value, dbkey, name, path</columns>
-        <file path="tool-data/tagdust_reference.loc" />
+        <file path="/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/tagdust_reference.loc" />
     </table>
     <table name="tagdust_architecture">
         <columns>value, dbkey, name, barcode, path</columns>
-        <file path="tool-data/tagdust_architecture.loc" />
+        <file path="/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/tagdust_architecture.loc" />
     </table>
  </tables>
