@@ -4,7 +4,7 @@
         <requirement type="package" version="0.5.9">bwa</requirement>
     </requirements>
     <command interpreter="python">
-        path_builder.py 
+        tagdust_reference_manager.py 
         --value "${value}" 
         --dbkey "${dbkey}" 
         --name "${name}" 
