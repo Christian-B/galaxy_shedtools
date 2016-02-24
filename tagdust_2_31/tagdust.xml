@@ -1,5 +1,5 @@
 <tool id="tagdust_runner_2_31" name="Tagdust runner" version="0.1.1">
-    <description>Runs tagdust in single end mode</description>
+    <description>Runs tagdust in single or paired end mode</description>
     <requirements>
         <requirement type="package" version="2.31">tagdust</requirement>
     </requirements>
