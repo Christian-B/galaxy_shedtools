@@ -1,8 +1,5 @@
 <tool id="tagdust_architecture_manager" name="tagdust architecture manager" tool_type="manage_data" version="0.0.1">
     <description>architecture creator</description>
-    <requirements>
-        <requirement type="package" version="0.5.9">bwa</requirement>
-    </requirements>
     <command interpreter="python">
         tagdust_architecture_data_manager.py 
             --data_table_name "tagdust_architecture" 

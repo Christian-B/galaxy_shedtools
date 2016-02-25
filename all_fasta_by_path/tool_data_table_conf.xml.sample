@@ -4,8 +4,4 @@
         <columns>value, dbkey, name, path</columns>
         <file path="tool-data/all_fasta.loc" />
     </table>
-    <table name="tagdust_architecture">
-        <columns>value, dbkey, name, barcode, path</columns>
-        <file path="tool-data/tagdust_architecture.loc" />
-    </table>
  </tables>

@@ -72,7 +72,7 @@
                     <when value="none"/>
                     <when value="cached">
                         <param name="ref_path" type="select" label="Using reference fasta">
-                            <options from_data_table="tagdust_reference"/>
+                            <options from_data_table="all_fasta"/>
                             <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
                         </param>
                     </when>
@@ -101,7 +101,7 @@
                     <when value="none"/>
                     <when value="cached">
                         <param name="ref_path" type="select" label="Using reference fasta">
-                            <options from_data_table="tagdust_reference"/>
+                            <options from_data_table="all_fasta"/>
                             <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
                         </param>
                     </when>
@@ -269,6 +269,23 @@
             <output name="extracted2" file="paired_READ2.fq" compare="sim_size" delta="100"/>
             <output name="unextracted2" file="paired_un_READ2.fq"  compare="sim_size" delta="100"/>
         </test>
+        <test>
+            <param name="input|run_type_selector" value="paired"/> 
+            <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastq" /> 
+            <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastq" /> 
+            <param name="architecture" value="R:N" /> 
+            <param name="input|reference_source|reference_source_selector" value="cached"/>
+            <param name="ref_path" value="ercc_and_TPA_mouse_RNA"/>
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted1" file="paired_READ1.fq" compare="sim_size" delta="100"/>
+            <output name="unextracted1" file="paired_un_READ1.fq"  compare="sim_size" delta="100"/>
+            <output name="extracted2" file="paired_READ2.fq" compare="sim_size" delta="100"/>
+            <output name="unextracted2" file="paired_un_READ2.fq"  compare="sim_size" delta="100"/>
+        </test>    
     </tests>
     <help>
 <![CDATA[
@@ -279,7 +296,9 @@ Note: Output from Architecture with could have a Barcode HMM building block choo
 ....If no barcode files are found this will simply be empty.
 ....You may have refresh the history for all barcode files to show.
 
-
+Please contact the admin to add an architecture / HMM building blocks. 
+(There is Data Manager that they can use)
+ 
 ====
 
 Taken from The TagDust2 Manual http://tagdust.sourceforge.net (part of Version 2_31 download)

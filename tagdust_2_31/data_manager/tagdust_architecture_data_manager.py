@@ -33,7 +33,7 @@ def createFileBasedOnHmm(hmms):
     file_name = ""
     bar_code = "no"
     for hmm in hmms:
-        block = hmm["block"]
+        block = hmm["block"].strip()
         if not (block[0] in ['R','O','G','B','F','S','P']):
             raise Exception( "hmm block {0} is not a valid. It must start with one of  ['R','O','G','B','F','S','P'].".format( block ) )
         if block[0] == 'B':

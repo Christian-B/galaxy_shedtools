@@ -4,12 +4,12 @@
         <requirement type="package" version="0.5.9">bwa</requirement>
     </requirements>
     <command interpreter="python">
-        tagdust_reference_manager.py 
+        path_name_value_key_manager.py 
         --value "${value}" 
         --dbkey "${dbkey}" 
         --name "${name}" 
         --path "${path}" 
-        --data_table_name "tagdust_reference" 
+        --data_table_name "all_fasta" 
         --json_output_file "${json_output_file}"
     </command>
     <inputs>

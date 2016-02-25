@@ -1,8 +1,8 @@
 <!-- Use the file tool_data_table_conf.xml.oldlocstyle if you don't want to update your loc files as changed in revision 4550:535d276c92bc-->
 <tables>
-    <table name="tagdust_reference">
+    <table name="all_fasta" comment_char="#">
         <columns>value, dbkey, name, path</columns>
-        <file path="/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/tagdust_reference.loc" />
+        <file path="/home/christian/Dropbox/Manchester/galaxy_shed_tools/all_fasta_by_path/tool-data/all_fasta.loc" />
     </table>
     <table name="tagdust_architecture">
         <columns>value, dbkey, name, barcode, path</columns>
