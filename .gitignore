@@ -82,8 +82,8 @@ unused/
 tagdust-2.31
 
 #tagdust test stuff
-tagdust_2_31/data_manager/tagdust_architecture/
-tagdust_2_31/data_manager/test.json
+tagdust_data_manager/data_manager/tagdust_architecture/
+tagdust_data_manager/data_manager/test.json
 
 #tagdust manual
 tagdust_2_31/User-Manual.pdf
