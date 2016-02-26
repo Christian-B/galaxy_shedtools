@@ -11,9 +11,9 @@
 #
 #value	dbkey	name	barcode	path
 #
-F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN  S:TATAGGG  R:N	no	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt
-B:GTA_AAC_R:N	B:GTA_AAC_R:N	B:GTA,AAC  R:N	yes	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/B:GTA,AAC_R:N.txt
-R:N	R:N	R:N Only	no	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/R:N.txt
+test_F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN_S:TATAGGG_R:N	F:NNNNNNNN  S:TATAGGG  R:N	no	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt
+test_B:GTA_AAC_R:N	B:GTA_AAC_R:N	B:GTA,AAC  R:N	yes	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/B:GTA,AAC_R:N.txt
+test_R:N	R:N	R:N Only	no	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/tool-data/R:N.txt
 
 
 

@@ -16,5 +16,5 @@
 #fasta file. So there will be multiple fasta files for each build,
 #such as with hg19 above.
 #
-ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/test-data/ercc_and_TPA_mouse_rRNA.fa
+test_ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	ercc_and_TPA_mouse_RNA	/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/test-data/ercc_and_TPA_mouse_rRNA.fa
 

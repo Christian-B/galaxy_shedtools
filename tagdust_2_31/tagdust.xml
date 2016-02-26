@@ -173,17 +173,17 @@
     <tests>
         <test>
             <param name="input|run_type_selector" value="architecture"/> 
-            <param name="architecture" value="F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <param name="architecture" value="test_F:NNNNNNNN_S:TATAGGG_R:N" /> 
             <output name="architecturefile" file="../tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt"/>
         </test>
         <test>
             <param name="input|run_type_selector" value="architecture"/> 
-            <param name="architecture" value="B:GTA_AAC_R:N" /> 
+            <param name="architecture" value="test_B:GTA_AAC_R:N" /> 
             <output name="architecturefile" file="../tool-data/B:GTA,AAC_R:N.txt"/>
         </test>
        <test>
             <param name="input|run_type_selector" value="architecture"/> 
-            <param name="architecture" value="R:N" /> 
+            <param name="architecture" value="test_R:N" /> 
             <output name="architecturefile" file="../tool-data/R:N.txt"/>
         </test>
         <!-- Large dataset in github but not toolshed -->
@@ -203,7 +203,7 @@
         <test>
             <param name="input|run_type_selector" value="single"/> 
             <param name="input|fastq_file" value="read1.fastq" ftype="fastq" /> 
-            <param name="architecture" value="F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <param name="architecture" value="test_F:NNNNNNNN_S:TATAGGG_R:N" /> 
             <param name="include|barcode_files" value="no" /> 
             <output name="logfile" >
                 <assert_contents>
@@ -216,7 +216,7 @@
         <test>
             <param name="input|run_type_selector" value="single"/> 
             <param name="input|fastq_file" value="read1.fastq" ftype="fastq" /> 
-            <param name="architecture" value="B:GTA_AAC_R:N" /> 
+            <param name="architecture" value="test_B:GTA_AAC_R:N" /> 
             <param name="input|include|barcode_files" value="yes" /> 
             <output name="logfile" >
                 <assert_contents>
@@ -256,7 +256,7 @@
             <param name="input|run_type_selector" value="paired"/> 
             <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastq" /> 
             <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastq" /> 
-            <param name="architecture" value="R:N" /> 
+            <param name="architecture" value="test_R:N" /> 
             <param name="input|reference_source|reference_source_selector" value="history"/>
             <param name="input|reference_source|ref_file" value="ercc_and_TPA_mouse_rRNA.fa" ftype="fasta"/>
             <output name="logfile" >
@@ -273,9 +273,9 @@
             <param name="input|run_type_selector" value="paired"/> 
             <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastq" /> 
             <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastq" /> 
-            <param name="architecture" value="R:N" /> 
+            <param name="architecture" value="test_R:N" /> 
             <param name="input|reference_source|reference_source_selector" value="cached"/>
-            <param name="ref_path" value="ercc_and_TPA_mouse_RNA"/>
+            <param name="ref_path" value="test_ercc_and_TPA_mouse_RNA"/>
             <output name="logfile" >
                 <assert_contents>
                     <has_text text="Determining threshold for read0." />
