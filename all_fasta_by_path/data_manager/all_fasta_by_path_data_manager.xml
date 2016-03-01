@@ -1,4 +1,4 @@
-<tool id="tagdust_reference_manager" name="tagdust reference manager" tool_type="manage_data" version="0.0.1">
+<tool id="all_fasta_by_path_manager" name="all_fasta by path data manager" tool_type="manage_data" version="0.0.1">
     <description>path inputer</description>
     <requirements>
         <requirement type="package" version="0.5.9">bwa</requirement>
@@ -23,7 +23,7 @@
     </outputs>
 
     <help>
-Adds a path to the tagdust references.
+Adds a server path to the all_fasta data table.
 
 The tool will check the path exists but NOT check that it holds the expected data type.
 
