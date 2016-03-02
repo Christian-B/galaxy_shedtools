@@ -65,6 +65,7 @@ def writeHmm(hmms, file_path):
             output_file.write(str(-i))
             output_file.write(" ")
             output_file.write(hmm["block"])
+        output_file.write("\n")
 
 def main():
 

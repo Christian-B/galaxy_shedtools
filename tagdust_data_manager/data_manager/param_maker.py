@@ -7,7 +7,7 @@ def main():
     params["value"] = "A Value"
     params["dbkey"] = "the key"
     params["hmms"] = [{u'__index__': u'0', u'block': u'F:NNN'},{u'__index__': u'1', u'block': u' B:GTA,AAA'}]
-    params["GALAXY_DATA_INDEX_DIR"] = "/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_2_31/data_manager"
+    params["GALAXY_DATA_INDEX_DIR"] = "/home/christian/Dropbox/Manchester/galaxy_shed_tools/tagdust_data_manager/data_manager"
     print "params", params
 
     param_dict = {}
