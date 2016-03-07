@@ -1,0 +1,75 @@
+<tool id="samtools_flag_filter" name="Samtools flag_filter" version="0.1">
+  <description>Samtool view tools</description>
+  <macros>
+    <import>samtool_macros.xml</import>
+  </macros>
+  <expand macro="requirements"></expand>
+  <expand macro="stdio"></expand>
+  <expand macro="version_command"></expand>
+
+    <command>
+    <![CDATA[
+        samtools view 
+        #for $bit in $bits
+            -${bit.state} ${bit.flag}
+        #end for
+        -b -o "${output}" "${input}" 
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" format="bam" label="Select BAM dataset slect alignments with.without bits set" type="data" />
+        <repeat name="bits" title="Flag">
+            <param name="flag" type="select" label="Type">
+                <option value="0x0001">Read is paired</option>
+                <option value="0x0002">Read is mapped in a proper pair</option>
+                <option value="0x0004">The read is unmapped</option>
+                <option value="0x0008">The mate is unmapped</option>
+                <option value="0x0010">Read strand</option>
+                <option value="0x0020">Mate strand</option>
+                <option value="0x0040">Read is the first in a pair</option>
+                <option value="0x0080">Read is the second in a pair</option>
+                <option value="0x0100">The alignment or this read is not primary</option>
+                <option value="0x0200">The read fails platform/vendor quality checks</option>
+                <option value="0x0400">The read is a PCR or optical duplicate</option>
+            </param>
+            <param name="state" type="select" display="radio" label="Set the states for this flag">
+                <option value="f">Keep only alignments with this flag set</option>
+                <option value="F">Remove all aligments with this flag set</option>
+            </param>
+    </repeat>
+
+    </inputs>
+    <outputs>
+        <data format="bam" name="output" label="Filtered by flag on ${input.name}" />
+    </outputs>
+    <tests>
+        <test>
+            <param ftype="bam" name="input" value="unfiltered.bam" />
+            <param name="bits_0|flag" value="The read is unmapped"/>
+            <param name="bits_0|state" value="f"/>
+            <output file="f0X0004.bam" ftype="bam" name="output" />
+        </test>
+        <test>
+            <param ftype="bam" name="input" value="unfiltered.bam" />
+            <param name="bits_0|flag" value="The read is unmapped"/>
+            <param name="bits_0|state" value="f"/>
+            <param name="bits_1|flag" value="The mate is unmapped"/>
+            <param name="bits_1|state" value="f"/>
+            <output file="f0X0004_plus8.bam" ftype="bam" name="output" />
+        </test>
+        <test>
+            <param ftype="bam" name="input" value="unfiltered.bam" />
+            <param name="bits_0|flag" value="The read is unmapped"/>
+            <param name="bits_0|state" value="f"/>
+            <param name="bits_1|flag" value="The mate is unmapped"/>
+            <param name="bits_1|state" value="F"/>
+            <output file="f0X0004_less8.bam" ftype="bam" name="output" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+later
+]]>
+  </help>
+    <expand macro="citations"></expand>
+</tool>
