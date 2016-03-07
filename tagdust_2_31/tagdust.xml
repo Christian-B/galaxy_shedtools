@@ -130,10 +130,10 @@
         <data format="txt" name="logfile1" label="The tagdust log output for ${input.fastq_file.name}." from_work_dir="output/data_logfile.txt">
             <filter>(input['run_type_selector'] == 'single')</filter>
         </data>
-        <data format="fastq" name="extracted" label="Tagdust extracted reads from ${input.fastq_file.name}." from_work_dir="output/data.fq">
+        <data format_source="fastq_file" name="extracted" label="Tagdust extracted reads from ${input.fastq_file.name}." from_work_dir="output/data.fq">
             <filter>(input['run_type_selector']=='single')</filter>
         </data>
-        <data format="fastq" name="unextracted" label="Tagdust un-extracted reads from ${input.fastq_file.name}." from_work_dir="output/data_un.fq">
+        <data format_source="fastq_file" name="unextracted" label="Tagdust un-extracted reads from ${input.fastq_file.name}." from_work_dir="output/data_un.fq">
             <filter>(input['run_type_selector']=='single')</filter>
         </data>
         <data format="txt" name="barcode_files" label="Tagdust barcoded reads from ${input.fastq_file.name}.">
@@ -144,16 +144,16 @@
         <data format="txt" name="logfile2" label="The tagdust log output for ${input.read1_file.name} and ${input.read2_file.name}." from_work_dir="output/data_logfile.txt">
             <filter>(input['run_type_selector'] == 'paired')</filter>
         </data>
-        <data format="fastq" name="extracted1" label="The tagdust extracted reads from ${input.read1_file.name}." from_work_dir="output/data_READ1.fq">
+        <data format_source="read1_file" name="extracted1" label="The tagdust extracted reads from ${input.read1_file.name}." from_work_dir="output/data_READ1.fq">
             <filter>(input['run_type_selector']=='paired')</filter>
         </data>
-        <data format="fastq" name="unextracted1" label="The tagdust un-extracted reads from ${input.read1_file.name}." from_work_dir="output/data_un_READ1.fq">
+        <data format_source="read1_file"  name="unextracted1" label="The tagdust un-extracted reads from ${input.read1_file.name}." from_work_dir="output/data_un_READ1.fq">
             <filter>(input['run_type_selector']=='paired')</filter>
         </data>
-        <data format="fastq" name="extracted2" label="The tagdust extracted reads from ${input.read2_file.name}." from_work_dir="output/data_READ2.fq">
+        <data format_source="read2_file"  name="extracted2" label="The tagdust extracted reads from ${input.read2_file.name}." from_work_dir="output/data_READ2.fq">
             <filter>(input['run_type_selector']=='paired')</filter>
         </data>
-        <data format="fastq" name="unextracted2" label="The tagdust un-extracted reads from ${input.read2_file.name}." from_work_dir="output/data_un_READ2.fq">
+        <data format_source="read2_file"  name="unextracted2" label="The tagdust un-extracted reads from ${input.read2_file.name}." from_work_dir="output/data_un_READ2.fq">
             <filter>(input['run_type_selector']=='paired')</filter>
         </data>
         <data format="txt" name="read1_barcode_files" label="Tagdust barcoded reads from ${input.read1_file.name}.">
@@ -202,7 +202,7 @@
         </test-->
         <test>
             <param name="input|run_type_selector" value="single"/> 
-            <param name="input|fastq_file" value="read1.fastq" ftype="fastq" /> 
+            <param name="input|fastq_file" value="read1.fastq" ftype="fastqsanger" /> 
             <param name="architecture" value="test_F:NNNNNNNN_S:TATAGGG_R:N" /> 
             <param name="include|barcode_files" value="no" /> 
             <output name="logfile" >
@@ -210,8 +210,8 @@
                     <has_text text="Determining threshold for read0." />
                  </assert_contents>
             </output>
-            <output name="extracted" file="read1.fq" compare="sim_size" delta="100"/>
-            <output name="unextracted" file="read1_un.fq" compare="sim_size" delta="100"/>
+            <output name="extracted" file="read1.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
+            <output name="unextracted" file="read1_un.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
         </test>
         <test>
             <param name="input|run_type_selector" value="single"/> 
@@ -254,8 +254,8 @@
         </test-->
         <test>
             <param name="input|run_type_selector" value="paired"/> 
-            <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastq" /> 
-            <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastq" /> 
+            <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastqsanger" /> 
+            <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastqsanger" /> 
             <param name="architecture" value="test_R:N" /> 
             <param name="input|reference_source|reference_source_selector" value="history"/>
             <param name="input|reference_source|ref_file" value="ercc_and_TPA_mouse_rRNA.fa" ftype="fasta"/>
@@ -264,10 +264,10 @@
                     <has_text text="Determining threshold for read0." />
                  </assert_contents>
             </output>
-            <output name="extracted1" file="paired_READ1.fq" compare="sim_size" delta="100"/>
-            <output name="unextracted1" file="paired_un_READ1.fq"  compare="sim_size" delta="100"/>
-            <output name="extracted2" file="paired_READ2.fq" compare="sim_size" delta="100"/>
-            <output name="unextracted2" file="paired_un_READ2.fq"  compare="sim_size" delta="100"/>
+            <output name="extracted1" file="paired_READ1.fq" ftype="fastqsanger" compare="sim_size" delta="100"/>
+            <output name="unextracted1" file="paired_un_READ1.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
+            <output name="extracted2" file="paired_READ2.fq" ftype="fastqsanger" compare="sim_size" delta="100"/>
+            <output name="unextracted2" file="paired_un_READ2.fq" ftype="fastqsanger" compare="sim_size" delta="100"/>
         </test>
         <test>
             <param name="input|run_type_selector" value="paired"/> 

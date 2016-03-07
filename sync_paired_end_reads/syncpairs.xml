@@ -16,8 +16,8 @@
         <param name="reads2" type="data" format="fastq" label="R2 Fasta File" />
     </inputs>
     <outputs>
-        <data name="reads1_output" format="fastq" label="Synced ${reads1.name}"/>
-        <data name="reads2_output" format="fastq" label="Synced ${reads2.name}"/>
+        <data name="reads1_output" format_source="reads1" label="Synced ${reads1.name}"/>
+        <data name="reads2_output" format_source="reads2" label="Synced ${reads2.name}"/>
      </outputs>
     <tests>
         <!-- Large dataset in github but not toolshed -->
