@@ -75,6 +75,7 @@ commands.txt
 #Code which should not go to git
 unused/
 package_pairedBamToBed12/pairedBamToBed12/
+package_umicount/umicount/
 
 #tar files
 *.tar
