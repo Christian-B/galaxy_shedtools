@@ -66,6 +66,10 @@ brenninc/sync_paired_end_reads
 
 package_tagdust_2_31
 
+package_package_pairedBamToBed12
+    iuc/package_samtools_1_2
+        iuc/package_ncurses_5_9
+        iuc/package_zlib_1_2_8
 
 
 

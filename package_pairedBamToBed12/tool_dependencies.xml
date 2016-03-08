@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="ncurses" version="5.9">
+        <repository name="package_ncurses_5_9" owner="iuc" prior_installation_required="True" />
+    </package>
+    <package name="zlib" version="1.2.8">
+        <repository name="package_zlib_1_2_8" owner="iuc" prior_installation_required="True" />
+    </package>
+    <package name="samtools" version="1.2">
+        <repository name="package_samtools_1_2" owner="iuc" prior_installation_required="True" />
+    </package>
+    <package name="pairedbamtobed12" version="1.0">
+        <install version="1.0">
+            <actions>
+                <action type="download_by_url">https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/package_pairedBamToBed12/pairedBamToBed12.tar.gz</action>
+                <action type="shell_command">make</action>
+                <action type="move_directory_files">
+                    <source_directory>bin</source_directory>
+                    <destination_directory>$INSTALL_DIR/bin</destination_directory>
+                </action>
+                <action type="set_environment">
+                  <environment_variable action="prepend_to" name="PATH">$INSTALL_DIR/bin</environment_variable>
+                  <environment_variable action="set_to" name="PAIREDBAMTODEB12_ROOT">$INSTALL_DIR</environment_variable>
+                </action>
+            </actions>
+        </install>
+        <readme />
+    </package>
+</tool_dependency>
