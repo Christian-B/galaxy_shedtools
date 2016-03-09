@@ -1,0 +1,27 @@
+<tool id="umicount" name="umicount" version="0.1">
+    <description>Runs umicount</description>
+    <stdio>
+        <exit_code range="1:" level="fatal" description="Error" />
+    </stdio>
+    <command interpreter="python">
+        dedup_fingerprint.py -f "${input}" > "${output}"
+    </command>
+    <inputs>
+        <param name="input" format="bed" label="Select Paired BED file" type="data" />
+    </inputs>
+    <outputs>
+        <data format="bed" name="output" label="Counted" />
+    </outputs>
+    <tests>
+        <test>
+            <param ftype="bed" name="input" value="paired.bed" />
+            <output file="cagescan_fragments.bed" ftype="bed" name="output" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+later
+]]>
+    </help>
+    <citations/>
+</tool>
