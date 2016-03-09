@@ -1,0 +1,33 @@
+<tool id="subread_featurecounts" name="FeatureCount from subread" version="1.5.0-p1">
+    <description>Runs FeatureCount from subread</description>
+    <requirements>
+        <requirement type="package" version="1.5.0-p1">subread</requirement>
+    </requirements>
+    <stdio>
+        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
+        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
+    </stdio>
+    <command >
+        featureCounts -p -t exon -g gene_id -a /home/christian/Dropbox/Gene_data/gencode.vM5.annotation.gtf -o "${output}" "${input}"
+    </command>
+    <inputs>
+        <param name="input" format="bam" label="Bam file to count Features of" type="data" />
+    </inputs>
+    <outputs>
+        <data format="tabular" name="output" label="Counted Features" />
+    </outputs>
+    <tests>
+        <test>
+            <param ftype="bam" name="input" value="sorted.bam" />
+            <output name="output" file="AllFeatureCounts.tsv"  ftype="tabular" compare="sim_size" delta="10000"/>
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+later
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>

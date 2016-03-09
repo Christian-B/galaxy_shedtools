@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="subread" version="1.5.0-p1">
+        <install version="1.0">
+            <actions>
+                <action type="download_by_url">https://sourceforge.net/projects/subread/files/subread-1.5.0-p1/subread-1.5.0-p1-source.tar.gz/download</action>
+                <action type="shell_command">cd src  &amp;&amp; make -f Makefile.Linux</action>
+                <action type="move_directory_files">
+                    <source_directory>bin</source_directory>
+                    <destination_directory>$INSTALL_DIR/bin</destination_directory>
+                </action>
+                <action type="set_environment">
+                  <environment_variable action="prepend_to" name="PATH">$INSTALL_DIR/bin</environment_variable>
+                  <environment_variable action="set_to" name="SUBREAD_ROOT">$INSTALL_DIR</environment_variable>
+                </action>
+            </actions>
+        </install>
+        <readme />
+    </package>
+</tool_dependency>
