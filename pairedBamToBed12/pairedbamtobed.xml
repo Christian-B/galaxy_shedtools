@@ -14,7 +14,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" format="bam" label="Select BAM dataset to convert to bedr" type="data" />
+        <param name="input" format="bam" label="Select BAM dataset to convert to bed" type="data" />
     </inputs>
     <outputs>
         <data format="bed" name="output" label="resorted" />
@@ -27,7 +27,11 @@
     </tests>
     <help>
 <![CDATA[
-later
+This tools runs the pairedbamtobed12 to convert a paired bam file to a bed file.
+
+As pairedbamtobed12 requires a bam file sorted by name, while galaxy only allows ones sorted by alignment this tool first uses Samtools to reorder the bam file.
+
+
 ]]>
     </help>
     <citations/>
