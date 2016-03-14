@@ -20,7 +20,7 @@ The black list is tool-data/black-list.ini
 
 Any directory that contains any of the blacklisted strings anywhere in the path are excluded.
 
-The defaulf file excludes most of the standard linux systems directories where data is unlikely to be found.
+The default file excludes most of the standard linux systems directories where data is unlikely to be found.
 
 It also excludes the /galaxy/ pattern to avoid users getting access to galaxy files.
 
