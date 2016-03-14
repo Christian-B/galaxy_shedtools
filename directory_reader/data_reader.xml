@@ -24,9 +24,10 @@
             #if $results.extension.file_type=="tsv"
                 --new_ending .tabular
             #end if
-            #if $results.extension.file_type in ["fasta.gz","fastq.gz"]
+            #if $results.extension.file_type in ["fasta.gz"]
                 #if $results.extension.decompress.doit=="yes"
                     --decompress
+                    --new_ending .fasta
                 #end if
             #end if
             #if $results.extension.file_type=="fastq"
@@ -34,6 +35,7 @@
             #end if
             #if $results.extension.file_type=="fastq.gz"
                 #if $results.extension.decompress.doit=="yes"
+                    --decompress
                     --new_ending .${results.extension.new_galaxy.new_ending}
                 #else
                     --new_ending .${results.extension.new_galaxy.new_ending}.gz
@@ -127,7 +129,7 @@
                     <when value="fastq.gz" >
                         <conditional name="decompress">
                             <param name="doit" type="select" label="Decompress data" help="If selected will decompress the data.">
-                                <option value="yes" selected="true">Yes decompress and change the extension to *.fasta</option>
+                                <option value="yes" selected="true">Yes decompress and change the extension to *.fastq</option>
                                 <option value="no">No copy as is.</option>
                             </param>
                             <when value="yes" />
