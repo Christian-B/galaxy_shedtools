@@ -1,8 +1,5 @@
 <tool id="all_fasta_by_path_manager" name="all_fasta by path data manager" tool_type="manage_data" version="0.0.1">
     <description>path inputer</description>
-    <requirements>
-        <requirement type="package" version="0.5.9">bwa</requirement>
-    </requirements>
     <command interpreter="python">
         path_name_value_key_manager.py 
         --value "${value}" 
@@ -27,7 +24,7 @@ Adds a server path to the all_fasta data table.
 
 The tool will check the path exists but NOT check that it holds the expected data type.
 
-If name is not provided the filename from path less the exstension is used.
+If name is not provided the filename from path less the extension is used.
 
 If value is not provided, the name will be used (or its default)
 
