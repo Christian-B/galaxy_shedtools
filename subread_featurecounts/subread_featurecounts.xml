@@ -7,24 +7,155 @@
         <exit_code range="1" level="fatal" description="Error code 1 occurred" />
         <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
     </stdio>
-    <command >
-        featureCounts -p -t exon -g gene_id -a /home/christian/Dropbox/Gene_data/gencode.vM5.annotation.gtf -o "${output}" "${input}"
-    </command>
+    <command>
+        featureCounts -p -t exon -g gene_id 
+            #if $reference_source.reference_source_selector=='history':
+                -a $reference_source.ref_file
+            #end if
+            #if $reference_source.reference_source_selector=='cached':
+                -a $reference_source.ref_path.fields.path
+            #end if
+            -o counts 
+            #if $names_source.names_source_selector=='manual':
+                #for $s in $names_source.input_serie
+                    $s.input_file
+                #end for
+            #else
+                #for $input in $names_source.inputs
+                    "${input}" 
+                #end for
+            #end if
+            ;
+            #if $names_source.names_source_selector=='file':
+                python $__tool_directory__/name_changer.py --raw_count_file counts --fixed_count_file ${output} --names_file ${names_source.names_file}
+                #if $names_prefix:
+                    --names_prefix ${names_prefix}
+                #end if
+            #end if
+            #if $names_source.names_source_selector=='manual':
+                python $__tool_directory__/name_changer.py --raw_count_file counts --fixed_count_file ${output} 
+                #for $s in $names_source.input_serie
+                    --new_name $s.new_name
+                #end for
+                #if $names_prefix:
+                    --names_prefix ${names_prefix}
+                #end if
+            #end if
+   </command>
     <inputs>
-        <param name="input" format="bam" label="Bam file to count Features of" type="data" />
+        <conditional name="reference_source">
+            <param name="reference_source_selector" type="select" label="Choose the source for the gene_transfer (gtf) file.">
+               <option value="cached">Locally cached</option>
+                <option value="history">History</option>
+            </param>
+            <when value="cached">
+                <param name="ref_path" type="select" label="Using reference gene transfer">
+                    <options from_data_table="gene_transfer"/>
+                    <validator type="no_options" message="A built-in reference gene transfer is not available."/>
+                </param>
+            </when>
+            <when value="history"> 
+                <param name="ref_file" type="data" format="gtf" label="Using reference file" />
+            </when>
+        </conditional>
+        <conditional name="names_source">
+            <param name="names_source_selector" type="select" label="Where should the column names come from">
+                <option value="file">File with list of names</option>
+                <option value="manual">Enter column names manually</option>
+                <option value="galaxy_path">Use the galaxy paths</option>
+            </param>
+            <when value="file">
+                <param name="inputs" format="bam" multiple="True" label="Bam file(s) to count Features of" type="data" />
+                <param name="names_file" format="txt" label="File which hld the names for the columns" type="data" />
+            </when>
+            <when value="manual">
+                <repeat name="input_serie" title="Files and names to add">
+                    <param name="input_file" format="bam" label="Bam file to count Features of" type="data" />
+                    <param name="new_name" size="30" type="text" value="" label="Name for that column"/>
+                </repeat>
+            </when>
+            <when value="galaxy_path">
+                <param name="inputs" format="bam" multiple="True" label="Bam file(s) to count Features of" type="data" />
+            </when>
+        </conditional>
+        <param name="names_prefix" size="30" type="text" value="" label="Prefix to add before every column name"/>
     </inputs>
     <outputs>
-        <data format="tabular" name="output" label="Counted Features" />
+        <data format="tabular" name="output" label="Counted Features with given names" >
+            <filter>(names_source['names_source_selector'] in ['file','manual'])</filter>
+        </data>
+        <data format="tabular" name="output_counts" label="Counted Features with galaxy file names" from_work_dir="counts">
+            <filter>(names_source['names_source_selector'] == 'galaxy_path')</filter>
+        </data>
+        <data format="tabular" name="summary" label="Feature Count Summary" from_work_dir="counts.summary"/>
     </outputs>
-    <tests>
-        <test>
-            <param ftype="bam" name="input" value="sorted.bam" />
-            <output name="output" file="AllFeatureCounts.tsv"  ftype="tabular" compare="sim_size" delta="10000"/>
+    <tests> 
+        <!-- Test data too large to be included -->
+        <!--test>
+            <param ftype="bam" name="inputs" value="C75_sorted.bam" />
+            <param name="reference_source|reference_source_selector" value="cached"/>
+            <param ftype="gtf" name="reference_source|ref_path" value="gencode.vM5" />
+            <param name="names_source|names_source_selector" value="galaxy_path"/>
+            <output name="output_counts" file="C75_FeatureCounts.tsv"  ftype="tabular" compare="sim_size" delta="10000"/>
+            <output name="summary">
+                <assert_contents>              
+                    <has_text text="Unassigned_Ambiguity" />
+                </assert_contents>              
+            </output>
         </test>
+        <test>
+            <param ftype="bam" name="inputs" value="C01_sorted.bam,C02_sorted.bam,C75_sorted.bam" />
+            <param name="reference_source|reference_source_selector" value="history"/>
+            <param ftype="gtf" name="reference_source|ref_file" value="/home/christian/Dropbox/Gene_data/gencode.vM5.annotation.gtf" />
+            <param name="names_source|names_source_selector" value="file"/>
+            <param ftype="txt" name="names_source|names_file" value="names.dat" />
+            <param name="names_prefix" value="prefix_"/>
+            <output name="output">
+                <assert_contents>              
+                    <has_text text="prefix_C_1" />
+                    <has_text text="prefix_C_2" />
+                    <has_text text="prefix_C75" />
+                </assert_contents>              
+            </output>
+            <output name="summary">
+                <assert_contents>              
+                    <has_text text="Unassigned_Ambiguity" />
+                </assert_contents>              
+            </output>
+        </test>
+        <test>
+            <param name="reference_source|reference_source_selector" value="history"/>
+            <param ftype="gtf" name="reference_source|ref_file" value="gencode.vM5.annotation.gtf" />
+            <param name="names_source|names_source_selector" value="manual"/>
+            <param ftype="bam" name="names_source|input_serie_0|input_file" value="C01_sorted.bam" />
+            <param name="names_source|input_serie_0|new_name" value="ForC1"/>
+            <param ftype="bam" name="names_source|input_serie_1|input_file" value="C02_sorted.bam" />
+            <param name="names_source|input_serie_1|new_name" value="ForC2"/>
+            <param ftype="bam" name="names_source|input_serie_2|input_file" value="C75_sorted.bam" />
+            <param name="names_source|input_serie_2|new_name" value="ForC75"/>
+            <param name="names_prefix" value="ColumnName"/>
+            <output name="output">
+                <assert_contents>              
+                    <has_text text="ColumnNameForC1" />
+                    <has_text text="ColumnNameForC2" />
+                    <has_text text="ColumnNameForC75" />
+                </assert_contents>              
+            </output>
+            <output name="summary">
+                <assert_contents>              
+                    <has_text text="Unassigned_Ambiguity" />
+                </assert_contents>              
+            </output>
+        </test-->
     </tests>
     <help>
 <![CDATA[
-later
+This tool runs subread's  Featurecounts function.
+
+Feature count labels the data columns with the input file names.  Which will be the .../000/024.dat style names used by galaxy.
+
+This tool therefor post processes the result changing these column names with either values found in a file or entered manually.
+In each case every name can be prefixed with the same value 
 ]]>
     </help>
     <citations>
