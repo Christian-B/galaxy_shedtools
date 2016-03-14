@@ -65,7 +65,7 @@
                 <param name="fastq_file" type="data" format="fastq" label="Single Fastq file to process" />
                 <conditional name="reference_source">
                     <param name="reference_source_selector" type="select" label="Choose the source for the reference fasta (If any)">
-                        <option value="none"  selected="true">Do not include a reference fatsa</option>
+                        <option value="none"  selected="true">Do not include a reference fasta</option>
                         <option value="cached">Locally cached</option>
                         <option value="history">History</option>
                     </param>
@@ -82,7 +82,7 @@
                 </conditional>
                 <conditional name="include">
                     <param name="barcode_files" type="select" label="Choose to find the barcode files (If any)">
-                        <option value="yes" selected="true">Yes. Look for possible barcode seperated files.</option>
+                        <option value="yes" selected="true">Yes. Look for possible barcode separated files.</option>
                         <option value="no" >No. Ignores all barcode files even if these are generated.</option>
                     </param>
                     <when value="yes"/>
@@ -111,7 +111,7 @@
                 </conditional>
                 <conditional name="include">
                     <param name="barcode_files" type="select" label="Choose to find the barcode files (If any)">
-                        <option value="yes" selected="true">Yes. Look for possible barcode seperated files.</option>
+                        <option value="yes" selected="true">Yes. Look for possible barcode separated files.</option>
                         <option value="no" >No. Ignores all barcode files even if these are generated.</option>
                     </param>
                     <when value="yes"/>
