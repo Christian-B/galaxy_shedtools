@@ -1,7 +1,7 @@
 <tool id="samtools_flag_filter" name="Samtools flag_filter" version="0.1">
-  <description>Samtool view tools</description>
+  <description>Samtools' view tool</description>
   <macros>
-    <import>samtool_macros.xml</import>
+    <import>samtools_macros.xml</import>
   </macros>
   <expand macro="requirements"></expand>
   <expand macro="stdio"></expand>
@@ -17,7 +17,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" format="bam" label="Select BAM dataset slect alignments with.without bits set" type="data" />
+        <param name="input" format="bam" label="Select BAM dataset select alignments with.without bits set" type="data" />
         <repeat name="bits" title="Flag">
             <param name="flag" type="select" label="Type">
                 <option value="0x0001">Read is paired</option>
@@ -34,7 +34,7 @@
             </param>
             <param name="state" type="select" display="radio" label="Set the states for this flag">
                 <option value="f">Keep only alignments with this flag set</option>
-                <option value="F">Remove all aligments with this flag set</option>
+                <option value="F">Remove all alignments with this flag set</option>
             </param>
     </repeat>
 
@@ -68,7 +68,25 @@
     </tests>
     <help>
 <![CDATA[
-later
+This tool uses Samtools view method and specifically the -f and -F parameters to filter a sam file to remove alignments based on their flag field.
+
+Alignments can be excluded based on either the presence or absence of that bit in their flag file.
+
+Multiple check can be carried out in the same pass.
+
+The flag values used are:
+
+0x0001: Read is paired
+0x0002: Read is mapped in a proper pair
+0x0004: The read is unmapped
+0x0008: The mate is unmapped
+0x0010: Read strand
+0x0020: Mate strand
+0x0040: Read is the first in a pair
+0x0080: Read is the second in a pair
+0x0100: The alignment or this read is not primary
+0x0200: The read fails platform/vendor quality checks
+0x0400: The read is a PCR or optical duplicate
 ]]>
   </help>
     <expand macro="citations"></expand>
