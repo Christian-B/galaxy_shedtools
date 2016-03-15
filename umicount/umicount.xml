@@ -10,7 +10,7 @@
         <param name="input" format="bed" label="Select Paired BED file" type="data" />
     </inputs>
     <outputs>
-        <data format="bed" name="output" label="Counted" />
+        <data format="bed" name="output" label="Unicount output for ${input.name}" />
     </outputs>
     <tests>
         <test>
@@ -20,7 +20,9 @@
     </tests>
     <help>
 <![CDATA[
-later
+Run umicount (https://raw.githubusercontent.com/mmendez12/umicount)
+
+See http://umicount.readthedocs.org/en/latest/introduction.html for more details.
 ]]>
     </help>
     <citations/>
