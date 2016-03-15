@@ -1,4 +1,4 @@
-<tool id="pairedbamtobed" name="Paired bam to bed" version="0.1">
+<tool id="pairedbamtobed12" name="Paired bam to bed12" version="0.1">
     <description>Paired Bam to Bed. With samtools sorting by name beforehand and back to required order for galaxy afterwards.</description>
     <requirements>
         <requirement type="package" version="1.0">pairedbamtobed12</requirement>
@@ -17,13 +17,15 @@
         <param name="input" format="bam" label="Select BAM dataset to convert to bed" type="data" />
     </inputs>
     <outputs>
-        <data format="bed" name="output" label="resorted" />
+        <data format="bed" name="output" label="Bed12 version of ${input.name}" />
     </outputs>
     <tests>
-        <test>
+        <!-- test data too large for toolshed 
+             See: https://github.com/Christian-B/galaxy_shedtools/tree/master/pairedBamToBed12 -->
+        <!--test>
             <param ftype="bam" name="input" value="filtered.bam" />
             <output file="paired.bed" ftype="bed" name="output" />
-        </test>
+        </test-->
     </tests>
     <help>
 <![CDATA[
