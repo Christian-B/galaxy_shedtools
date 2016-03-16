@@ -7,35 +7,30 @@
     <expand macro="stdio"></expand>
     <expand macro="version_command"></expand>
     <command >
-        echo using architecture ;
-        cat $architecture.fields.path ;
-        echo ;
-        #if $input.run_type_selector=="architecture"
-            cp $architecture.fields.path architecture.txt ;
-        #else
+        @cat-archiecture@
+        #if $input.run_type_selector=="single"
+            cp $input.fastq_file input.fastq ;
+        #end if
+        #if $input.run_type_selector=="paired"
+            cp $input.read1_file read1.fastq ;
+            cp $input.read2_file read2.fastq ;
+        #end if
+        mkdir output ;
+        tagdust -t8 -o output/data 
+            -arch $architecture.fields.path
+            #if $input.reference_source.reference_source_selector=='history':
+                -ref $input.reference_source.ref_file
+            #end if
+            #if $input.reference_source.reference_source_selector=='cached':
+                -ref $input.reference_source.ref_path.fields.path
+            #end if
             #if $input.run_type_selector=="single"
-                cp $input.fastq_file input.fastq ;
+                input.fastq ;
+            #else
+                read1.fastq read2.fastq ;
             #end if
-            #if $input.run_type_selector=="paired"
-                cp $input.read1_file read1.fastq ;
-                cp $input.read2_file read2.fastq ;
-            #end if
-            mkdir output ;
-            tagdust -t8 -o output/data 
-                -arch $architecture.fields.path
-                #if $input.reference_source.reference_source_selector=='history':
-                    -ref $input.reference_source.ref_file
-                #end if
-                #if $input.reference_source.reference_source_selector=='cached':
-                    -ref $input.reference_source.ref_path.fields.path
-                #end if
-                #if $input.run_type_selector=="single"
-                    input.fastq ;
-                #else
-                    read1.fastq read2.fastq ;
-                #end if
-                echo files in output folder ;
-                ls -al output ;
+            echo files in output folder ;
+            ls -al output ;
             #if $input.include.barcode_files=="yes"
                 #if $architecture.fields.barcode=="yes"
                     cd output ;
@@ -51,14 +46,12 @@
                     echo To get then set Choose to find the barcode files to Yes and run the tool again ;
                 #end if
             #end if
-        #end if
     </command>
     <inputs>
         <conditional name="input">
             <param name="run_type_selector" type="select" label="Choose single or paired mode (Or just show an architecture)">
                 <option value="single"  selected="true">Run with Single-end data</option>
                 <option value="paired">Run with Pair-end data</option>
-                <option value="architecture">Just show architecture file</option>
             </param>
             <when value="single">
                 <param name="fastq_file" type="data" format="fastq" label="Single Fastq file to process" />
@@ -119,11 +112,7 @@
             </when>
             <when value="architecture"/> 
         </conditional>
-        <param name="architecture" type="select" label="Using architecture">
-            <options from_data_table="tagdust_architecture"/>
-            <validator type="no_options" message="No architecture found"/>
-            <!--filter name="barcode" value="yes" column="3"/-->
-        </param>
+        <expand macro="architecture"></expand>
     </inputs>
     <outputs>
         <data format="txt" name="logfile1" label="The tagdust log output for ${input.fastq_file.name}." from_work_dir="output/data_logfile.txt">
@@ -165,26 +154,8 @@
             <filter>(input['run_type_selector']=='paired')</filter>
             <filter>(input['include']=='yes')</filter>
         </data>
-        <data format="txt" name="architecturefile" label="The tagdust architecture." from_work_dir="architecture.txt">
-            <filter>(input['run_type_selector'] == 'architecture')</filter>
-        </data>
     </outputs>
     <tests>
-        <test>
-            <param name="input|run_type_selector" value="architecture"/> 
-            <param name="architecture" value="test_F:NNNNNNNN_S:TATAGGG_R:N" /> 
-            <output name="architecturefile" file="../tool-data/F:NNNNNNNN_S:TATAGGG_R:N.txt"/>
-        </test>
-        <test>
-            <param name="input|run_type_selector" value="architecture"/> 
-            <param name="architecture" value="test_B:GTA_AAC_R:N" /> 
-            <output name="architecturefile" file="../tool-data/B:GTA,AAC_R:N.txt"/>
-        </test>
-       <test>
-            <param name="input|run_type_selector" value="architecture"/> 
-            <param name="architecture" value="test_R:N" /> 
-            <output name="architecturefile" file="../tool-data/R:N.txt"/>
-        </test>
         <!-- Large dataset in github but not toolshed -->
         <!--test>
             <param name="input|run_type_selector" value="single"/> 
@@ -212,7 +183,7 @@
             <output name="extracted" file="read1.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
             <output name="unextracted" file="read1_un.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
         </test>
-        <test>
+        <!--test>
             <param name="input|run_type_selector" value="single"/> 
             <param name="input|fastq_file" value="read1.fastq" ftype="fastq" /> 
             <param name="architecture" value="test_B:GTA_AAC_R:N" /> 
@@ -232,7 +203,7 @@
                 <discovered_dataset designation="AAC" ftype="fastq" file="with_b_BC_AAC.fq"/>
                 <discovered_dataset designation="GTA" ftype="fastq" file="with_b_BC_GTA.fq"/>
             </output>
-        </test>
+        </test-->
         <!-- Large dataset in github but not toolshed -->
         <!--test>
             <param name="input|run_type_selector" value="paired"/> 
@@ -251,7 +222,7 @@
             <output name="extracted2" file="C75_S29__READ2.fq" compare="sim_size" delta="10000"/>
             <output name="unextracted2" file="C75_S29__un_READ2.fq"  compare="sim_size" delta="10000"/>
         </test-->
-        <test>
+        <!--test>
             <param name="input|run_type_selector" value="paired"/> 
             <param name="input|read1_file" value="read1_extracted.fastq" ftype="fastqsanger" /> 
             <param name="input|read2_file" value="read2_extracted.fastq" ftype="fastqsanger" /> 
@@ -284,12 +255,11 @@
             <output name="unextracted1" file="paired_un_READ1.fq"  compare="sim_size" delta="100"/>
             <output name="extracted2" file="paired_READ2.fq" compare="sim_size" delta="100"/>
             <output name="unextracted2" file="paired_un_READ2.fq"  compare="sim_size" delta="100"/>
-        </test>    
+        </test-->
     </tests>
     <help>
 <![CDATA[
 This tool runs Tagdust2 in single or paired end mode.
-
 
 Note: Output from Architecture with could have a Barcode HMM building block choose to find the barcode files.
 ....If no barcode files are found this will simply be empty.
@@ -297,65 +267,10 @@ Note: Output from Architecture with could have a Barcode HMM building block choo
 
 Please contact the admin to add an architecture / HMM building blocks. 
 (There is Data Manager that they can use)
- 
-====
 
-Taken from The TagDust2 Manual http://tagdust.sourceforge.net (part of Version 2_31 download)
+]]>    
+@tagdust-documentation@
 
-Raw sequences produced by next generation sequencing (NGS) machines can contain adapter, linker, 
-barcode and fingerprint sequences. TagDust2 is a program to extract and correctly label the sequences
-to be mapped in downstream pipelines.
-TagDust allows users to specify the expected architecture of a read and converts it into a hidden
-Markov model. The latter can assign sequences to a particular barcode (or index) even in the presence
-of sequencing errors. Sequences not matching the architecture (primer dimers, contaminants etc.) are
-automatically discarded
-
-TagDust requires an input file containing sequences and a user defined HMM architecture used to ex-
-tract the reads. The architecture is composed of a selection of pre-defined building blocks representing
-indices, barcodes, spacers and other sequences one might encounter in the raw output of a sequenced
-sample.
-
-HMM Building Blocks
-
-TagDust comes with a set of pre-defined HMM building blocks. Each includes a silent state at the
-beginning and end used to link blocks together. Each block is specified by a unique letter following
-by a colon and some information about the sequence.
-
-Read
-Segment modeling the read.
-Code: R:N
-
-Optional
-Segment modeling an optional single or short stretch of nucleotides.
-Code: O:N
-
-G addition
-Segment modeling the occasional addition of guanines to the reads. 
-(89.3% chance of a single G , 19.5% chance of 2 Gs..).
-Code: G:G
-
-Barcode or Index
-Segment modeling a set of barcode sequences. For each sequence a separate HMM is created. The
-barcode sequences must be given as a comma separated list. A null model of the same length as the
-barcode is automatically added and initialized to the background nucleotide frequencies.
-Code: B:GTA,AAC
-
-Fingerprint or Unique Molecular Identifier - UMI
-Segment modeling a fingerprint (or unique molecular identifiers). Insertions and deletions are by
-default not allowed within a fingerprint segment.
-Code: F:NNN
-
-Spacer
-Segment modeling a pre-defined sequence.
-Code: S:GTA
-
-Partial
-This segment is used to model sequences that may only be partially present at the 5‘ or 3‘ end of
-the read. The transition probabilities (orange and blue) are set automatically based on the length
-distribution of exactly matching adapters.
-Code: P:CCTTAA
-
-]]>
-    </help>
-     <expand macro="citations"></expand>
+    </help> 
+    <expand macro="citations"></expand>
 </tool>

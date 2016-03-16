@@ -5,11 +5,6 @@
             <requirement type="package" version="2.31">tagdust</requirement>
         </requirements>
     </xml>
-    <xml name="citations">
-        <citations>
-            <citation type="doi">110.1093/bioinformatics/btp527</citation>
-        </citations>
-    </xml>
     <xml name="version_command">
         <version_command>tagdust --version | head -n 1 | awk '{ print $2 }'</version_command>
     </xml>
@@ -17,5 +12,82 @@
         <stdio>
             <exit_code range="1:" level="fatal" description="Error" />
         </stdio>
+    </xml>
+    <token name="@cat-archiecture@">
+        echo using architecture ;
+        cat $architecture.fields.path ;
+        echo ;
+    </token>
+    <xml name="architecture">
+         <param name="architecture" type="select" label="Using architecture">
+            <options from_data_table="tagdust_architecture"/>
+            <validator type="no_options" message="No architecture found"/>
+            <!--filter name="barcode" value="yes" column="3"/-->
+        </param>
+    </xml>
+    <token name="@tagdust-documentation@">
+<![CDATA[
+====
+
+Taken from The TagDust2 Manual http://tagdust.sourceforge.net (part of Version 2_31 download)
+
+Raw sequences produced by next generation sequencing (NGS) machines can contain adapter, linker, 
+barcode and fingerprint sequences. TagDust2 is a program to extract and correctly label the sequences
+to be mapped in downstream pipelines.
+TagDust allows users to specify the expected architecture of a read and converts it into a hidden
+Markov model. The latter can assign sequences to a particular barcode (or index) even in the presence
+of sequencing errors. Sequences not matching the architecture (primer dimers, contaminants etc.) are
+automatically discarded
+
+TagDust requires an input file containing sequences and a user defined HMM architecture used to ex-
+tract the reads. The architecture is composed of a selection of pre-defined building blocks representing
+indices, barcodes, spacers and other sequences one might encounter in the raw output of a sequenced
+sample.
+
+HMM Building Blocks
+
+TagDust comes with a set of pre-defined HMM building blocks. Each includes a silent state at the
+beginning and end used to link blocks together. Each block is specified by a unique letter following
+by a colon and some information about the sequence.
+
+Read
+Segment modeling the read.
+Code: R:N
+
+Optional
+Segment modeling an optional single or short stretch of nucleotides.
+Code: O:N
+
+G addition
+Segment modeling the occasional addition of guanines to the reads. 
+(89.3% chance of a single G , 19.5% chance of 2 Gs..).
+Code: G:G
+
+Barcode or Index
+Segment modeling a set of barcode sequences. For each sequence a separate HMM is created. The
+barcode sequences must be given as a comma separated list. A null model of the same length as the
+barcode is automatically added and initialized to the background nucleotide frequencies.
+Code: B:GTA,AAC
+
+Fingerprint or Unique Molecular Identifier - UMI
+Segment modeling a fingerprint (or unique molecular identifiers). Insertions and deletions are by
+default not allowed within a fingerprint segment.
+Code: F:NNN
+
+Spacer
+Segment modeling a pre-defined sequence.
+Code: S:GTA
+
+Partial
+This segment is used to model sequences that may only be partially present at the 5‘ or 3‘ end of
+the read. The transition probabilities (orange and blue) are set automatically based on the length
+distribution of exactly matching adapters.
+Code: P:CCTTAA
+]]>
+    </token>
+    <xml name="citations">
+        <citations>
+            <citation type="doi">10.1093/bioinformatics/btp527</citation>
+        </citations>
     </xml>
 </macros>
