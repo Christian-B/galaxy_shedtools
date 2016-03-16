@@ -17,7 +17,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" format="bam" label="Select BAM dataset select alignments with.without bits set" type="data" />
+        <param name="input" format="bam,sam" label="Select BAM dataset select alignments with.without bits set" type="data" />
         <repeat name="bits" title="Flag">
             <param name="flag" type="select" label="Type">
                 <option value="0x0001">Read is paired  0x0001</option>
