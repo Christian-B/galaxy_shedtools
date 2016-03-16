@@ -25,21 +25,15 @@
                 --new_ending .tabular
             #end if
             #if $results.extension.file_type in ["fasta.gz"]
-                #if $results.extension.decompress.doit=="yes"
-                    --decompress
-                    --new_ending .fasta
-                #end if
+                --decompress
+                --new_ending .fasta
             #end if
             #if $results.extension.file_type=="fastq"
                 --new_ending .$results.extension.new_galaxy.new_ending
             #end if
             #if $results.extension.file_type=="fastq.gz"
-                #if $results.extension.decompress.doit=="yes"
-                    --decompress
-                    --new_ending .${results.extension.new_galaxy.new_ending}
-                #else
-                    --new_ending .${results.extension.new_galaxy.new_ending}.gz
-                #end if
+                --decompress
+                --new_ending .${results.extension.new_galaxy.new_ending}
             #end if
         #else
             --ending bam 
@@ -102,16 +96,7 @@
                     <when value="csv" />
                     <when value="fa" />
                     <when value="fasta" />
-                    <when value="fasta.gz" >
-                        <conditional name="decompress">
-                            <param name="doit" type="select" label="Decompress data" help="If selected will decompress the data.">
-                                <option value="yes" selected="true">Yes decompress and change the extension to *.fasta</option>
-                                <option value="no">No copy as is.</option>
-                            </param>
-                            <when value="yes" />
-                            <when value="no" />
-                        </conditional>
-                    </when>
+                    <when value="fasta.gz" />
                     <when value="fastq" >
                         <conditional name="new_galaxy">
                             <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will determine which down stream tools can be used.">
@@ -127,14 +112,6 @@
                         </conditional>
                     </when>
                     <when value="fastq.gz" >
-                        <conditional name="decompress">
-                            <param name="doit" type="select" label="Decompress data" help="If selected will decompress the data.">
-                                <option value="yes" selected="true">Yes decompress and change the extension to *.fastq</option>
-                                <option value="no">No copy as is.</option>
-                            </param>
-                            <when value="yes" />
-                            <when value="no" />
-                        </conditional>
                         <conditional name="new_galaxy">
                             <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will determine which down stream tools can be used.">
                                 <option value="fastq" selected="true" >Keep data as general fastq format</option>
@@ -166,23 +143,9 @@
         <data format="txt" name="listing" label="List of files in $list_name">
         </data>
         <!-- Ideally galaxy can get the type based on the file extensions. If so just add the type here -->
-        <collection type="list" label="$list_name" name="as_galaxy_list">
+        <collection type="list" label="$list_name" name="data_collection">
             <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] in ['bam','csv','fa','fasta','fastq','fq','sam','tabular','text','tsv','txt','xls','xlsx'])</filter>
-                <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
-        </collection>
-        <collection type="list" label="$list_name" name="decompressed_list">
-            <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type'] in ['fasta.qz','fastq.gz'])</filter>
-            <filter>(results['extension']['decompress']['doit'] == "yes")</filter>
-                <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
-        </collection>
-        <!-- The .gz at the end of a compressed file is useful for the user but confuses galaxy -->
-        <collection type="list" label="$list_name" name="gz_list">
-            <filter>(results['required'] == 'data')</filter>
-            <filter>(results['extension']['file_type']in ['fasta.gz','fastq.gz'])</filter>
-            <filter>(results['extension']['decompress']['doit']  == "no")</filter>
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.(?P&lt;ext&gt;.+).gz" directory="output" visible="true" />
+            <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
         </collection>
     </outputs>
     <tests>
@@ -195,7 +158,7 @@
                     <has_line line="sample1.csv" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="csv" file="sample1.csv" />
            </output_collection>
         </test>
@@ -208,7 +171,7 @@
                     <has_line line="other.fasta" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="fasta" file="sample1.fasta" />
                 <element name="other" ftype="fasta" file="sample1.fasta" />
            </output_collection>
@@ -223,23 +186,22 @@
                     <not_has_text text="other.fasta" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="fasta" file="sample1.fasta" />
            </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fasta.gz"/>
-            <param name="results|extension|decompress|doit" value="no"/>
             <param name="results|last" value="le1" />
             <output name="listing">
                 <assert_contents>
-                    <has_line line="sample1.fasta.gz" />
-                    <not_has_text text="other.fasta.gz" />
+                    <has_line line="sample1.fasta" />
+                    <not_has_text text="other.fasta" />
                 </assert_contents>
             </output>
-            <output_collection name="gz_list" type="list">
-                <element name="sample1" ftype="fasta" file="sample1.fasta.gz" />
+            <output_collection name="data_collection" type="list">
+                <element name="sample1" ftype="fasta" file="sample1.fasta" />
            </output_collection>
         </test>
         <test>
@@ -250,7 +212,7 @@
                     <has_line line="sample1.fastq" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="fastq" file="sample1.fastq" />
            </output_collection>
         </test>
@@ -262,7 +224,7 @@
                     <has_line line="sample1.fastq" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="fastq" file="sample1.fastq" />
            </output_collection>
         </test>
@@ -275,62 +237,32 @@
                     <has_line line="sample1.fastqsanger" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
            </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fastq.gz"/>
-            <param name="results|extension|decompress|doit" value="no"/>
-            <output name="listing_fastq_gz">
+            <output name="data_collection">
                 <assert_contents>
-                    <has_line line="sample1.fastq.gz" />
+                    <has_line line="sample1.fastq" />
                 </assert_contents>
             </output>
-            <output_collection name="gz_list" type="list">
-                <element name="sample1" ftype="fastq" file="sample1.fastq.gz" />
+            <output_collection name="data_collection" type="list">
+                <element name="sample1" ftype="fastq" file="sample1.fastq" />
            </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="fastq.gz"/>
-            <param name="results|extension|decompress|doit" value="yes"/>
             <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
             <output name="listing_fastq_gz">
                 <assert_contents>
                     <has_line line="sample1.fastqsanger" />
                 </assert_contents>
             </output>
-            <output_collection name="decompressed_list" type="list">
-                <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
-           </output_collection>
-        </test>
-        <test>
-            <param name="directory" value="test-data" />
-            <param name="results|extension|file_type" value="fastq.gz"/>
-            <param name="results|extension|decompress|doit" value="no"/>
-            <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
-            <output name="listing_fastq_gz">
-                <assert_contents>
-                    <has_line line="sample1.fastqsanger.gz" />
-                </assert_contents>
-            </output>
-            <output_collection name="gz_list" type="list">
-                <element name="sample1" ftype="fastqsanger" file="sample1.fastq.gz" />
-           </output_collection>
-        </test>
-        <test>
-            <param name="directory" value="test-data" />
-            <param name="results|extension|file_type" value="fastq.gz"/>
-            <param name="results|extension|new_galaxy|new_ending" value="fastqsanger"/>
-            <param name="results|extension|decompress|doit" value="yes"/>
-            <output name="listing_fastq_gz">
-                <assert_contents>
-                    <has_line line="sample1.fastqsanger" />
-                </assert_contents>
-            </output>
-            <output_collection name="decompressed_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
            </output_collection>
         </test>
@@ -342,7 +274,7 @@
                     <has_line line="sample1.sam" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="sam" file="sample1.sam" />
            </output_collection>
         </test>
@@ -354,7 +286,7 @@
                     <has_line line="sample1.tabular" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="tabular" file="sample1.tabular" />
            </output_collection>
         </test>
@@ -366,19 +298,19 @@
                     <has_line line="sample1.txt" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="txt" file="sample1.text" />
            </output_collection>
         </test>
         <test>
             <param name="directory" value="test-data" />
             <param name="results|extension|file_type" value="tsv"/>
-            <output name="as_galaxy_list">
+            <output name="data_collection">
                 <assert_contents>
                     <has_line line="sample1.tabular" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="tabular" file="sample1.tsv" />
            </output_collection>
         </test>
@@ -390,7 +322,7 @@
                     <has_line line="sample1.txt" />
                 </assert_contents>  
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="txt" file="sample1.txt" />
                 <element name="sample2" ftype="txt" file="sample2.txt" />
            </output_collection>
@@ -403,7 +335,7 @@
                     <has_line line="sample1.xls" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="xls" file="sample1.xls" />
            </output_collection>
         </test>
@@ -415,7 +347,7 @@
                     <has_line line="sample1.xlsx" />
                 </assert_contents>
             </output>
-            <output_collection name="as_galaxy_list" type="list">
+            <output_collection name="data_collection" type="list">
                 <element name="sample1" ftype="xlsx" file="sample1.xlsx" />
            </output_collection>
         </test>
@@ -479,7 +411,7 @@ Setting last R1_001 will return the read1 files:   C01_R1_001.fasta   C02_R1_001
 As Galaxy detects the file type based on the extension this tool will change the exstension for supported alternative file ends.
     This includes (manually) setting the exstension to fastqsanger, fastqsolexa, fastqillumina for tools that specify one of these.
 
-As some tools do not accept gz files this tool will offer to unzip gz files.
+This tool will unzip gz files.
 
 ====
 
