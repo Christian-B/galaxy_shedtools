@@ -1,12 +1,11 @@
 <tool id="tagdust_runner_2_31" name="Tagdust runner" version="0.1.1">
     <description>Runs tagdust in single or paired end mode</description>
-    <requirements>
-        <requirement type="package" version="2.31">tagdust</requirement>
-    </requirements>
-    <stdio>
-        <exit_code range="1" level="fatal" description="Error code 1 occurred" />
-        <exit_code range="2:255" level="fatal" description="Unknown error occurred" />
-    </stdio>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements"></expand>
+    <expand macro="stdio"></expand>
+    <expand macro="version_command"></expand>
     <command >
         echo using architecture ;
         cat $architecture.fields.path ;
@@ -358,7 +357,5 @@ Code: P:CCTTAA
 
 ]]>
     </help>
-    <citations>
-    </citations>
-
+     <expand macro="citations"></expand>
 </tool>

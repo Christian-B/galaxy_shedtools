@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<macros>
+    <xml name="requirements">
+        <requirements>
+            <requirement type="package" version="2.31">tagdust</requirement>
+        </requirements>
+    </xml>
+    <xml name="citations">
+        <citations>
+            <citation type="doi">110.1093/bioinformatics/btp527</citation>
+        </citations>
+    </xml>
+    <xml name="version_command">
+        <version_command>tagdust --version | head -n 1 | awk '{ print $2 }'</version_command>
+    </xml>
+    <xml name="stdio">
+        <stdio>
+            <exit_code range="1:" level="fatal" description="Error" />
+        </stdio>
+    </xml>
+</macros>
