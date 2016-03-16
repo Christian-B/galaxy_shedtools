@@ -1,4 +1,4 @@
-<tool id="directory_data_reader_script" name="Directory Data Finder" version="0.1">
+<tool id="directory_data_reader_script" name="Directory Data Finder" version="0.2">
     <description>Reads a particular data type from a directory on the server</description>
     <command interpreter="python">
 <![CDATA[
