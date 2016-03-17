@@ -164,6 +164,14 @@ Code: P:CCTTAA
     </token>
     <xml name="citations">
         <citations>
+        <citation type="bibtex">
+            @misc{
+                TagDust,
+                author = {Timo Lassmann},
+                title = {TagDust on sourceforge},
+                url = {http://tagdust.sourceforge.net/}
+            }
+        </citation>
             <citation type="doi">10.1093/bioinformatics/btp527</citation>
             <citation type="doi">10.1186/s12859-015-0454-y</citation>
         </citations>

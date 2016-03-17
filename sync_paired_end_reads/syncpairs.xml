@@ -1,4 +1,4 @@
-<tool id="syncpairs" name="Sync Fasta Pairs" version="0.0.1">
+<tool id="syncpairs" name="Sync Fastq Pairs" version="0.0.1">
     <description>Runes sncy pairs on two fastq files.</description>
     <requirements>
         <requirement type="package" version="1.66">biopython</requirement>
@@ -12,12 +12,12 @@
         syncpairs.py $reads1 $reads2 $reads1_output $reads2_output
     </command>
     <inputs>
-        <param name="reads1" type="data" format="fastq" label="R1 Fasta File" />
-        <param name="reads2" type="data" format="fastq" label="R2 Fasta File" />
+        <param name="reads1" type="data" format="fastq,fastqsanger" label="Read1 Fastq File" />
+        <param name="reads2" type="data" format="fastq,fastqsanger" label="Read2 Fastq File" />
     </inputs>
     <outputs>
-        <data name="reads1_output" format_source="reads1" label="Synced ${reads1.name}"/>
-        <data name="reads2_output" format_source="reads2" label="Synced ${reads2.name}"/>
+        <data name="reads1_output" format_source="reads1" label="Synced Read 1"/>
+        <data name="reads2_output" format_source="reads2" label="Synced Read 2"/>
      </outputs>
     <tests>
         <!-- Large dataset in github but not toolshed -->
@@ -50,5 +50,16 @@ Install
 ]]>
     </help>
     <citations>
+        <citation type="bibtex">
+            @misc{
+                sync_paired_end_reads,
+                author = {Mickaël Mendez},
+                title = {sync_paired_end_reads on Github},
+                publisher = {GitHub},
+                journal = {GitHub repository},
+                url = {https://github.com/mmendez12/sync_paired_end_reads},
+                commit = {afd9bf092ed55a65f90f28f40d6230c5fe849223}
+            }
+        </citation>
     </citations>
 </tool>
