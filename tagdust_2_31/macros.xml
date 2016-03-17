@@ -18,6 +18,36 @@
         cat $architecture.fields.path ;
         echo ;
     </token>
+    <token name="@tagdust-call-minus-files@">
+        mkdir output ;
+        tagdust -t8 -o output/data 
+            -arch $architecture.fields.path
+            #if $reference_source.reference_source_selector=='history':
+                -ref $reference_source.ref_file
+            #end if
+            #if $reference_source.reference_source_selector=='cached':
+                -ref $reference_source.ref_path.fields.path
+            #end if
+    </token>
+    <token name="@ls_and_barcode@">
+        echo files in output folder ;
+        ls -al output ;
+        #if $include.barcode_files=="yes"
+            #if $architecture.fields.barcode=="yes"
+                cd output ;
+                ls *_BC_* > $barcode_files
+            #else
+                echo Selected architecture not expected to generate any barcode files > $barcode_files ;
+                echo To avoid this output set Choose to find the barcode files to No >> $barcode_files ;
+            #end if
+        #else 
+            #if $architecture.fields.barcode=="yes"
+                echo ;
+                echo Tagdust not included in output at users request! ;
+                echo To get then set Choose to find the barcode files to Yes and run the tool again ;
+            #end if
+        #end if
+    </token>
     <xml name="architecture">
          <param name="architecture" type="select" label="Using architecture">
             <options from_data_table="tagdust_architecture"/>
@@ -25,6 +55,53 @@
             <!--filter name="barcode" value="yes" column="3"/-->
         </param>
     </xml>
+    <xml name="reference_source">
+        <conditional name="reference_source">
+            <param name="reference_source_selector" type="select" label="Choose the source for the reference fasta (If any)">
+                <option value="none"  selected="true">Do not include a reference fasta</option>
+                <option value="cached">Locally cached</option>
+                <option value="history">History</option>
+            </param>
+            <when value="none"/>
+            <when value="cached">
+                <param name="ref_path" type="select" label="Using reference fasta">
+                <options from_data_table="all_fasta"/>
+                    <validator type="no_options" message="A built-in reference fasta is not available for the build associated with the selected input file"/>
+                </param>
+            </when>
+            <when value="history"> 
+                <param name="ref_file" type="data" format="fasta" label="Using reference file" />
+            </when>
+        </conditional>
+    </xml>
+    <xml name="include_barcode_file">
+        <conditional name="include">
+            <param name="barcode_files" type="select" label="Choose to find the barcode files (If any)">
+                <option value="yes" selected="true">Yes. Look for possible barcode separated files.</option>
+                <option value="no" >No. Ignores all barcode files even if these are generated.</option>
+            </param>
+            <when value="yes"/>
+            <when value="no"/>
+        </conditional>
+    </xml>
+    <xml name="output_barcode">
+        <data format="txt" name="barcode_files" label="Tagdust barcoded reads.">
+            <discover_datasets pattern="data_BC_(?P&lt;designation&gt;.+)\.fq" ext="fastq" directory="output" visible="true" />
+            <filter>(include['barcode_files']=='yes')</filter>
+        </data>
+    </xml>
+    <token name="@tool-documentation@">
+<![CDATA[
+
+Note: Output from Architecture with could have a Barcode HMM building block choose to find the barcode files.
+....If no barcode files are found this will simply be empty.
+....You may have refresh the history for all barcode files to show.
+
+Please contact the admin to add an architecture / HMM building blocks. 
+(There is Data Manager that they can use)
+
+]]>
+    </token>
     <token name="@tagdust-documentation@">
 <![CDATA[
 ====
@@ -88,6 +165,7 @@ Code: P:CCTTAA
     <xml name="citations">
         <citations>
             <citation type="doi">10.1093/bioinformatics/btp527</citation>
+            <citation type="doi">10.1186/s12859-015-0454-y</citation>
         </citations>
     </xml>
 </macros>

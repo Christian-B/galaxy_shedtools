@@ -1,0 +1,87 @@
+<tool id="tagdust_single_runner_2_31" name="Tagdust single end runner" version="0.2">
+    <description>Runs tagdust in single end mode</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+    <expand macro="version_command"/>
+    <command >
+        @cat-archiecture@
+        cp $fastq_file input.fastq ;
+        @tagdust-call-minus-files@
+            input.fastq ;
+        @ls_and_barcode@
+    </command>
+    <inputs>
+        <param name="fastq_file" type="data" format="fastq,fastqsanger" label="Fastq file to process" />
+        <expand macro="reference_source"/>
+        <expand macro="architecture"/>
+        <expand macro="include_barcode_file"/>
+    </inputs>
+    <outputs>
+        <data format="txt" name="logfile1" label="The tagdust single end log output." from_work_dir="output/data_logfile.txt"/>
+        <data format_source="fastq_file" name="extracted" label="Tagdust extracted reads." from_work_dir="output/data.fq"/>
+        <data format_source="fastq_file" name="unextracted" label="Tagdust un-extracted reads." from_work_dir="output/data_un.fq"/>
+        <expand macro="output_barcode"/>
+    </outputs>
+    <tests>
+        <!-- Large dataset in github but not toolshed -->
+        <!--test>
+            <param name="fastq_file" value="C75_S29_R1_001.fastq" ftype="fastq" /> 
+            <param name="architecture" value="F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <param name="include|barcode_files" value="no" /> 
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted" file="C75_S29_R1_001.fq" compare="sim_size" delta="10000"/>
+            <output name="unextracted" file="C75_S29_R1_001_un.fq"  compare="sim_size" delta="10000"/>
+        </test-->
+        <test>
+            <param name="fastq_file" value="read1.fastq" ftype="fastqsanger" /> 
+            <param name="architecture" value="test_F:NNNNNNNN_S:TATAGGG_R:N" /> 
+            <param name="barcode_files" value="no" /> 
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted" file="read1.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
+            <output name="unextracted" file="read1_un.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
+        </test>
+        <test>
+            <param name="run_type_selector" value="single"/> 
+            <param name="fastq_file" value="read1.fastq" ftype="fastq" /> 
+            <param name="architecture" value="test_B:GTA_AAC_R:N" /> 
+            <param name="include|barcode_files" value="yes" /> 
+            <output name="logfile" >
+                <assert_contents>
+                    <has_text text="Determining threshold for read0." />
+                 </assert_contents>
+            </output>
+            <output name="extracted" file="with_b_.fq"/>
+            <output name="unextracted" file="with_b_un.fq"/>
+            <output name="barcode_files">
+                <assert_contents>
+                    <has_line line="data_BC_AAC.fq" />
+                    <has_line line="data_BC_GTA.fq" />
+                </assert_contents>
+                <discovered_dataset designation="AAC" ftype="fastq" file="with_b_BC_AAC.fq"/>
+                <discovered_dataset designation="GTA" ftype="fastq" file="with_b_BC_GTA.fq"/>
+            </output>
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+This tool runs Tagdust2 in single mode.
+
+]]>
+@tool-documentation@
+
+@tagdust-documentation@
+
+    </help> 
+    <expand macro="citations"></expand>
+</tool>

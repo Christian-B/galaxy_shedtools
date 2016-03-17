@@ -1,4 +1,4 @@
-<tool id="tagdust_architectur_2_31" name="Tagdust Architecture viewer" version="0.2">
+<tool id="tagdust_architecture" name="Tagdust Architecture viewer" version="0.2">
     <description>Displays a tagdust Architecture file</description>
     <macros>
         <import>macros.xml</import>
@@ -31,7 +31,7 @@
     </tests>
      <help>
 <![CDATA[
-This ools simply prints out the selected architecture without running tagdust.
+This tools simply prints out the selected architecture without running tagdust.
 
 Note both the single end and paired end tagdust tools will report the architecture to standard out. 
 
