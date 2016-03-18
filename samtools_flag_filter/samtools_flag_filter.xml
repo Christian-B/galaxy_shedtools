@@ -1,5 +1,5 @@
 <tool id="samtools_flag_filter" name="Samtools flag_filter" version="0.1">
-  <description>Samtools' view tool</description>
+  <description>Use Samtools' view tool to filter alignments based on the flag field.</description>
   <macros>
     <import>samtools_macros.xml</import>
   </macros>
@@ -17,7 +17,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" format="bam,sam" label="Select BAM dataset select alignments with.without bits set" type="data" />
+        <param name="input" format="bam,sam" label="BAM/SAM dataset to filter by flag" type="data" />
         <repeat name="bits" title="Flag">
             <param name="flag" type="select" label="Type">
                 <option value="0x0001">Read is paired  0x0001</option>
@@ -40,28 +40,28 @@
 
     </inputs>
     <outputs>
-        <data format="bam" name="output" label="Filtered by flag on ${input.name}" />
+        <data format="bam" name="output" label="Filtered by flag" />
     </outputs>
     <tests>
         <test>
             <param ftype="bam" name="input" value="unfiltered.bam" />
-            <param name="bits_0|flag" value="The read is unmapped"/>
+            <param name="bits_0|flag" value="The read is unmapped  0x0004"/>
             <param name="bits_0|state" value="f"/>
             <output file="f0X0004.bam" ftype="bam" name="output" />
         </test>
         <test>
             <param ftype="bam" name="input" value="unfiltered.bam" />
-            <param name="bits_0|flag" value="The read is unmapped"/>
+            <param name="bits_0|flag" value="The read is unmapped  0x0004"/>
             <param name="bits_0|state" value="f"/>
-            <param name="bits_1|flag" value="The mate is unmapped"/>
+            <param name="bits_1|flag" value="The mate is unmapped  0x0008"/>
             <param name="bits_1|state" value="f"/>
             <output file="f0X0004_plus8.bam" ftype="bam" name="output" />
         </test>
         <test>
             <param ftype="bam" name="input" value="unfiltered.bam" />
-            <param name="bits_0|flag" value="The read is unmapped"/>
+            <param name="bits_0|flag" value="The read is unmapped  0x0004"/>
             <param name="bits_0|state" value="f"/>
-            <param name="bits_1|flag" value="The mate is unmapped"/>
+            <param name="bits_1|flag" value="The mate is unmapped  0x0008"/>
             <param name="bits_1|state" value="F"/>
             <output file="f0X0004_less8.bam" ftype="bam" name="output" />
         </test>
