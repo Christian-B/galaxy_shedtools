@@ -17,7 +17,7 @@
         <param name="input" format="bam" label="Select BAM dataset to convert to bed" type="data" />
     </inputs>
     <outputs>
-        <data format="bed" name="output" label="Bed12 version of ${input.name}" />
+        <data format="bed" name="output" label="Bed12 version" />
     </outputs>
     <tests>
         <!-- test data too large for toolshed 
@@ -29,12 +29,21 @@
     </tests>
     <help>
 <![CDATA[
-This tools runs the pairedbamtobed12 to convert a paired bam file to a bed file.
+This tools runs pairedbamtobed12 to convert a paired bam file to a bed file.
 
 As pairedbamtobed12 requires a bam file sorted by name, while galaxy only allows ones sorted by alignment this tool first uses Samtools to reorder the bam file.
 
 
 ]]>
     </help>
-    <citations/>
+    <citations>
+        <citation type="bibtex">
+            @misc{
+                pairedBamToBed12,
+                author = {Nicolas Bertin, Mickaël Mendez, Charles Plessy},
+                title = {pairedBamToBed12 on GitHub},
+                url = {https://github.com/Population-Transcriptomics/pairedBamToBed12}
+            }
+        </citation>
+    </citations>
 </tool>

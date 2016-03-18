@@ -12,6 +12,7 @@
     <package name="pairedbamtobed12" version="1.0">
         <install version="1.0">
             <actions>
+                <!-- Original source https://github.com/Population-Transcriptomics/pairedBamToBed12  commit/8716972653757dbe828a4cff2e11337c12eaf75c -->
                 <action type="download_by_url">https://raw.githubusercontent.com/Christian-B/galaxy_shedtools/master/package_pairedBamToBed12/pairedBamToBed12.tar.gz</action>
                 <action type="shell_command">make</action>
                 <action type="move_directory_files">
