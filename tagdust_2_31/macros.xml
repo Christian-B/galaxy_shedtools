@@ -20,7 +20,7 @@
     </token>
     <token name="@tagdust-call-minus-files@">
         mkdir output ;
-        tagdust -t8 -o output/data 
+        tagdust -t\${GALAXY_SLOTS:-4} -o output/data 
             -arch $architecture.fields.path
             #if $reference_source.reference_source_selector=='history':
                 -ref $reference_source.ref_file
