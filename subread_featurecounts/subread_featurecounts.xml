@@ -26,21 +26,24 @@
                 #end for
             #end if
             ;
-            #if $names_source.names_source_selector=='file':
-                python $__tool_directory__/name_changer.py --raw_count_file counts --fixed_count_file ${output} --names_file ${names_source.names_file}
-                #if $names_prefix:
-                    --names_prefix ${names_prefix}
+        #if $names_source.names_source_selector in ["file","manual"]:
+            python $__tool_directory__/name_changer.py 
+                --raw_count_file counts --fixed_count_file ${output} 
+                --raw_summary_file counts.summary --fixed_summary_file "${summary}"
+                #if $names_source.names_source_selector=='file':
+                    --names_file ${names_source.names_file}
+                    #if $names_source.names_prefix:
+                        --names_prefix ${names_source.names_prefix}
+                    #end if
+                #else:
+                    #for $s in $names_source.input_serie
+                        --new_name $s.new_name
+                    #end for
                 #end if
-            #end if
-            #if $names_source.names_source_selector=='manual':
-                python $__tool_directory__/name_changer.py --raw_count_file counts --fixed_count_file ${output} 
-                #for $s in $names_source.input_serie
-                    --new_name $s.new_name
-                #end for
-                #if $names_prefix:
-                    --names_prefix ${names_prefix}
-                #end if
-            #end if
+        #else
+            cp counts  "${output}" ;
+            cp counts.summary  "${summary}"
+        #end if
    </command>
     <inputs>
         <conditional name="reference_source">
@@ -66,7 +69,10 @@
             </param>
             <when value="file">
                 <param name="inputs" format="bam" multiple="True" label="Bam file(s) to count Features of" type="data" />
-                <param name="names_file" format="txt" label="File which hld the names for the columns" type="data" />
+                <param name="names_file" format="txt" 
+                    label="File which has the names for the columns. Note start and end strings shareed by every name will be removed" 
+                    type="data" />
+                <param name="names_prefix" size="30" type="text" value="" label="Prefix to add before every column name"/>
             </when>
             <when value="manual">
                 <repeat name="input_serie" title="Files and names to add">
@@ -78,25 +84,20 @@
                 <param name="inputs" format="bam" multiple="True" label="Bam file(s) to count Features of" type="data" />
             </when>
         </conditional>
-        <param name="names_prefix" size="30" type="text" value="" label="Prefix to add before every column name"/>
     </inputs>
     <outputs>
-        <data format="tabular" name="output" label="Counted Features with given names" >
-            <filter>(names_source['names_source_selector'] in ['file','manual'])</filter>
-        </data>
-        <data format="tabular" name="output_counts" label="Counted Features with galaxy file names" from_work_dir="counts">
-            <filter>(names_source['names_source_selector'] == 'galaxy_path')</filter>
-        </data>
-        <data format="tabular" name="summary" label="Feature Count Summary" from_work_dir="counts.summary"/>
+        <data format="tabular" name="output" label="Counted Features" />
+        <data format="tabular" name="summary" label="Feature Count Summary" />
     </outputs>
     <tests> 
-        <!-- Test data too large to be included -->
-        <!--test>
+        <!-- Test data too large to be included but can be found at 
+             https://github.com/Christian-B/galaxy_shedtools/tree/master/subread_featurecounts -->
+        <test>
             <param ftype="bam" name="inputs" value="C75_sorted.bam" />
             <param name="reference_source|reference_source_selector" value="cached"/>
             <param ftype="gtf" name="reference_source|ref_path" value="gencode.vM5" />
             <param name="names_source|names_source_selector" value="galaxy_path"/>
-            <output name="output_counts" file="C75_FeatureCounts.tsv"  ftype="tabular" compare="sim_size" delta="10000"/>
+            <output name="output" file="C75_FeatureCounts.tsv"  ftype="tabular" compare="sim_size" delta="10000"/>
             <output name="summary">
                 <assert_contents>              
                     <has_text text="Unassigned_Ambiguity" />
@@ -109,12 +110,12 @@
             <param ftype="gtf" name="reference_source|ref_file" value="/home/christian/Dropbox/Gene_data/gencode.vM5.annotation.gtf" />
             <param name="names_source|names_source_selector" value="file"/>
             <param ftype="txt" name="names_source|names_file" value="names.dat" />
-            <param name="names_prefix" value="prefix_"/>
+            <param name="names_source|names_prefix" value="prefix_"/>
             <output name="output">
                 <assert_contents>              
-                    <has_text text="prefix_C_1" />
-                    <has_text text="prefix_C_2" />
-                    <has_text text="prefix_C75" />
+                    <has_text text="prefix__1" />
+                    <has_text text="prefix__2" />
+                    <has_text text="prefix_75" />
                 </assert_contents>              
             </output>
             <output name="summary">
@@ -125,7 +126,7 @@
         </test>
         <test>
             <param name="reference_source|reference_source_selector" value="history"/>
-            <param ftype="gtf" name="reference_source|ref_file" value="gencode.vM5.annotation.gtf" />
+            <param ftype="gtf" name="reference_source|ref_file" value="/home/christian/Dropbox/Gene_data/gencode.vM5.annotation.gtf" />
             <param name="names_source|names_source_selector" value="manual"/>
             <param ftype="bam" name="names_source|input_serie_0|input_file" value="C01_sorted.bam" />
             <param name="names_source|input_serie_0|new_name" value="ForC1"/>
@@ -133,12 +134,11 @@
             <param name="names_source|input_serie_1|new_name" value="ForC2"/>
             <param ftype="bam" name="names_source|input_serie_2|input_file" value="C75_sorted.bam" />
             <param name="names_source|input_serie_2|new_name" value="ForC75"/>
-            <param name="names_prefix" value="ColumnName"/>
             <output name="output">
                 <assert_contents>              
-                    <has_text text="ColumnNameForC1" />
-                    <has_text text="ColumnNameForC2" />
-                    <has_text text="ColumnNameForC75" />
+                    <has_text text="ForC1" />
+                    <has_text text="ForC2" />
+                    <has_text text="ForC75" />
                 </assert_contents>              
             </output>
             <output name="summary">
@@ -146,7 +146,7 @@
                     <has_text text="Unassigned_Ambiguity" />
                 </assert_contents>              
             </output>
-        </test-->
+        </test>
     </tests>
     <help>
 <![CDATA[
@@ -159,6 +159,16 @@ In each case every name can be prefixed with the same value
 ]]>
     </help>
     <citations>
+        <citation type="bibtex">
+            @misc{
+                Subread,
+                author = {Liao Y, Smyth GK and Shi W},
+                title = {Subread (incl FeatureCount on SourceForge},
+                url = {http://subread.sourceforge.net/}
+            }
+        </citation>
+        <citation type="doi">10.1093/bioinformatics/btt656</citation>
+        <citation type="doi">10.1093/nar/gkt214</citation>
     </citations>
 
 </tool>
