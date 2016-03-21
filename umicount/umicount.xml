@@ -10,7 +10,7 @@
         <param name="input" format="bed" label="Select Paired BED file" type="data" />
     </inputs>
     <outputs>
-        <data format="bed" name="output" label="Unicount output for ${input.name}" />
+        <data format="bed" name="output" label="Unicount output" />
     </outputs>
     <tests>
         <test>
@@ -20,10 +20,27 @@
     </tests>
     <help>
 <![CDATA[
-Run umicount (https://raw.githubusercontent.com/mmendez12/umicount)
+Runs umicount (https://raw.githubusercontent.com/mmendez12/umicount)
 
 See http://umicount.readthedocs.org/en/latest/introduction.html for more details.
 ]]>
     </help>
-    <citations/>
+    <citations>
+        <citation type="bibtex">
+            @misc{
+                umicount_bibtex,
+                author = {Mickaël Mendez},
+                title = {umicount on GitHub},
+                url = {https://github.com/mmendez12/umicount}
+            }
+        </citation>
+        <citation type="bibtex">
+            @misc{
+                umicount_docs,
+                author = {Mickaël Mendez},
+                title = {umicount documentation on readthedocs},
+                url = {http://umicount.readthedocs.org}
+            }
+        </citation>
+    </citations>
 </tool>
