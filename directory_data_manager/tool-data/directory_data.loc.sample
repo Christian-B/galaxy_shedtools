@@ -1,0 +1,19 @@
+#This file lists the directories that can be read in
+
+#This file has the format (white space characters are TAB characters):
+#
+#<unique_build_id>	<dbkey>	<display_name>	<original_extension>	<galaxy_extension>	<decompress>	<path>
+#
+#original_extension should not include the starting .
+#
+#galaxy_extension should be one listed in galaxy/config/datatypes_conf.xml (or xml.sample)
+#
+#decompress should be No or Yes
+#
+#So, data_manager.loc could look something like this: (whitespace is tabs)
+#
+#john_12	john_12	John's fastq files batch 12	fastq.gz	fastqsanger	Yes	/data/john/batch12
+#
+#Your directory_data.loc file should contain an entry for each path and extension pair
+#
+

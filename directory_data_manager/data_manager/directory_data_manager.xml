@@ -1,0 +1,55 @@
+<tool id="directory_data_manager" name="directory data manager" tool_type="manage_data" version="0.0.1">
+    <description>path inputer</description>
+    <command interpreter="python">
+        directory_data_manager.py
+        --data_table_name "directory_data" 
+        --json_output_file "${json_output_file}"
+    </command>
+    <inputs>
+        <param name="path" type="text" value="" label="path field for the entry" />
+        <param name="original_extension" type="text" value="" label="Extensions as found in directory." />
+        <param name="galaxy_extension" type="text" value="" label="Galaxay Extension." />
+        <param name="decompress" type="select" label="Will files need to be decompressed.">
+            <option value="Yes">Yes. Files should decompressed (unzipped)</option>
+            <option value="No">No. Files are not compressed</option>
+        </param>
+        <param name="value" type="text" value="" label="value field for the entry.  Defaults to name if left blank." />
+        <param name="dbkey" type="text" value="" label="dbkey field for the entry.  Defaults to value if left blank." />
+        <param name="name" type="text" value="" label="name field for the entry. Defaults to the file name from path if left blank." />
+    </inputs>
+    <outputs>
+        <data name="json_output_file" format="data_manager_json"/>
+    </outputs>
+
+    <help>
+Adds information for downloading data to the directory_data data table.
+
+Reguried inputs are.
+
+path: Full path on the server where galaxy can find the files
+
+Original Extension: The Extention as found on the server.
+    Parts before the extension that could be used to split the data into seubsection such are Read1 and Read2 should not e included.
+
+Galaxy_Extension: The Extention to give the file before loading into galaxy so galaxy can detect the file type.
+    This should be one as listed in galaxy/config/datatypes_conf.xml (or xml.sample)
+    For example use tabular for tsv, txt for text and fasta and not fa
+    Ideally use fastqsanger, fastqsolexa, fastqcssanger, or fastqillumina instead of just fastq as many tools need this level of detail.
+
+Decompress: 'Yes' to ask the tool to decompress the files otherwise 'No'. Any other value will cause an error. 
+
+If name is not provided the filename from path less the exstension is used.
+
+If value is not provided, the name will be used (or its default)
+
+If dbkey is not provided, the value will be used (or its default)
+
+===
+
+The tool will check the path exists and that it holds at least one file with the required extension.
+
+    </help>
+    <citations>
+    </citations>
+
+</tool>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<data_managers>
+    <data_manager tool_file="data_manager/directory_data_manager.xml" id="directory_data_manager" version="0.0.1">
+        <data_table name="directory_data">
+            <output>
+                <column name="value" />
+                <column name="dbkey" />
+                <column name="name" />
+                <column name="original_extension" />
+                <column name="galaxy_extension" />
+                <column name="decompress" />
+                <column name="path" />
+            </output>
+        </data_table>
+    </data_manager>
+
+</data_managers>
