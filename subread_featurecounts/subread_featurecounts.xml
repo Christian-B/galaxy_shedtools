@@ -70,7 +70,7 @@
             <when value="file">
                 <param name="inputs" format="bam" multiple="True" label="Bam file(s) to count Features of" type="data" />
                 <param name="names_file" format="txt" 
-                    label="File which has the names for the columns. Note start and end strings shareed by every name will be removed" 
+                    label="File which has the names for the columns. Note start and end strings shared by every name will be removed" 
                     type="data" />
                 <param name="names_prefix" size="30" type="text" value="" label="Prefix to add before every column name"/>
             </when>
