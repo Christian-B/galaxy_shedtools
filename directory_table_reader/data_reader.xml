@@ -1,5 +1,5 @@
 <tool id="directory_table_reader" name="Directory Data Reader" version="0.2">
-    <description>Reads data from preconfigured directoriestable.</description>
+    <description>Reads data from preconfigured directories table.</description>
     <command interpreter="python">
         <![CDATA[
         directory_copier.py  
