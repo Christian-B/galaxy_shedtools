@@ -1,0 +1,126 @@
+<tool id="directory_table_reader" name="Directory Data Reader" version="0.2">
+    <description>Reads data from preconfigured directoriestable.</description>
+    <command interpreter="python">
+        <![CDATA[
+        directory_copier.py  
+            --ending .${directory.fields.original_extension} 
+            --new_ending .${directory.fields.galaxy_extension} 
+            #if $results.required=="data"
+                --new_ending .${directory.fields.galaxy_extension} 
+                --decompress ${directory.fields.decompress} 
+                #if $results.start
+                    --start $results.start
+                #end if      
+                #if $results.last
+                    --last $results.last
+                #end if      
+            #end if      
+            --path ${directory.fields.path} 
+            --list ${listing}
+        ]]>
+    </command>
+    <inputs>
+        <param name="directory" type="select" label="Directory to import data from">
+            <options from_data_table="directory_data"/>
+            <validator type="no_options" message="No Data Directory Setup"/>
+        </param>
+        <param name="list_name" type="text" size="25" label="output name" value="input data"/>
+        <conditional name="results">
+            <param name="required" type="select" label="Download data or just directory listing" help="Select type of action required.">
+                <option value="data" selected="true">Data and listing of selected type</option>
+                <option value="listing">Get listing of selected file types </option>
+            </param>
+            <when value="data">
+                <param name="start" type="text" value="" label="String which must be at the start of each file name" />
+                <param name="last" type="text" value="" label="String which must be at the end of the file name (excluding the file type)" />
+            </when>
+            <when value="listing"/>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data format="txt" name="listing" label="List of files in $list_name">
+        </data>
+        <!-- Ideally galaxy can get the type based on the file extensions. If so just add the type here -->
+        <collection type="list" label="$list_name" name="data_collection">
+            <filter>(results['required'] == 'data')</filter>
+            <discover_datasets pattern="__designation_and_ext__" directory="output" visible="true" />
+        </collection>
+    </outputs>
+    <tests>
+        <test>
+            <param name="directory" value="fastq.gz_files_id" />
+            <param name="list_name" value="test_files" />
+            <param name="results|required" value="listing"/>
+            <output name="listing">
+                <assert_contents>
+                    <has_line line="sample1.fastqsanger" />
+                    <has_line line="other.fastqsanger" />
+                </assert_contents>
+            </output>
+         </test>
+        <test>
+            <param name="directory" value="fastq.gz_files_id" />
+            <output name="listing_fastq_gz">
+                <assert_contents>
+                    <has_line line="sample1.fastqsanger" />
+                </assert_contents>
+            </output>
+            <output_collection name="data_collection" type="list">
+                <element name="sample1" ftype="fastqsanger" file="sample1.fastq" />
+                <element name="other" ftype="fastqsanger" file="other.fastq" />
+           </output_collection>
+         </test>
+        <test>
+            <param name="directory" value="fastq_files_id" />
+            <param name="results|start" value="sam" />
+            <output name="listing_fastq">
+                <assert_contents>
+                    <has_line line="sample1.fastq" />
+                    <not_has_text text="other.fasta" />
+                </assert_contents>
+            </output>
+            <output_collection name="data_collection" type="list">
+                <element name="sample1" ftype="fastq" file="sample1.fastq" />
+           </output_collection>
+         </test>
+    </tests>
+
+    <help>
+<![CDATA[
+This tool will lookup files on the Galaxy server machine, including mounted directories.
+
+Only directories and ending combinations set up by a Galaxy admin can be listed or loaded in this way.
+These endings are case senitive.
+
+====
+
+The data options will look for all files that have a particular ending in the selected directory.
+
+The tool will return two things.
+
+1. A Dataset collection of all the detected files. (If data requested)
+
+2. A file with the names of all the detected files. These will be sorted in the same order as galaxy builds the dataset collection. 
+
+The files can be filtered by setting a specific start string for the file name. 
+Only files that start with this string (case senstive) will be included.
+
+Files can also be filter for the last part before the file extsentions.
+
+Assuming the directory has:
+C01_R1_001.fasta   C01_R2_001.fatsa   C02_R1_001.fasta   C02_R2_001.fatsa
+
+Setting start C01 will return just the C01 files:   C01_R1_001.fasta   C01_R2_001.fatsa
+
+Setting last R1_001 will return the read1 files:   C01_R1_001.fasta   C02_R1_001.fasta
+
+As Galaxy detects the file type based on the extension this tool will change the exstension as setup by the admin.
+
+This tool will unzip gz files if requested to by the admin,
+
+]]>
+    </help>
+    <citations>
+    </citations>
+
+</tool>
