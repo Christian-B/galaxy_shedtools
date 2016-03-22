@@ -20,9 +20,9 @@
         <expand macro="include_barcode_file"/>
     </inputs>
     <outputs>
-        <data format="txt" name="logfile1" label="The tagdust single end log output." from_work_dir="output/data_logfile.txt"/>
-        <data format_source="fastq_file" name="extracted" label="Tagdust extracted reads." from_work_dir="output/data.fq"/>
-        <data format_source="fastq_file" name="unextracted" label="Tagdust un-extracted reads." from_work_dir="output/data_un.fq"/>
+        <data format="txt" name="logfile" label="Tagdust log on ${on_string} ." from_work_dir="output/data_logfile.txt"/>
+        <data format_source="fastq_file" name="extracted" label="Tagdust extracted reads from ${on_string}." from_work_dir="output/data.fq"/>
+        <data format_source="fastq_file" name="unextracted" label="Tagdust un-extracted reads from ${on_string}." from_work_dir="output/data_un.fq"/>
         <expand macro="output_barcode"/>
     </outputs>
     <tests>
@@ -48,8 +48,8 @@
                     <has_text text="Determining threshold for read0." />
                  </assert_contents>
             </output>
-            <output name="extracted" file="read1.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
-            <output name="unextracted" file="read1_un.fq"  ftype="fastqsanger" compare="sim_size" delta="100"/>
+            <output name="extracted" file="read1.fq"  ftype="fastqsanger" compare="sim_size" delta="1000"/>
+            <output name="unextracted" file="read1_un.fq"  ftype="fastqsanger" compare="sim_size" delta="1000"/>
         </test>
         <test>
             <param name="run_type_selector" value="single"/> 
