@@ -17,7 +17,7 @@
         <param name="input" format="bam" label="Select BAM dataset to convert to bed" type="data" />
     </inputs>
     <outputs>
-        <data format="bed" name="output" label="Bed12 version" />
+        <data format="bed" name="output" label="Bed12 version of ${on_string}" />
     </outputs>
     <tests>
         <!-- test data too large for toolshed 

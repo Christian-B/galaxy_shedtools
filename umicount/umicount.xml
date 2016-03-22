@@ -10,7 +10,7 @@
         <param name="input" format="bed" label="Select Paired BED file" type="data" />
     </inputs>
     <outputs>
-        <data format="bed" name="output" label="Unicount output" />
+        <data format="bed" name="output" label="Unicount output for ${on_string}" />
     </outputs>
     <tests>
         <test>

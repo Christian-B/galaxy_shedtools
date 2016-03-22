@@ -16,8 +16,8 @@
         <param name="reads2" type="data" format="fastq,fastqsanger" label="Read2 Fastq File" />
     </inputs>
     <outputs>
-        <data name="reads1_output" format_source="reads1" label="Synced Read 1"/>
-        <data name="reads2_output" format_source="reads2" label="Synced Read 2"/>
+        <data name="reads1_output" format_source="reads1" label="Synced Read 1 from ${on_string}"/>
+        <data name="reads2_output" format_source="reads2" label="Synced Read 2 from ${on_string}"/>
      </outputs>
     <tests>
         <!-- Large dataset in github but not toolshed -->
