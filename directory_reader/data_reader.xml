@@ -61,6 +61,22 @@
         --list ${listing}
 ]]>
     </command>
+    <macros>
+        <xml name="new_galaxy">
+            <conditional name="new_galaxy">
+                <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will determine which down stream tools can be used.">
+                    <option value="fastq" selected="true">Keep data as general fastq format</option>
+                    <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
+                    <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
+                    <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
+                </param>
+                <when value="fastq" />
+                <when value="fastqsanger" />
+                <when value="fastqsolexa" />
+                <when value="fastqillumina" />  
+            </conditional>
+        </xml>
+    </macros>    
     <inputs>
         <param name="directory" type="text" label="Directory to read data from." />
         <param name="list_name" type="text" size="25" label="output name" value="input data"/>
@@ -98,34 +114,14 @@
                     <when value="fasta" />
                     <when value="fasta.gz" />
                     <when value="fastq" >
-                        <conditional name="new_galaxy">
-                            <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will determine which down stream tools can be used.">
-                                <option value="fastq" selected="true">Keep data as general fastq format</option>
-                                <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
-                                <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
-                                <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
-                             </param>
-                            <when value="fastq" />
-                            <when value="fastqsanger" />
-                            <when value="fastqsolexa" />
-                            <when value="fastqillumina" />
-                        </conditional>
+                        <expand macro="new_galaxy"/>
                     </when>
                     <when value="fastq.gz" >
-                        <conditional name="new_galaxy">
-                            <param name="new_ending" type="select" label="Ending to be used for Galaxy" help="Will determine which down stream tools can be used.">
-                                <option value="fastq" selected="true" >Keep data as general fastq format</option>
-                                <option value="fastqsanger">Tag data as fastq sanger in galaxy</option>
-                                <option value="fastqsolexa">Tag data as fastq solexa in galaxy</option>
-                                <option value="fastqillumina">Tag data as fastq illumina in galaxy</option>
-                             </param>
-                            <when value="fastq" />
-                            <when value="fastqsanger" />
-                            <when value="fastqsolexa" />
-                            <when value="fastqillumina" />
-                        </conditional>
+                        <expand macro="new_galaxy"/>
                     </when>
-                    <when value="fq" />
+                    <when value="fq" >
+                        <expand macro="new_galaxy"/>
+                    </when>
                     <when value="sam" />
                     <when value="tabular" />
                     <when value="text" />
