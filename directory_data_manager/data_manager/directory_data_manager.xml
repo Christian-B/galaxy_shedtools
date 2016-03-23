@@ -24,25 +24,56 @@
     <help>
 Adds information for downloading data to the directory_data data table.
 
-Reguried inputs are.
+Reguried inputs
+===============
 
-path: Full path on the server where galaxy can find the files
+path
+----
 
-Original Extension: The Extention as found on the server.
-    Parts before the extension that could be used to split the data into seubsection such are Read1 and Read2 should not e included.
+Full path on the server where galaxy can find the files
 
-Galaxy_Extension: The Extention to give the file before loading into galaxy so galaxy can detect the file type.
-    This should be one as listed in galaxy/config/datatypes_conf.xml (or xml.sample)
-    For example use tabular for tsv, txt for text and fasta and not fa
-    Ideally use fastqsanger, fastqsolexa, fastqcssanger, or fastqillumina instead of just fastq as many tools need this level of detail.
+Original Extension
+------------------
 
-Decompress: 'Yes' to ask the tool to decompress the files otherwise 'No'. Any other value will cause an error. 
+The Extention as found on the server.
 
-If name is not provided the filename from path less the exstension is used.
+Parts before the extension that could be used to split the data into seubsection such are Read1 and Read2 should not e included.
 
-If value is not provided, the name will be used (or its default)
+Galaxy_Extension
+----------------
 
-If dbkey is not provided, the value will be used (or its default)
+The Extention to give the file before loading into galaxy so galaxy can detect the file type.
+
+This should be one as listed in galaxy/config/datatypes_conf.xml (or xml.sample)
+
+For example use tabular for tsv, txt for text and fasta and not fa\n
+
+Ideally use fastqsanger, fastqsolexa, fastqcssanger, or fastqillumina instead of just fastq as many tools need this level of detail.
+
+Decompress
+----------
+
+'Yes' to ask the tool to decompress the files otherwise 'No'.
+
+Any other value will cause an error. 
+
+Optional Inputs
+===============
+
+Name
+----
+
+If not provided the last bit of **path**  is used.
+
+Value
+-----
+
+If value is not provided, the **name** will be used (or its default)
+
+dbkey
+-----
+
+If not provided, the **value** will be used (or its default)
 
 ===
 
