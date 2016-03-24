@@ -45,7 +45,7 @@ brenninc/package_r_3_2_1
 
 
 brenninc/sync_paired_end_reads
-    iuc/package_biopython_1_66
+    biopython/package_biopython_1_66
         iuc/package_readline_6_3 
             iuc/package_ncurses_6_0
         iuc/package_numpy_1_9 iuc 
