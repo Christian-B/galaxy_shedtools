@@ -1,0 +1,50 @@
+<tool id="line_both" name="Tail with lines from begining or end" version="0.1">
+    <description>Extracts last few lines from a text file</description>
+    <command>
+        tail 
+        #if $count_select=="from_bottom":
+            --lines $num_lines 
+        #end if
+        #if $count_select=="from_top":
+            --lines +$num_lines 
+        #end if
+        $input_file > $output_file
+    </command>
+    <inputs>
+        <param name="input_file" type="data" format="txt" label="Full file"/>
+        <!--conditional name="count"-->
+            <param name="count_select" type="select" label="Who to count number of lines">
+                <option value="default" selected="true">Use defualt Value (10 from bottom)</option>
+                <option value="from_bottom">Count from last line</option>
+                <option value="from_top">Count from top line</option>
+            </param>
+        <!--/conditional-->
+        <param name="num_lines" size="4" type="integer" value="10" label="Number of lines to tail" min="1"/>
+    </inputs>
+    <outputs>
+        <data format="txt" type="data" name="output_file" label="Tail file">
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_file" value="30_lines.text" />
+            <output name="output_file" file="simple_tail.txt" />
+        </test>
+        <test>
+            <param name="input_file" value="30_lines.text" />
+            <param name="count_select" value="from_bottom" />
+            <param name="num_lines" value="5" />
+            <output name="output_file" file="last_5_lines.txt" />
+        </test>
+        <test>
+            <param name="input_file" value="30_lines.text" />
+            <param name="count_select" value="from_top" />
+            <param name="num_lines" value="5" />
+            <output name="output_file" file="from_5_lines.txt" />
+        </test>
+    </tests>
+    <help>
+        Preforms tail on a text file.
+    </help>
+    <citations/>
+</tool>

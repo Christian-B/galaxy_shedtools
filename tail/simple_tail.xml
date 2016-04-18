@@ -1,0 +1,23 @@
+<tool id="simple_tail" name="Tail" version="0.1">
+    <description>Extracts last few lines from a text file</description>
+    <command>
+        tail $input_file > $output_file
+    </command>
+    <inputs>
+        <param name="input_file" type="data" format="txt" label="Full file"/>
+    </inputs>
+    <outputs>
+        <data format="txt" type="data" name="output_file" label="Tail file">
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_file" value="30_lines.text" />
+            <output name="output_file" file="simple_tail.txt" />
+        </test>
+    </tests>
+    <help>
+        Preforms tail on a text file.
+    </help>
+    <citations/>
+</tool>
