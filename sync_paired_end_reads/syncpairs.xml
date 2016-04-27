@@ -28,10 +28,10 @@
             <output name="reads2_output" file="C75_S29_R2_001_extracted.fastq" ftype="fastq" />
         </test-->
         <test>
-            <param name="reads1" value="read1.fq" ftype="fastq" /> 
-            <param name="reads2" value="read2.fastq" ftype="fastq" /> 
-            <output name="reads1_output" file="read1_extracted.fastq" ftype="fastq" />
-            <output name="reads2_output" file="read2_extracted.fastq" ftype="fastq" />
+            <param name="reads1" value="read1.fq" ftype="fastqsanger" /> 
+            <param name="reads2" value="read2.fastq" ftype="fastqsanger" /> 
+            <output name="reads1_output" file="read1_extracted.fastq" ftype="fastqsanger" />
+            <output name="reads2_output" file="read2_extracted.fastq" ftype="fastqsanger" />
         </test>
     </tests>
     <help>
