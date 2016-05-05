@@ -62,10 +62,10 @@
             </when>
         </conditional>
         <conditional name="names_source">
-            <param name="names_source_selector" type="select" label="Where should the column names come from">
-                <option value="file">File with list of names</option>
-                <option value="manual">Enter column names manually</option>
-                <option value="galaxy_path">Use the galaxy paths</option>
+            <param name="names_source_selector" type="select" label="How are the inputs organized?">
+                <option value="file">Collection of /Multiple bam file plus File with list of names.</option>
+                <option value="galaxy_path">Collection of /Multiple bam files, but no file with list of names.</option>
+                <option value="manual">Manually enter each file and a name for that file.</option>
             </param>
             <when value="file">
                 <param name="inputs" format="bam" multiple="True" label="Bam file(s) to count Features of" type="data" />
