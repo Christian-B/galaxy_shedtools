@@ -1,0 +1,52 @@
+<!-- adapted from https://toolshed.g2.bx.psu.edu/view/iuc/bedtools/f8b7dc21b4ee
+     Added the samtools sort and samtools requirement as bam files must be outpit sorted -->
+<tool id="bedtools_bedtobam_sorted" name="BED to sorted BAM" version="@WRAPPER_VERSION@.0">
+    <description>converter</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements" >
+        <requirement type="package" version="1.2">samtools</requirement>
+    </expand>
+    <expand macro="stdio" />
+    <command>
+<![CDATA[
+        bedtools bedtobam
+        $bed12
+        -mapq $mapq
+        -g $genome
+        -i '$input'
+        > unsorted.bam  &&
+        samtools sort -@ \${GALAXY_SLOTS:-1} -o '$output' -O bam -T dataset 'unsorted.bam'
+]]>
+    </command>
+    <inputs>
+        <param format="bed" name="input" type="data" label="Convert the following BED file to BAM"/>
+        <param name="bed12" type="boolean" truevalue="-bed12" falsevalue="" checked="false"
+            label="Indicate that the input BED file is in BED12 (a.k.a 'blocked' BED) format"
+            help="If Selected, bedToBam will convert blocked BED features (e.g., gene annotaions) into 'spliced' BAM alignments by creating an appropriate CIGAR string. (-bed12)"/>
+        <expand macro="genome" />
+        <param name="mapq" type="integer" value="255"
+            label="Set a mapping quality (SAM MAPQ field) value for all BED entries" help="(-mapq)"/>
+    </inputs>
+    <outputs>
+        <data format="bam" name="output" metadata_source="input" label="${input.name} (as BAM)"/>
+    </outputs>
+    <tests>
+        <test>
+            <param name="input" value="bedToBam1.bed" ftype="bed" />
+            <param name="genome" value="mm9_chr1.len" ftype="tabular" />
+            <output name="output" file="sortedBedToBam_result.bam" lines_diff="4" ftype="bam" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+**What it does**
+
+bedToBam converts features in a feature file to BAM format. This is useful as an efficient means of storing large genome annotations in a compact, indexed format for visualization purposes.
+
+@REFERENCES@
+]]>
+    </help>
+    <expand macro="citations" />
+</tool>

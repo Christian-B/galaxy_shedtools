@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- copied from from https://toolshed.g2.bx.psu.edu/view/iuc/bedtools/f8b7dc21b4ee -->
+<tool_dependency>
+    <package name="bedtools" version="2.24">
+        <repository name="package_bedtools_2_24" owner="iuc" />
+    </package>
+    <package name="samtools" version="1.2">
+        <repository name="package_samtools_1_2" owner="iuc" />
+    </package>
+</tool_dependency>
