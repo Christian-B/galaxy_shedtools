@@ -86,11 +86,8 @@ def main():
             start_header = ["Geneid", "Chr", "Start", "End", "Strand", "Length"]
             header_line = fix_header_line(start_header, input_file.readline(), new_names)
             output_file.write(header_line)
-            count = 0
             for line in input_file:
-                count += 1
-                if count < 5:
-                    output_file.write(line)
+                output_file.write(line)
 
     with open(options.raw_summary_file, "r") as input_file:
         with open(options.fixed_summary_file, "w") as output_file:
