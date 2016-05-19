@@ -9,11 +9,12 @@
 
     <command>
     <![CDATA[
-        samtools view 
+        samtools sort -@ \${GALAXY_SLOTS:-1} -o temp_bam -O bam -T dataset "${input}" &&
+        samtools view -@ \${GALAXY_SLOTS:-1}
         #for $bit in $bits
             -${bit.state} ${bit.flag}
         #end for
-        -b -o "${output}" "${input}" 
+        -b -o "${output}"  temp_bam
     ]]>
     </command>
     <inputs>
