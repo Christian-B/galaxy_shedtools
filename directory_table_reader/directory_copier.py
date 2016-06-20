@@ -1,6 +1,7 @@
 import gzip
 import optparse  # using optparse as hydra still python 2.6
 import os.path
+import re
 import shutil
 import sys
 
@@ -14,22 +15,21 @@ def check_pattern_get_new_name(a_file, ending, options):
     if options.start:
         if not(a_file.startswith(options.start)):
             return None
+    name = a_file[:-len(ending)]
+    if name.endswith("."):
+        name = name[:-1]
     if options.last:
-        if ending[0] == ".":
-            last = options.last + ending
-        else:
-            if options.last[-1] == ".":
-                last = options.last + ending
-            else:
-                last = options.last + "." + ending
-        if not(a_file.endswith(last)):
+        if not(name.endswith(last)):
+            return None
+    if options.regex:
+        pattern = re.compile(options.regex)
+        if pattern.search(name) is None:
             return None
     if options.new_ending:
-        name = a_file[:-len(ending)]
         if options.new_ending[0] ==".":
-            if name[-1] == ".":
-                name = name[:-1]
-        return name + options.new_ending
+            return name + options.new_ending
+        else:
+            return name + "." + options.new_ending
     if options.decompress:
         if a_file.endswith(".gz"):
             return a_file[:-3]
@@ -46,7 +46,6 @@ def check_and_get_new_name(a_file, options):
 def link(a_file, new_name, path):
     file_path = os.path.join(os.path.realpath(path), a_file)
     sym_path = os.path.join(os.path.realpath("output"), new_name)
-    #if not(os.path.exists(sym_path)):
     os.link(file_path, sym_path)
 
 
@@ -58,7 +57,8 @@ def decompress(a_file, new_name, path):
 
 
 def copy_and_link(path, options):
-    os.mkdir("output")
+    if options.decompress or options.link:
+        os.mkdir("output")
     with open(options.list, 'w') as list_file:
         files = os.listdir(path)
         files.sort()
@@ -86,10 +86,10 @@ if __name__ == '__main__':
                       help="String that must be at the start of the file name ")
     parser.add_option("--last", action="store", type="string",
                       help="String that must be the last bit of the file name before the endings")
+    parser.add_option("--regex", action="store", type="string",
+                      help="Regex for file names not including the endings")
     parser.add_option("--new_ending", action="store", type="string", 
                       help="New ending to replace any previous ending in list and if required links or decompressions. Note: If not set decompression will auto remove the compressioned part of the ending")
-    #parser.add_option("--regex", action="store", type="string",
-    #                  help="Regex pattern the file name (less . ending) must match before the endings")
     parser.add_option("--list", action="store", type="string",
                       help="Path to where all files should be listed. ")
     parser.add_option("--link", action="store_true", default=False,

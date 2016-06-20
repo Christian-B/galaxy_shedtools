@@ -9,10 +9,13 @@
                 --new_ending .${directory.fields.galaxy_extension} 
                 --decompress ${directory.fields.decompress} 
                 #if $results.start
-                    --start $results.start
+                    --start "$results.start"
                 #end if      
                 #if $results.last
-                    --last $results.last
+                    --last "$results.last"
+                #end if      
+                #if $results.regex
+                    --regex "$results.regex"
                 #end if      
             #end if      
             --path ${directory.fields.path} 
@@ -33,6 +36,11 @@
             <when value="data">
                 <param name="start" type="text" value="" label="String which must be at the start of each file name" />
                 <param name="last" type="text" value="" label="String which must be at the end of the file name (excluding the file type)" />
+                <param name="regex" type="text" value="" label="Regex pattern which must somewhere in the file name (excluding the file type)" >
+                    <sanitizer>
+                        <valid initial="string.printable"/>
+                    </sanitizer>
+                </param>
             </when>
             <when value="listing"/>
         </conditional>
@@ -76,7 +84,20 @@
             <output name="listing_fastq">
                 <assert_contents>
                     <has_line line="sample1.fastq" />
-                    <not_has_text text="other.fasta" />
+                    <not_has_text text="other.fastq" />
+                </assert_contents>
+            </output>
+            <output_collection name="data_collection" type="list">
+                <element name="sample1" ftype="fastq" file="sample1.fastq" />
+           </output_collection>
+         </test>
+        <test>
+            <param name="directory" value="fastq_files_id" />
+            <param name="results|regex" value="le.?" />
+            <output name="listing_fastq">
+                <assert_contents>
+                    <has_line line="sample1.fastq" />
+                    <not_has_text text="other.fastq" />
                 </assert_contents>
             </output>
             <output_collection name="data_collection" type="list">
@@ -107,12 +128,22 @@ Only files that start with this string (case senstive) will be included.
 
 Files can also be filter for the last part before the file extsentions.
 
-Assuming the directory has:
-C01_R1_001.fasta   C01_R2_001.fatsa   C02_R1_001.fasta   C02_R2_001.fatsa
+Files can also be filtered by a regex pattern.  
+Only files that contain the regex string will be included.
+This uses the python search funtion so as long as the Regex pattern is found somewhere in file name (excluding extension).
 
-Setting start C01 will return just the C01 files:   C01_R1_001.fasta   C01_R2_001.fatsa
+The three filter start, last and regex if supplied work indepently, so only files that pass all supplied test will be included.
+
+Note: Before applying the last and regex test the ending (includig the . just before the ending are removed)
+
+Assuming the directory has:
+C01_R1_001.fasta   C01_R2_001.fatsa   C02_R1_001.fasta   C02_R2_002.fatsa
+
+Setting start C01 will return just the C01 files:   C01_R1_001.fasta   C01_R2_002.fatsa
 
 Setting last R1_001 will return the read1 files:   C01_R1_001.fasta   C02_R1_001.fasta
+
+Setting regex R2_00.$ will return the R2 files:   C01_R2_001.fatsa   C02_R2_002.fatsa
 
 As Galaxy detects the file type based on the extension this tool will change the exstension as setup by the admin.
 
