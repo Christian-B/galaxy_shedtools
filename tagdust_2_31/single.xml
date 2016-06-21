@@ -75,7 +75,7 @@
     </tests>
     <help>
 <![CDATA[
-This tool runs Tagdust2 in single mode.
+This tool runs Tagdust2 in single mode. Start with a single file.
 
 ]]>
 @tool-documentation@

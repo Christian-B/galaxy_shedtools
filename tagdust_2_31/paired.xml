@@ -83,7 +83,7 @@
     </tests>
     <help>
 <![CDATA[
-This tool runs Tagdust2 in paired end mode.
+This tool runs Tagdust2 in paired end mode. Start with a pair of files, or two DataCollections with the pairs in order.
 
 ]]>
 @tool-documentation@

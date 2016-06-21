@@ -77,8 +77,8 @@
     <xml name="include_barcode_file">
         <conditional name="include">
             <param name="barcode_files" type="select" label="Choose to find the barcode files (If any)">
-                <option value="yes" selected="true">Yes. Look for possible barcode separated files.</option>
-                <option value="no" >No. Ignores all barcode files even if these are generated.</option>
+                <option value="no" selected="true">No. Ignores all barcode files even if these are generated.</option>
+                <option value="yes">Yes. Look for possible barcode separated files.</option>
             </param>
             <when value="yes"/>
             <when value="no"/>
